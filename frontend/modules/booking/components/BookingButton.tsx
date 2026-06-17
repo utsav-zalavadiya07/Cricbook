@@ -1,0 +1,91 @@
+"use client";
+
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createBatchBooking, createBooking } from "../services/bookingService";
+import { BatchBookingRequest, BookingRequest } from "../types/booking.types";
+
+type ApiError = {
+  response?: {
+    data?: {
+      message?: string;
+      error?: string;
+    };
+  };
+};
+
+interface BookingButtonProps {
+  bookingData: BookingRequest | BatchBookingRequest;
+  price: number;
+  paymentMeta?: Record<string, string | undefined>;
+}
+
+export default function BookingButton({ bookingData, price, paymentMeta = {} }: BookingButtonProps) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const inFlight = useRef(false);
+
+  const handleBooking = async () => {
+    if (inFlight.current) return;
+    inFlight.current = true;
+    setLoading(true);
+    setError("");
+    try {
+      const isBatch = "slotIds" in bookingData;
+      const res = isBatch
+        ? await createBatchBooking(bookingData)
+        : await createBooking(bookingData);
+      const bookings = Array.isArray(res.data) ? res.data : [res.data];
+      const params = new URLSearchParams({
+        bookingIds: bookings.map((booking: { id: number }) => booking.id).join(","),
+        bookingId: String(bookings[0].id),
+        price: String(price),
+      });
+      Object.entries(paymentMeta).forEach(([key, value]) => {
+        if (value) params.set(key, value);
+      });
+      router.push(`/payment?${params.toString()}`);
+    } catch (err: unknown) {
+      const apiError = err as ApiError;
+      setError(
+        apiError.response?.data?.message ||
+          apiError.response?.data?.error ||
+          "Booking failed. The slot may already be taken."
+      );
+    } finally {
+      inFlight.current = false;
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-xl">
+          {error}
+        </div>
+      )}
+      <button
+        onClick={handleBooking}
+        disabled={loading}
+        className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-2xl transition-all duration-200 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-0.5 text-base"
+      >
+        {loading ? (
+          <span className="flex items-center justify-center gap-2">
+            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+            </svg>
+            Confirming booking...
+          </span>
+        ) : (
+          `Confirm & Pay ₹${price} →`
+        )}
+      </button>
+      <p className="text-center text-slate-500 text-xs">
+        You won&apos;t be charged yet. Payment happens on the next step.
+      </p>
+    </div>
+  );
+}

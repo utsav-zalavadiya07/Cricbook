@@ -1,0 +1,31 @@
+Starting project at c:\Users\utsav\Java\Cricbook\mobile
+Using src/app as the root directory for Expo Router.
+Starting Metro Bundler
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+Web node_modules\expo\AppEntry.js ▓▓▓▓▓▓▓░░░░░░░░░ 44.8% (120/197)
+Web Bundled 5737ms node_modules\expo\AppEntry.js (406 modules)
+ LOG  [web] Logs will appear in the browser console
+Unable to resolve "../theme" from "src\app\CricbookMobileApp.tsx"
+[0m [90m 221 |[39m   [33mWallet[39m[33m,[39m
+ [90m 222 |[39m } [36mfrom[39m [32m"../types/models"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 223 |[39m [36mimport[39m { theme } [36mfrom[39m [32m"../theme"[39m[33m;[39m
+ [90m     |[39m                        [31m[1m^[22m[39m
+ [90m 224 |[39m [36mimport[39m {
+ [90m 225 |[39m   [33mAppButton[39m[33m,[39m
+ [90m 226 |[39m   [33mChip[39m[33m,[39m[0m
+
+Import stack:
+
+ src\app\CricbookMobileApp.tsx
+ | import "../theme"
+
+ App.tsx
+ | import "./src/app/CricbookMobileApp"
+
+ node_modules\expo\AppEntry.js
+ | import "../../App"
+
+ 
+ | import "./node_modules/expo/AppEntry"
+

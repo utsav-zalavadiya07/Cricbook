@@ -1,0 +1,15 @@
+package com.example.Cricbook.enums;
+
+public enum FeedEventType {
+    TEAM_CREATED,
+    TEAM_INVITE_SENT,
+    TEAM_JOINED,
+    MATCH_CREATED,
+    MATCH_JOINED,
+    PROFILE_UPDATED,
+    SOCIAL_POST_CREATED,
+    SOCIAL_POST_EDITED,
+    SOCIAL_POST_REACTED,
+    SOCIAL_COMMENTED,
+    SOCIAL_POST_REPORTED
+}

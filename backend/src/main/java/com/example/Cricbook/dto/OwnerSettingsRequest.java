@@ -1,0 +1,76 @@
+package com.example.Cricbook.dto;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class OwnerSettingsRequest {
+    private String businessName;
+    private String supportPhone;
+    private String businessAddress;
+    private String gstNumber;
+    private String businessLogoUrl;
+    private String supportEmail;
+    private String businessType;
+    private String operatingHours;
+    private Integer defaultSlotDurationMinutes;
+    private String openingTime;
+    private String closingTime;
+    private String indoorOutdoor;
+    private String amenities;
+    private Integer advanceBookingDays;
+    private Integer minimumBookingMinutes;
+    private Boolean allowInstantBooking;
+    private Boolean approvalRequired;
+    private Boolean trustedPlayersOnly;
+    private String cancellationPolicy;
+    private Boolean dynamicPricingEnabled;
+    private Boolean weekendPricingEnabled;
+    private Boolean peakPricingEnabled;
+    private String pricingMode;
+    private Double peakMultiplier;
+    private Double weekendMultiplier;
+    private String staffInviteEmail;
+    private String staffRole;
+    private String staffPermissions;
+    private String bankAccountName;
+    private String bankAccountNumber;
+    private String bankIfsc;
+    private String upiId;
+    private String settlementSchedule;
+    private Boolean bookingAlerts;
+    private Boolean paymentAlerts;
+    private Boolean reviewAlerts;
+    private Boolean marketingAlerts;
+    private Boolean promotionWhatsappEnabled;
+    private Integer reminderLeadMinutes;
+    private Boolean partialPaymentEnabled;
+    private Integer minimumPaymentPercent;
+    private String refundMode;
+    private Boolean rainRefundAllowed;
+    private Boolean freeWeatherReschedule;
+    private Boolean weatherRiskAlerts;
+    private Integer rainThresholdPercent;
+    private Boolean resaleEnabled;
+    private Boolean transferEnabled;
+    private Integer maxResaleMarkupPercent;
+    private Boolean restrictSuspiciousAccounts;
+    private Boolean allowPublicTournaments;
+    private String communityVisibility;
+    private String teamRegistrationRule;
+    private String brandPrimaryColor;
+    private String brandTheme;
+    private Boolean compactDashboard;
+    private Boolean twoFactorEnabled;
+    private Integer sessionTimeoutMinutes;
+    private String ipRestrictions;
+    private Boolean autoPricingEnabled;
+    private Boolean autoRescheduleEnabled;
+    private Boolean aiCoachEnabled;
+    private Boolean smartPromotionsEnabled;
+    private Boolean revenueExportEnabled;
+    private Boolean gstReportsEnabled;
+    private String exportFormat;
+    private Boolean dataExportRequested;
+}

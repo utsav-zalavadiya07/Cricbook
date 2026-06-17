@@ -1,0 +1,1339 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.example:Cricbook >------------------------
+[INFO] Building  0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.0.6:run (default-cli) > test-compile @ Cricbook >>>
+[INFO] 
+[INFO] --- jacoco:0.8.11:prepare-agent (default) @ Cricbook ---
+[INFO] argLine set to -javaagent:C:\\Users\\utsav\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.11\\org.jacoco.agent-0.8.11-runtime.jar=destfile=C:\\Users\\utsav\\Java\\Cricbook\\backend\\target\\jacoco.exec
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ Cricbook ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ Cricbook ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ Cricbook ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ Cricbook ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:4.0.6:run (default-cli) < test-compile @ Cricbook <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.0.6:run (default-cli) @ Cricbook ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.6)
+
+2026-05-29T04:50:30.140+05:30  INFO 25940 --- [Cricbook] [           main] c.example.Cricbook.CricbookApplication   : Starting CricbookApplication using Java 22.0.2 with PID 25940 (C:\Users\utsav\Java\Cricbook\backend\target\classes started by utsav in C:\Users\utsav\Java\Cricbook\backend)
+2026-05-29T04:50:30.142+05:30  INFO 25940 --- [Cricbook] [           main] c.example.Cricbook.CricbookApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-05-29T04:50:30.142+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.boot.SpringApplication               : Loading source class com.example.Cricbook.CricbookApplication
+2026-05-29T04:50:30.174+05:30 DEBUG 25940 --- [Cricbook] [           main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.server.servlet.context.AnnotationConfigServletWebServerApplicationContext@561868a0
+2026-05-29T04:50:30.786+05:30  INFO 25940 --- [Cricbook] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-29T04:50:30.830+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.b.a.AutoConfigurationPackages        : @EnableAutoConfiguration was declared on a class in the package 'com.example.Cricbook'. Automatic @Repository and @Entity scanning is enabled.
+2026-05-29T04:50:31.025+05:30  INFO 25940 --- [Cricbook] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 201 ms. Found 147 JPA repository interfaces.
+2026-05-29T04:50:31.457+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.b.t.s.TomcatServletWebServerFactory  : Code archive: C:\Users\utsav\.m2\repository\org\springframework\boot\spring-boot-web-server\4.0.6\spring-boot-web-server-4.0.6.jar
+2026-05-29T04:50:31.458+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.b.t.s.TomcatServletWebServerFactory  : Code archive: C:\Users\utsav\.m2\repository\org\springframework\boot\spring-boot-web-server\4.0.6\spring-boot-web-server-4.0.6.jar
+2026-05-29T04:50:31.459+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.b.t.s.TomcatServletWebServerFactory  : None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2026-05-29T04:50:31.475+05:30  INFO 25940 --- [Cricbook] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-05-29T04:50:31.490+05:30  INFO 25940 --- [Cricbook] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-29T04:50:31.490+05:30  INFO 25940 --- [Cricbook] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-05-29T04:50:31.532+05:30 DEBUG 25940 --- [Cricbook] [           main] b.w.c.s.WebApplicationContextInitializer : Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+2026-05-29T04:50:31.532+05:30  INFO 25940 --- [Cricbook] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1358 ms
+2026-05-29T04:50:31.641+05:30  INFO 25940 --- [Cricbook] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-05-29T04:50:31.685+05:30  INFO 25940 --- [Cricbook] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.12.Final
+2026-05-29T04:50:31.962+05:30  INFO 25940 --- [Cricbook] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-29T04:50:31.982+05:30  INFO 25940 --- [Cricbook] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-29T04:50:32.104+05:30  INFO 25940 --- [Cricbook] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@75dbe490
+2026-05-29T04:50:32.105+05:30  INFO 25940 --- [Cricbook] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-29T04:50:32.159+05:30  WARN 25940 --- [Cricbook] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-29T04:50:32.170+05:30  INFO 25940 --- [Cricbook] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/cricbook_auth?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.4.2
+	Default catalog/schema: cricbook_auth/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-29T04:50:33.737+05:30  INFO 25940 --- [Cricbook] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-29T04:50:33.899+05:30 DEBUG 25940 --- [Cricbook] [           main] org.hibernate.SQL                        : create table player_settings (id bigint not null auto_increment, allow_friend_requests bit not null, allow_messages bit not null, allow_team_invites bit not null, auto_pay_splits bit not null, auto_waitlist_enabled bit not null, competition_level varchar(255) not null, created_at datetime(6), currency varchar(255) not null, default_payment_method varchar(255), download_data_requested bit not null, last_export_requested_at datetime(6), login_method varchar(255) not null, nearby_only_matchmaking bit not null, preferred_skill_level varchar(255) not null, profile_visibility varchar(255) not null, quick_rebook_enabled bit not null, region_city varchar(255) not null, saved_upi_id varchar(255), show_availability bit not null, show_location bit not null, show_stats bit not null, show_trust_score bit not null, timezone varchar(255) not null, trusted_only_matchmaking bit not null, two_factor_enabled bit not null, updated_at datetime(6), user_id bigint not null, primary key (id)) engine=InnoDB
+2026-05-29T04:50:33.947+05:30 DEBUG 25940 --- [Cricbook] [           main] org.hibernate.SQL                        : alter table roles modify column name enum ('ROLE_ADMIN','ROLE_OWNER','ROLE_USER') not null
+2026-05-29T04:50:33.966+05:30 DEBUG 25940 --- [Cricbook] [           main] org.hibernate.SQL                        : alter table turfs modify column rating DECIMAL(2,1) DEFAULT 0
+2026-05-29T04:50:34.237+05:30 DEBUG 25940 --- [Cricbook] [           main] org.hibernate.SQL                        : alter table player_settings drop index uk_player_settings_user
+2026-05-29T04:50:34.562+05:30 DEBUG 25940 --- [Cricbook] [           main] org.hibernate.SQL                        : alter table player_settings add constraint uk_player_settings_user unique (user_id)
+2026-05-29T04:50:34.977+05:30 DEBUG 25940 --- [Cricbook] [           main] org.hibernate.SQL                        : alter table player_settings add constraint FKj5t8i47dq93jywat8dej6ket4 foreign key (user_id) references users (id)
+2026-05-29T04:50:35.105+05:30  INFO 25940 --- [Cricbook] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-29T04:50:35.164+05:30  INFO 25940 --- [Cricbook] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-29T04:50:35.696+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping filters: springSecurityFilterChain urls=[/*] order=-100, characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105, jwtAuthenticationFilter urls=[/*] order=2147483647
+2026-05-29T04:50:35.696+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping servlets: dispatcherServlet urls=[/]
+2026-05-29T04:50:35.708+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.b.s.f.OrderedRequestContextFilter    : Filter 'requestContextFilter' configured for use
+2026-05-29T04:50:35.714+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.b.s.f.OrderedCharacterEncodingFilter : Filter 'characterEncodingFilter' configured for use
+2026-05-29T04:50:35.714+05:30 DEBUG 25940 --- [Cricbook] [           main] .DelegatingFilterProxyRegistrationBean$1 : Filter 'springSecurityFilterChain' configured for use
+2026-05-29T04:50:35.714+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.b.s.filter.OrderedFormContentFilter  : Filter 'formContentFilter' configured for use
+2026-05-29T04:50:36.432+05:30  INFO 25940 --- [Cricbook] [           main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-05-29T04:50:36.455+05:30  WARN 25940 --- [Cricbook] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-05-29T04:50:38.490+05:30 DEBUG 25940 --- [Cricbook] [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : 334 mappings in 'requestMappingHandlerMapping'
+2026-05-29T04:50:38.540+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /uploads/**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2026-05-29T04:50:38.559+05:30 DEBUG 25940 --- [Cricbook] [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 2 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-05-29T04:50:38.598+05:30 DEBUG 25940 --- [Cricbook] [           main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-05-29T04:50:38.805+05:30  INFO 25940 --- [Cricbook] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-05-29T04:50:38.811+05:30 DEBUG 25940 --- [Cricbook] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+
+============================
+CONDITIONS EVALUATION REPORT
+============================
+
+
+Positive matches:
+-----------------
+
+   AopAutoConfiguration matched:
+      - @ConditionalOnBooleanProperty (spring.aop.auto=true) matched (OnPropertyCondition)
+
+   AopAutoConfiguration.AspectJAutoProxyingConfiguration matched:
+      - @ConditionalOnClass found required class 'org.aspectj.weaver.Advice' (OnClassCondition)
+
+   AopAutoConfiguration.AspectJAutoProxyingConfiguration.CglibAutoProxyConfiguration matched:
+      - @ConditionalOnBooleanProperty (spring.aop.proxy-target-class=true) matched (OnPropertyCondition)
+
+   ApplicationAvailabilityAutoConfiguration#applicationAvailability matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.availability.ApplicationAvailability; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataJpaRepositoriesAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.data.jpa.repository.JpaRepository' (OnClassCondition)
+      - @ConditionalOnBooleanProperty (spring.data.jpa.repositories.enabled=true) matched (OnPropertyCondition)
+      - @ConditionalOnBean (types: javax.sql.DataSource; SearchStrategy: all) found bean 'dataSource'; @ConditionalOnMissingBean (types: org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean,org.springframework.data.jpa.repository.config.JpaRepositoryConfigExtension; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataSourceAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'javax.sql.DataSource', 'org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType' (OnClassCondition)
+      - @ConditionalOnMissingBean (types: io.r2dbc.spi.ConnectionFactory; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataSourceAutoConfiguration.PooledDataSourceConfiguration matched:
+      - AnyNestedCondition 1 matched 1 did not; NestedCondition on DataSourceAutoConfiguration.PooledDataSourceCondition.PooledDataSourceAvailable PooledDataSource found supported DataSource; NestedCondition on DataSourceAutoConfiguration.PooledDataSourceCondition.ExplicitType @ConditionalOnProperty (spring.datasource.type) did not find property 'spring.datasource.type' (DataSourceAutoConfiguration.PooledDataSourceCondition)
+      - @ConditionalOnMissingBean (types: javax.sql.DataSource,javax.sql.XADataSource; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataSourceAutoConfiguration.PooledDataSourceConfiguration#jdbcConnectionDetails matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.jdbc.autoconfigure.JdbcConnectionDetails; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataSourceConfiguration.Hikari matched:
+      - @ConditionalOnClass found required class 'com.zaxxer.hikari.HikariDataSource' (OnClassCondition)
+      - @ConditionalOnProperty (spring.datasource.type=com.zaxxer.hikari.HikariDataSource) matched (OnPropertyCondition)
+      - @ConditionalOnMissingBean (types: javax.sql.DataSource; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataSourceInitializationAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.jdbc.datasource.init.DatabasePopulator' (OnClassCondition)
+      - SQL InitializationDatabase Initialization default value is EMBEDDED (OnSqlInitializationCondition)
+      - @ConditionalOnSingleCandidate (types: javax.sql.DataSource; SearchStrategy: all) found a single bean 'dataSource'; @ConditionalOnMissingBean (types: org.springframework.boot.sql.autoconfigure.init.ApplicationScriptDatabaseInitializer; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataSourcePoolMetadataProvidersConfiguration.HikariPoolDataSourceMetadataProviderConfiguration matched:
+      - @ConditionalOnClass found required class 'com.zaxxer.hikari.HikariDataSource' (OnClassCondition)
+
+   DataSourceTransactionManagerAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'javax.sql.DataSource', 'org.springframework.jdbc.core.JdbcTemplate', 'org.springframework.transaction.TransactionManager' (OnClassCondition)
+
+   DataSourceTransactionManagerAutoConfiguration.JdbcTransactionManagerConfiguration matched:
+      - @ConditionalOnSingleCandidate (types: javax.sql.DataSource; SearchStrategy: all) found a single bean 'dataSource' (OnBeanCondition)
+
+   DataWebAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'org.springframework.data.web.PageableHandlerMethodArgumentResolver', 'org.springframework.web.servlet.config.annotation.WebMvcConfigurer' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnMissingBean (types: org.springframework.data.web.PageableHandlerMethodArgumentResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataWebAutoConfiguration#pageableCustomizer matched:
+      - @ConditionalOnMissingBean (types: org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataWebAutoConfiguration#sortCustomizer matched:
+      - @ConditionalOnMissingBean (types: org.springframework.data.web.config.SortHandlerMethodArgumentResolverCustomizer; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DataWebAutoConfiguration#springDataWebSettings matched:
+      - @ConditionalOnMissingBean (types: org.springframework.data.web.config.SpringDataWebSettings; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   DispatcherServletAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.web.servlet.DispatcherServlet' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+
+   DispatcherServletAutoConfiguration.DispatcherServletConfiguration matched:
+      - @ConditionalOnClass found required class 'jakarta.servlet.ServletRegistration' (OnClassCondition)
+      - Default DispatcherServlet did not find dispatcher servlet beans (DispatcherServletAutoConfiguration.DefaultDispatcherServletCondition)
+
+   DispatcherServletAutoConfiguration.DispatcherServletRegistrationConfiguration matched:
+      - @ConditionalOnClass found required class 'jakarta.servlet.ServletRegistration' (OnClassCondition)
+      - DispatcherServlet Registration did not find servlet registration bean (DispatcherServletAutoConfiguration.DispatcherServletRegistrationCondition)
+
+   DispatcherServletAutoConfiguration.DispatcherServletRegistrationConfiguration#dispatcherServletRegistration matched:
+      - @ConditionalOnBean (names: dispatcherServlet types: org.springframework.web.servlet.DispatcherServlet; SearchStrategy: all) found bean 'dispatcherServlet' (OnBeanCondition)
+
+   ErrorMvcAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'jakarta.servlet.Servlet', 'org.springframework.web.servlet.DispatcherServlet' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+
+   ErrorMvcAutoConfiguration#basicErrorController matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.webmvc.error.ErrorController; SearchStrategy: current) did not find any beans (OnBeanCondition)
+
+   ErrorMvcAutoConfiguration#errorAttributes matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.webmvc.error.ErrorAttributes; SearchStrategy: current) did not find any beans (OnBeanCondition)
+
+   ErrorMvcAutoConfiguration.DefaultErrorViewResolverConfiguration#conventionErrorViewResolver matched:
+      - @ConditionalOnBean (types: org.springframework.web.servlet.DispatcherServlet; SearchStrategy: all) found bean 'dispatcherServlet'; @ConditionalOnMissingBean (types: org.springframework.boot.webmvc.autoconfigure.error.ErrorViewResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   ErrorMvcAutoConfiguration.WhitelabelErrorViewConfiguration matched:
+      - @ConditionalOnBooleanProperty (spring.web.error.whitelabel.enabled=true) matched (OnPropertyCondition)
+      - ErrorTemplate Missing did not find error template view (ErrorMvcAutoConfiguration.ErrorTemplateMissingCondition)
+
+   ErrorMvcAutoConfiguration.WhitelabelErrorViewConfiguration#beanNameViewResolver matched:
+      - @ConditionalOnMissingBean (types: org.springframework.web.servlet.view.BeanNameViewResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   ErrorMvcAutoConfiguration.WhitelabelErrorViewConfiguration#defaultErrorView matched:
+      - @ConditionalOnMissingBean (names: error; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   HibernateJpaAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean', 'jakarta.persistence.EntityManager', 'org.hibernate.engine.spi.SessionImplementor' (OnClassCondition)
+
+   HibernateJpaConfiguration matched:
+      - @ConditionalOnSingleCandidate (types: javax.sql.DataSource; SearchStrategy: all) found a single bean 'dataSource' (OnBeanCondition)
+
+   HttpEncodingAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.web.filter.CharacterEncodingFilter' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnBooleanProperty (spring.servlet.encoding.enabled=true) matched (OnPropertyCondition)
+
+   HttpEncodingAutoConfiguration#characterEncodingFilter matched:
+      - @ConditionalOnMissingBean (types: org.springframework.web.filter.CharacterEncodingFilter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   HttpMessageConvertersAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.http.converter.HttpMessageConverter' (OnClassCondition)
+      - NoneNestedConditions 0 matched 1 did not; NestedCondition on HttpMessageConvertersAutoConfiguration.NotReactiveWebApplicationCondition.ReactiveWebApplication did not find reactive web application classes (HttpMessageConvertersAutoConfiguration.NotReactiveWebApplicationCondition)
+
+   HttpMessageConvertersAutoConfiguration.StringHttpMessageConverterConfiguration#stringHttpMessageConvertersCustomizer matched:
+      - @ConditionalOnMissingBean (types: org.springframework.http.converter.StringHttpMessageConverter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JacksonAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'tools.jackson.databind.json.JsonMapper' (OnClassCondition)
+
+   JacksonAutoConfiguration#jacksonJsonMapper matched:
+      - @ConditionalOnMissingBean (types: tools.jackson.databind.json.JsonMapper; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JacksonAutoConfiguration#jsonMapperBuilder matched:
+      - @ConditionalOnMissingBean (types: tools.jackson.databind.json.JsonMapper$Builder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JacksonAutoConfiguration.JsonProblemDetailsConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.http.ProblemDetail' (OnClassCondition)
+
+   JacksonHttpMessageConvertersConfiguration.JacksonJsonHttpMessageConverterConfiguration matched:
+      - @ConditionalOnClass found required class 'tools.jackson.databind.json.JsonMapper' (OnClassCondition)
+      - @ConditionalOnProperty (spring.http.converters.preferred-json-mapper=jackson) matched (OnPropertyCondition)
+      - @ConditionalOnBean (types: tools.jackson.databind.json.JsonMapper; SearchStrategy: all) found bean 'jacksonJsonMapper' (OnBeanCondition)
+
+   JacksonHttpMessageConvertersConfiguration.JacksonJsonHttpMessageConverterConfiguration#jacksonJsonHttpMessageConvertersCustomizer matched:
+      - @ConditionalOnMissingBean (types: org.springframework.http.converter.json.JacksonJsonHttpMessageConverter ignored: org.springframework.hateoas.server.mvc.TypeConstrainedJacksonJsonHttpMessageConverter,org.springframework.data.rest.webmvc.alps.AlpsJacksonJsonHttpMessageConverter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JdbcClientAutoConfiguration matched:
+      - @ConditionalOnSingleCandidate (types: org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate; SearchStrategy: all) found a single bean 'namedParameterJdbcTemplate'; @ConditionalOnMissingBean (types: org.springframework.jdbc.core.simple.JdbcClient; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JdbcTemplateAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'javax.sql.DataSource', 'org.springframework.jdbc.core.JdbcTemplate' (OnClassCondition)
+      - @ConditionalOnSingleCandidate (types: javax.sql.DataSource; SearchStrategy: all) found a single bean 'dataSource' (OnBeanCondition)
+
+   JdbcTemplateConfiguration matched:
+      - @ConditionalOnMissingBean (types: org.springframework.jdbc.core.JdbcOperations; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JpaBaseConfiguration#entityManagerFactory matched:
+      - @ConditionalOnMissingBean (types: org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean,jakarta.persistence.EntityManagerFactory; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JpaBaseConfiguration#entityManagerFactoryBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.jpa.EntityManagerFactoryBuilder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JpaBaseConfiguration#jpaVendorAdapter matched:
+      - @ConditionalOnMissingBean (types: org.springframework.orm.jpa.JpaVendorAdapter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JpaBaseConfiguration#transactionManager matched:
+      - @ConditionalOnMissingBean (types: org.springframework.transaction.TransactionManager; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JpaBaseConfiguration.PersistenceManagedTypesConfiguration matched:
+      - @ConditionalOnMissingBean (types: org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean,jakarta.persistence.EntityManagerFactory; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JpaBaseConfiguration.PersistenceManagedTypesConfiguration#persistenceManagedTypes matched:
+      - @ConditionalOnMissingBean (types: org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   JtaAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'jakarta.transaction.Transaction' (OnClassCondition)
+      - @ConditionalOnBooleanProperty (spring.jta.enabled=true) matched (OnPropertyCondition)
+
+   LifecycleAutoConfiguration#defaultLifecycleProcessor matched:
+      - @ConditionalOnMissingBean (names: lifecycleProcessor; SearchStrategy: current) did not find any beans (OnBeanCondition)
+
+   MailSenderAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'jakarta.mail.internet.MimeMessage', 'jakarta.activation.MimeType', 'org.springframework.mail.MailSender' (OnClassCondition)
+      - AnyNestedCondition 1 matched 1 did not; NestedCondition on MailSenderAutoConfiguration.MailSenderCondition.JndiNameProperty @ConditionalOnProperty (spring.mail.jndi-name) did not find property 'spring.mail.jndi-name'; NestedCondition on MailSenderAutoConfiguration.MailSenderCondition.HostProperty @ConditionalOnProperty (spring.mail.host) matched (MailSenderAutoConfiguration.MailSenderCondition)
+      - @ConditionalOnMissingBean (types: org.springframework.mail.MailSender; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   MailSenderPropertiesConfiguration matched:
+      - @ConditionalOnProperty (spring.mail.host) matched (OnPropertyCondition)
+
+   MailSenderPropertiesConfiguration#mailSender matched:
+      - @ConditionalOnMissingBean (types: org.springframework.mail.javamail.JavaMailSender; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   MultipartAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'jakarta.servlet.Servlet', 'org.springframework.web.multipart.support.StandardServletMultipartResolver', 'jakarta.servlet.MultipartConfigElement' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnBooleanProperty (spring.servlet.multipart.enabled=true) matched (OnPropertyCondition)
+
+   MultipartAutoConfiguration#multipartConfigElement matched:
+      - @ConditionalOnMissingBean (types: jakarta.servlet.MultipartConfigElement; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   MultipartAutoConfiguration#multipartResolver matched:
+      - @ConditionalOnMissingBean (types: org.springframework.web.multipart.MultipartResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   NamedParameterJdbcTemplateConfiguration matched:
+      - @ConditionalOnSingleCandidate (types: org.springframework.jdbc.core.JdbcTemplate; SearchStrategy: all) found a single bean 'jdbcTemplate'; @ConditionalOnMissingBean (types: org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   PersistenceExceptionTranslationAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor' (OnClassCondition)
+
+   PersistenceExceptionTranslationAutoConfiguration#persistenceExceptionTranslationPostProcessor matched:
+      - @ConditionalOnBooleanProperty (spring.persistence.exceptiontranslation.enabled=true) matched (OnPropertyCondition)
+      - @ConditionalOnMissingBean (types: org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   PropertyPlaceholderAutoConfiguration#propertySourcesPlaceholderConfigurer matched:
+      - @ConditionalOnMissingBean (types: org.springframework.context.support.PropertySourcesPlaceholderConfigurer; SearchStrategy: current) did not find any beans (OnBeanCondition)
+
+   SecurityAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.security.authentication.DefaultAuthenticationEventPublisher' (OnClassCondition)
+
+   SecurityAutoConfiguration#authenticationEventPublisher matched:
+      - @ConditionalOnMissingBean (types: org.springframework.security.authentication.AuthenticationEventPublisher; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SecurityFilterAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer', 'org.springframework.security.config.http.SessionCreationPolicy' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+
+   SecurityFilterAutoConfiguration#securityFilterChainRegistration matched:
+      - @ConditionalOnBean (names: springSecurityFilterChain; SearchStrategy: all) found bean 'springSecurityFilterChain' (OnBeanCondition)
+
+   ServletWebSecurityAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.security.config.annotation.web.configuration.EnableWebSecurity' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+
+   ServletWebSecurityAutoConfiguration.PathPatternRequestMatcherBuilderConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.boot.webmvc.autoconfigure.DispatcherServletPath' (OnClassCondition)
+      - @ConditionalOnBean (types: org.springframework.boot.webmvc.autoconfigure.DispatcherServletPath; SearchStrategy: all) found bean 'dispatcherServletRegistration' (OnBeanCondition)
+
+   ServletWebSecurityAutoConfiguration.PathPatternRequestMatcherBuilderConfiguration#pathPatternRequestMatcherBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher$Builder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocConfigProperties matched:
+      - @ConditionalOnProperty (springdoc.api-docs.enabled) matched (OnPropertyCondition)
+      - @ConditionalOnBean (types: org.springdoc.core.configuration.SpringDocConfiguration; SearchStrategy: all) found bean 'org.springdoc.core.configuration.SpringDocConfiguration' (OnBeanCondition)
+
+   SpringDocConfiguration matched:
+      - @ConditionalOnWebApplication (required) found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnProperty (springdoc.api-docs.enabled) matched (OnPropertyCondition)
+
+   SpringDocConfiguration#fileSupportConverter matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.core.converters.FileSupportConverter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocConfiguration#openAPIBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.core.service.OpenAPIService; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocConfiguration#operationBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.core.service.OperationService; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocConfiguration#parameterBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.core.service.GenericParameterService; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocConfiguration#polymorphicModelConverter matched:
+      - @ConditionalOnProperty (springdoc.model-converters.polymorphic-converter.enabled) matched (OnPropertyCondition)
+      - @ConditionalOnMissingBean (types: org.springdoc.core.converters.PolymorphicModelConverter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocConfiguration#requestBodyBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.core.service.RequestBodyService; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocConfiguration#responseSupportConverter matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.core.converters.ResponseSupportConverter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocConfiguration#schemaPropertyDeprecatingConverter matched:
+      - @ConditionalOnProperty (springdoc.model-converters.deprecating-converter.enabled) matched (OnPropertyCondition)
+      - @ConditionalOnMissingBean (types: org.springdoc.core.converters.SchemaPropertyDeprecatingConverter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocConfiguration#securityParser matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.core.service.SecurityService; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocConfiguration#springDocCustomizers matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.core.customizers.SpringDocCustomizers; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocConfiguration#springDocProviders matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.core.providers.SpringDocProviders; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocConfiguration#springdocObjectMapperProvider matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.core.providers.ObjectMapperProvider; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocConfiguration.QuerydslProvider matched:
+      - @ConditionalOnClass found required class 'org.springframework.data.querydsl.binding.QuerydslBindingsFactory' (OnClassCondition)
+
+   SpringDocConfiguration.QuerydslProvider#queryDslQuerydslPredicateOperationCustomizer matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.core.customizers.QuerydslPredicateOperationCustomizer; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocConfiguration.WebConversionServiceConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.boot.autoconfigure.web.format.WebConversionService' (OnClassCondition)
+
+   SpringDocPageableConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.data.domain.Pageable' (OnClassCondition)
+      - @ConditionalOnWebApplication (required) found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnProperty (springdoc.api-docs.enabled) matched (OnPropertyCondition)
+      - @ConditionalOnBean (types: org.springdoc.core.configuration.SpringDocConfiguration; SearchStrategy: all) found bean 'org.springdoc.core.configuration.SpringDocConfiguration' (OnBeanCondition)
+
+   SpringDocPageableConfiguration#delegatingMethodParameterCustomizer matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.core.customizers.DelegatingMethodParameterCustomizer; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocPageableConfiguration#pageableOpenAPIConverter matched:
+      - @ConditionalOnProperty (springdoc.model-converters.pageable-converter.enabled) matched (OnPropertyCondition)
+      - @ConditionalOnMissingBean (types: org.springdoc.core.converters.PageableOpenAPIConverter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocSecurityConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.security.web.SecurityFilterChain' (OnClassCondition)
+      - @ConditionalOnWebApplication (required) found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnExpression (#{${springdoc.api-docs.enabled:true} and ${springdoc.enable-spring-security:true}}) resulted in true (OnExpressionCondition)
+      - @ConditionalOnBean (types: org.springdoc.core.configuration.SpringDocConfiguration; SearchStrategy: all) found bean 'org.springdoc.core.configuration.SpringDocConfiguration' (OnBeanCondition)
+
+   SpringDocSecurityConfiguration.SpringSecurityLoginEndpointConfiguration matched:
+      - @ConditionalOnClass found required class 'jakarta.servlet.Filter' (OnClassCondition)
+
+   SpringDocSortConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.data.domain.Sort' (OnClassCondition)
+      - @ConditionalOnWebApplication (required) found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnProperty (springdoc.api-docs.enabled) matched (OnPropertyCondition)
+      - @ConditionalOnBean (types: org.springdoc.core.configuration.SpringDocConfiguration; SearchStrategy: all) found bean 'org.springdoc.core.configuration.SpringDocConfiguration' (OnBeanCondition)
+
+   SpringDocSortConfiguration#sortOpenAPIConverter matched:
+      - @ConditionalOnProperty (springdoc.sort-converter.enabled) matched (OnPropertyCondition)
+      - @ConditionalOnMissingBean (types: org.springdoc.core.converters.SortOpenAPIConverter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocUIConfiguration matched:
+      - @ConditionalOnWebApplication (required) found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnBean (types: org.springdoc.core.configuration.SpringDocConfiguration; SearchStrategy: all) found bean 'org.springdoc.core.configuration.SpringDocConfiguration' (OnBeanCondition)
+
+   SpringDocWebMvcConfiguration matched:
+      - found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnProperty (springdoc.api-docs.enabled) matched (OnPropertyCondition)
+      - @ConditionalOnBean (types: org.springdoc.core.configuration.SpringDocConfiguration; SearchStrategy: all) found bean 'org.springdoc.core.configuration.SpringDocConfiguration' (OnBeanCondition)
+
+   SpringDocWebMvcConfiguration#openApiResource matched:
+      - @ConditionalOnExpression (#{(${springdoc.use-management-port:false} == false ) and ${springdoc.enable-default-api-docs:true}}) resulted in true (OnExpressionCondition)
+      - @ConditionalOnMissingBean (types: org.springdoc.webmvc.api.OpenApiWebMvcResource; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocWebMvcConfiguration#requestBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.webmvc.core.service.RequestService; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocWebMvcConfiguration#responseBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.core.service.GenericResponseService; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocWebMvcConfiguration#springWebProvider matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.core.providers.SpringWebProvider; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SpringDocWebMvcConfiguration.SpringDocWebMvcRouterConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.web.servlet.function.RouterFunction' (OnClassCondition)
+
+   SpringDocWebMvcConfiguration.SpringDocWebMvcRouterConfiguration#routerFunctionProvider matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.webmvc.core.providers.RouterFunctionWebMvcProvider; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SslAutoConfiguration#sslBundleRegistry matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.ssl.SslBundleRegistry,org.springframework.boot.ssl.SslBundles; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SwaggerConfig matched:
+      - found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnProperty (springdoc.swagger-ui.enabled) matched (OnPropertyCondition)
+      - @ConditionalOnBean (types: org.springdoc.core.configuration.SpringDocConfiguration; SearchStrategy: all) found bean 'org.springdoc.core.configuration.SpringDocConfiguration' (OnBeanCondition)
+
+   SwaggerConfig#indexPageTransformer matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.webmvc.ui.SwaggerIndexTransformer; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SwaggerConfig#swaggerConfigResource matched:
+      - @ConditionalOnProperty (springdoc.use-management-port=false) matched (OnPropertyCondition)
+      - @ConditionalOnMissingBean (types: org.springdoc.webmvc.ui.SwaggerConfigResource; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SwaggerConfig#swaggerResourceResolver matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.webmvc.ui.SwaggerResourceResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SwaggerConfig#swaggerWebMvcConfigurer matched:
+      - @ConditionalOnMissingBean (types: org.springdoc.webmvc.ui.SwaggerWebMvcConfigurer; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SwaggerConfig#swaggerWelcome matched:
+      - @ConditionalOnProperty (springdoc.use-management-port=false) matched (OnPropertyCondition)
+      - @ConditionalOnMissingBean (types: org.springdoc.webmvc.ui.SwaggerWelcomeWebMvc; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SwaggerUiConfigParameters matched:
+      - @ConditionalOnProperty (springdoc.swagger-ui.enabled) matched (OnPropertyCondition)
+      - @ConditionalOnBean (types: org.springdoc.core.configuration.SpringDocConfiguration; SearchStrategy: all) found bean 'org.springdoc.core.configuration.SpringDocConfiguration' (OnBeanCondition)
+
+   SwaggerUiConfigProperties matched:
+      - @ConditionalOnProperty (springdoc.swagger-ui.enabled) matched (OnPropertyCondition)
+      - @ConditionalOnBean (types: org.springdoc.core.configuration.SpringDocConfiguration; SearchStrategy: all) found bean 'org.springdoc.core.configuration.SpringDocConfiguration' (OnBeanCondition)
+
+   SwaggerUiOAuthProperties matched:
+      - @ConditionalOnProperty (springdoc.swagger-ui.enabled) matched (OnPropertyCondition)
+      - @ConditionalOnBean (types: org.springdoc.core.configuration.SpringDocConfiguration; SearchStrategy: all) found bean 'org.springdoc.core.configuration.SpringDocConfiguration' (OnBeanCondition)
+
+   TaskExecutionAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor' (OnClassCondition)
+
+   TaskExecutorConfigurations.AsyncConfigurerConfiguration matched:
+      - @ConditionalOnMissingBean (types: org.springframework.scheduling.annotation.AsyncConfigurer; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TaskExecutorConfigurations.SimpleAsyncTaskExecutorBuilderConfiguration#simpleAsyncTaskExecutorBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.task.SimpleAsyncTaskExecutorBuilder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+      - @ConditionalOnThreading found PLATFORM (OnThreadingCondition)
+
+   TaskExecutorConfigurations.TaskExecutorConfiguration matched:
+      - AnyNestedCondition 1 matched 1 did not; NestedCondition on TaskExecutorConfigurations.OnExecutorCondition.ModelCondition @ConditionalOnProperty (spring.task.execution.mode=force) did not find property 'spring.task.execution.mode'; NestedCondition on TaskExecutorConfigurations.OnExecutorCondition.ExecutorBeanCondition @ConditionalOnMissingBean (types: java.util.concurrent.Executor; SearchStrategy: all) did not find any beans (TaskExecutorConfigurations.OnExecutorCondition)
+
+   TaskExecutorConfigurations.TaskExecutorConfiguration#applicationTaskExecutor matched:
+      - @ConditionalOnThreading found PLATFORM (OnThreadingCondition)
+
+   TaskExecutorConfigurations.ThreadPoolTaskExecutorBuilderConfiguration#threadPoolTaskExecutorBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.task.ThreadPoolTaskExecutorBuilder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TaskSchedulingAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler' (OnClassCondition)
+
+   TaskSchedulingAutoConfiguration#scheduledBeanLazyInitializationExcludeFilter matched:
+      - @ConditionalOnBean (names: org.springframework.scheduling.config.internalScheduledAnnotationProcessor; SearchStrategy: all) found bean 'org.springframework.scheduling.config.internalScheduledAnnotationProcessor' (OnBeanCondition)
+
+   TaskSchedulingConfigurations.SimpleAsyncTaskSchedulerBuilderConfiguration#simpleAsyncTaskSchedulerBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.task.SimpleAsyncTaskSchedulerBuilder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+      - @ConditionalOnThreading found PLATFORM (OnThreadingCondition)
+
+   TaskSchedulingConfigurations.TaskSchedulerConfiguration matched:
+      - @ConditionalOnBean (names: org.springframework.scheduling.config.internalScheduledAnnotationProcessor; SearchStrategy: all) found bean 'org.springframework.scheduling.config.internalScheduledAnnotationProcessor'; @ConditionalOnMissingBean (types: org.springframework.scheduling.TaskScheduler,java.util.concurrent.ScheduledExecutorService; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TaskSchedulingConfigurations.TaskSchedulerConfiguration#taskScheduler matched:
+      - @ConditionalOnThreading found PLATFORM (OnThreadingCondition)
+
+   TaskSchedulingConfigurations.ThreadPoolTaskSchedulerBuilderConfiguration#threadPoolTaskSchedulerBuilder matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.task.ThreadPoolTaskSchedulerBuilder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TomcatServletWebServerAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'jakarta.servlet.ServletRequest', 'org.apache.catalina.startup.Tomcat', 'org.apache.coyote.UpgradeProtocol', 'org.springframework.boot.tomcat.servlet.TomcatServletWebServerFactory' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+
+   TomcatServletWebServerAutoConfiguration#tomcatServletWebServerFactory matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.web.server.servlet.ServletWebServerFactory; SearchStrategy: current) did not find any beans (OnBeanCondition)
+
+   TomcatWebServerConfiguration matched:
+      - @ConditionalOnWarDeployment the application is not deployed as a WAR file. (OnWarDeploymentCondition)
+
+   TomcatWebServerConfiguration.TomcatWebSocketConfiguration matched:
+      - @ConditionalOnClass found required class 'org.apache.tomcat.websocket.server.WsSci' (OnClassCondition)
+
+   TransactionAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.transaction.PlatformTransactionManager' (OnClassCondition)
+
+   TransactionAutoConfiguration.EnableTransactionManagementConfiguration matched:
+      - @ConditionalOnBean (types: org.springframework.transaction.TransactionManager; SearchStrategy: all) found bean 'transactionManager'; @ConditionalOnMissingBean (types: org.springframework.transaction.annotation.AbstractTransactionManagementConfiguration; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TransactionAutoConfiguration.EnableTransactionManagementConfiguration.CglibAutoProxyConfiguration matched:
+      - @ConditionalOnBooleanProperty (spring.aop.proxy-target-class=true) matched (OnPropertyCondition)
+
+   TransactionAutoConfiguration.TransactionTemplateConfiguration matched:
+      - @ConditionalOnSingleCandidate (types: org.springframework.transaction.PlatformTransactionManager; SearchStrategy: all) found a single bean 'transactionManager' (OnBeanCondition)
+
+   TransactionAutoConfiguration.TransactionTemplateConfiguration#transactionTemplate matched:
+      - @ConditionalOnMissingBean (types: org.springframework.transaction.support.TransactionOperations; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TransactionManagerCustomizationAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.transaction.PlatformTransactionManager' (OnClassCondition)
+
+   TransactionManagerCustomizationAutoConfiguration#platformTransactionManagerCustomizers matched:
+      - @ConditionalOnMissingBean (types: org.springframework.boot.transaction.autoconfigure.TransactionManagerCustomizers; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   ValidationAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'jakarta.validation.executable.ExecutableValidator' (OnClassCondition)
+      - @ConditionalOnResource found location classpath:META-INF/services/jakarta.validation.spi.ValidationProvider (OnResourceCondition)
+
+   ValidationAutoConfiguration#defaultValidator matched:
+      - @ConditionalOnMissingBean (types: jakarta.validation.Validator; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   ValidationAutoConfiguration#methodValidationPostProcessor matched:
+      - @ConditionalOnMissingBean (types: org.springframework.validation.beanvalidation.MethodValidationPostProcessor; SearchStrategy: current) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'jakarta.servlet.Servlet', 'org.springframework.web.servlet.DispatcherServlet', 'org.springframework.web.servlet.config.annotation.WebMvcConfigurer' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+      - @ConditionalOnMissingBean (types: org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration#formContentFilter matched:
+      - @ConditionalOnBooleanProperty (spring.mvc.formcontent.filter.enabled=true) matched (OnPropertyCondition)
+      - @ConditionalOnMissingBean (types: org.springframework.web.filter.FormContentFilter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration.EnableWebMvcConfiguration#flashMapManager matched:
+      - @ConditionalOnMissingBean (names: flashMapManager; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration.EnableWebMvcConfiguration#localeResolver matched:
+      - @ConditionalOnMissingBean (names: localeResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration.EnableWebMvcConfiguration#viewNameTranslator matched:
+      - @ConditionalOnMissingBean (names: viewNameTranslator; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration.WebMvcAutoConfigurationAdapter#defaultViewResolver matched:
+      - @ConditionalOnMissingBean (types: org.springframework.web.servlet.view.InternalResourceViewResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration.WebMvcAutoConfigurationAdapter#requestContextFilter matched:
+      - @ConditionalOnMissingBean (types: org.springframework.web.context.request.RequestContextListener,org.springframework.web.filter.RequestContextFilter; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebMvcAutoConfiguration.WebMvcAutoConfigurationAdapter#viewResolver matched:
+      - @ConditionalOnBean (types: org.springframework.web.servlet.ViewResolver; SearchStrategy: all) found beans 'defaultViewResolver', 'beanNameViewResolver', 'mvcViewResolver'; @ConditionalOnMissingBean (names: viewResolver types: org.springframework.web.servlet.view.ContentNegotiatingViewResolver; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+
+Negative matches:
+-----------------
+
+   AopAutoConfiguration.AspectJAutoProxyingConfiguration.JdkDynamicAutoProxyConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.aop.proxy-target-class=false) did not find property 'spring.aop.proxy-target-class' (OnPropertyCondition)
+
+   AopAutoConfiguration.ClassProxyingConfiguration:
+      Did not match:
+         - @ConditionalOnMissingClass found unwanted class 'org.aspectj.weaver.Advice' (OnClassCondition)
+
+   DataJpaRepositoriesAutoConfiguration#entityManagerFactoryBootstrapExecutorCustomizer:
+      Did not match:
+         - AnyNestedCondition 0 matched 2 did not; NestedCondition on DataJpaRepositoriesAutoConfiguration.BootstrapExecutorCondition.LazyBootstrapMode @ConditionalOnProperty (spring.data.jpa.repositories.bootstrap-mode=lazy) did not find property 'spring.data.jpa.repositories.bootstrap-mode'; NestedCondition on DataJpaRepositoriesAutoConfiguration.BootstrapExecutorCondition.DeferredBootstrapMode @ConditionalOnProperty (spring.data.jpa.repositories.bootstrap-mode=deferred) did not find property 'spring.data.jpa.repositories.bootstrap-mode' (DataJpaRepositoriesAutoConfiguration.BootstrapExecutorCondition)
+
+   DataRepositoryMetricsAutoConfiguration:
+      Did not match:
+         - @ConditionalOnBean did not find required type 'io.micrometer.core.instrument.MeterRegistry' (OnBeanCondition)
+
+   DataSourceAutoConfiguration.EmbeddedDatabaseConfiguration:
+      Did not match:
+         - EmbeddedDataSource spring.datasource.url is set (DataSourceAutoConfiguration.EmbeddedDatabaseCondition)
+
+   DataSourceCheckpointRestoreConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.crac.Resource' (OnClassCondition)
+
+   DataSourceConfiguration.Dbcp2:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.apache.commons.dbcp2.BasicDataSource' (OnClassCondition)
+
+   DataSourceConfiguration.Generic:
+      Did not match:
+         - @ConditionalOnProperty (spring.datasource.type) did not find property 'spring.datasource.type' (OnPropertyCondition)
+
+   DataSourceConfiguration.OracleUcp:
+      Did not match:
+         - @ConditionalOnClass did not find required classes 'oracle.ucp.jdbc.PoolDataSourceImpl', 'oracle.jdbc.OracleConnection' (OnClassCondition)
+
+   DataSourceConfiguration.Tomcat:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.apache.tomcat.jdbc.pool.DataSource' (OnClassCondition)
+
+   DataSourceHealthContributorAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.health.autoconfigure.contributor.ConditionalOnEnabledHealthIndicator' (OnClassCondition)
+
+   DataSourceJmxConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.jmx.enabled=true) did not find property 'spring.jmx.enabled' (OnPropertyCondition)
+
+   DataSourcePoolMetadataProvidersConfiguration.CommonsDbcp2PoolDataSourceMetadataProviderConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.apache.commons.dbcp2.BasicDataSource' (OnClassCondition)
+
+   DataSourcePoolMetadataProvidersConfiguration.OracleUcpPoolDataSourceMetadataProviderConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required classes 'oracle.ucp.jdbc.PoolDataSource', 'oracle.jdbc.OracleConnection' (OnClassCondition)
+
+   DataSourcePoolMetadataProvidersConfiguration.TomcatDataSourcePoolMetadataProviderConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.apache.tomcat.jdbc.pool.DataSource' (OnClassCondition)
+
+   DataSourcePoolMetricsAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'io.micrometer.core.instrument.MeterRegistry' (OnClassCondition)
+
+   DataSourceTransactionManagerAutoConfiguration.JdbcTransactionManagerConfiguration#transactionManager:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springframework.transaction.TransactionManager; SearchStrategy: all) found beans of type 'org.springframework.transaction.TransactionManager' transactionManager (OnBeanCondition)
+
+   DispatcherServletAutoConfiguration.DispatcherServletConfiguration#multipartResolver:
+      Did not match:
+         - @ConditionalOnBean (types: org.springframework.web.multipart.MultipartResolver; SearchStrategy: all) did not find any beans of type org.springframework.web.multipart.MultipartResolver (OnBeanCondition)
+
+   GsonHttpMessageConvertersConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'com.google.gson.Gson' (OnClassCondition)
+
+   HibernateMetricsAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'io.micrometer.core.instrument.MeterRegistry' (OnClassCondition)
+
+   Jackson2HttpMessageConvertersConfiguration.MappingJackson2HttpMessageConverterConfiguration:
+      Did not match:
+         - AnyNestedCondition 0 matched 2 did not; NestedCondition on Jackson2HttpMessageConvertersConfiguration.PreferJackson2OrJacksonUnavailableCondition.JacksonUnavailable @ConditionalOnMissingBean (types: org.springframework.boot.http.converter.autoconfigure.JacksonHttpMessageConvertersConfiguration$JacksonJsonHttpMessageConvertersCustomizer; SearchStrategy: all) found beans of type 'org.springframework.boot.http.converter.autoconfigure.JacksonHttpMessageConvertersConfiguration$JacksonJsonHttpMessageConvertersCustomizer' jacksonJsonHttpMessageConvertersCustomizer; NestedCondition on Jackson2HttpMessageConvertersConfiguration.PreferJackson2OrJacksonUnavailableCondition.Jackson2Preferred @ConditionalOnProperty (spring.http.converters.preferred-json-mapper=jackson2) did not find property 'spring.http.converters.preferred-json-mapper' (Jackson2HttpMessageConvertersConfiguration.PreferJackson2OrJacksonUnavailableCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'com.fasterxml.jackson.databind.ObjectMapper' (OnClassCondition)
+
+   Jackson2HttpMessageConvertersConfiguration.MappingJackson2XmlHttpMessageConverterConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'com.fasterxml.jackson.dataformat.xml.XmlMapper' (OnClassCondition)
+
+   JacksonAutoConfiguration.CborConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'tools.jackson.dataformat.cbor.CBORMapper' (OnClassCondition)
+
+   JacksonAutoConfiguration.XmlConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'tools.jackson.dataformat.xml.XmlMapper' (OnClassCondition)
+
+   JacksonHttpMessageConvertersConfiguration.JacksonXmlHttpMessageConverterConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'tools.jackson.dataformat.xml.XmlMapper' (OnClassCondition)
+
+   JmxAutoConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.jmx.enabled=true) did not find property 'spring.jmx.enabled' (OnPropertyCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.jmx.export.MBeanExporter' (OnClassCondition)
+
+   JndiDataSourceAutoConfiguration:
+      Did not match:
+         - @ConditionalOnProperty (spring.datasource.jndi-name) did not find property 'spring.datasource.jndi-name' (OnPropertyCondition)
+      Matched:
+         - @ConditionalOnClass found required classes 'javax.sql.DataSource', 'org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType' (OnClassCondition)
+
+   JndiJtaConfiguration:
+      Did not match:
+         - @ConditionalOnJndi JNDI environment is not available (OnJndiCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.transaction.jta.JtaTransactionManager' (OnClassCondition)
+
+   JpaBaseConfiguration.JpaWebConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.jpa.open-in-view=true) found different value in property 'spring.jpa.open-in-view' (OnPropertyCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.web.servlet.config.annotation.WebMvcConfigurer' (OnClassCondition)
+         - found 'session' scope (OnWebApplicationCondition)
+
+   JsonbHttpMessageConvertersConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'jakarta.json.bind.Jsonb' (OnClassCondition)
+
+   KotlinSerializationHttpMessageConvertersConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required classes 'kotlinx.serialization.Serializable', 'kotlinx.serialization.json.Json' (OnClassCondition)
+
+   MailHealthContributorAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.health.autoconfigure.contributor.ConditionalOnEnabledHealthIndicator' (OnClassCondition)
+
+   MailSenderJndiConfiguration:
+      Did not match:
+         - @ConditionalOnProperty (spring.mail.jndi-name) did not find property 'spring.mail.jndi-name' (OnPropertyCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'jakarta.mail.Session' (OnClassCondition)
+
+   MailSenderValidatorAutoConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.mail.test-connection=true) found different value in property 'spring.mail.test-connection' (OnPropertyCondition)
+
+   ManagementWebSecurityAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointAutoConfiguration' (OnClassCondition)
+
+   MessageSourceAutoConfiguration:
+      Did not match:
+         - ResourceBundle did not find bundle with basename messages (MessageSourceAutoConfiguration.ResourceBundleCondition)
+
+   MultipleOpenApiSupportConfiguration:
+      Did not match:
+         - AnyNestedCondition 0 matched 2 did not; NestedCondition on MultipleOpenApiSupportCondition.OnActuatorDifferentPort @ConditionalOnProperty (springdoc.show-actuator) did not find property 'springdoc.show-actuator'; NestedCondition on MultipleOpenApiSupportCondition.OnMultipleOpenApiSupportCondition AnyNestedCondition 0 matched 2 did not; NestedCondition on MultipleOpenApiGroupsCondition.OnGroupConfigProperty @ConditionalOnProperty (springdoc.group-configs[0].group) did not find property 'springdoc.group-configs[0].group'; NestedCondition on MultipleOpenApiGroupsCondition.OnGroupedOpenApiBean @ConditionalOnBean (types: org.springdoc.core.models.GroupedOpenApi; SearchStrategy: all) did not find any beans of type org.springdoc.core.models.GroupedOpenApi (MultipleOpenApiSupportCondition)
+      Matched:
+         - found 'session' scope (OnWebApplicationCondition)
+         - @ConditionalOnProperty (springdoc.api-docs.enabled) matched (OnPropertyCondition)
+
+   MultipleOpenApiSupportConfiguration.SpringDocWebMvcActuatorDifferentConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.endpoint.web.servlet.WebMvcEndpointHandlerMapping' (OnClassCondition)
+         - Ancestor org.springdoc.webmvc.core.configuration.MultipleOpenApiSupportConfiguration did not match (ConditionEvaluationReport.AncestorsMatchedCondition)
+
+   ProjectInfoAutoConfiguration#buildProperties:
+      Did not match:
+         - @ConditionalOnResource did not find resource '${spring.info.build.location:classpath:META-INF/build-info.properties}' (OnResourceCondition)
+
+   ProjectInfoAutoConfiguration#gitProperties:
+      Did not match:
+         - GitResource did not find git info at classpath:git.properties (ProjectInfoAutoConfiguration.GitResourceAvailableCondition)
+
+   RSocketSecurityAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.rsocket.server.RSocketServerCustomizer' (OnClassCondition)
+
+   ReactiveManagementWebSecurityAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointAutoConfiguration' (OnClassCondition)
+
+   ReactiveUserDetailsServiceAutoConfiguration:
+      Did not match:
+         - AnyNestedCondition 0 matched 2 did not; NestedCondition on ReactiveUserDetailsServiceAutoConfiguration.RSocketEnabledOrReactiveWebApplication.ReactiveWebApplicationCondition did not find reactive web application classes; NestedCondition on ReactiveUserDetailsServiceAutoConfiguration.RSocketEnabledOrReactiveWebApplication.RSocketSecurityEnabledCondition @ConditionalOnBean (types: org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler; SearchStrategy: all) did not find any beans of type org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler (ReactiveUserDetailsServiceAutoConfiguration.RSocketEnabledOrReactiveWebApplication)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.security.authentication.ReactiveAuthenticationManager' (OnClassCondition)
+         - AnyNestedCondition 1 matched 2 did not; NestedCondition on MissingAlternativeUserDetailsManagerOrUserPropertiesConfigured.PasswordConfigured @ConditionalOnProperty (spring.security.user.password) did not find property 'spring.security.user.password'; NestedCondition on MissingAlternativeUserDetailsManagerOrUserPropertiesConfigured.NameConfigured @ConditionalOnProperty (spring.security.user.name) did not find property 'spring.security.user.name'; NestedCondition on MissingAlternativeUserDetailsManagerOrUserPropertiesConfigured.MissingAlternative @ConditionalOnMissingClass did not find unwanted classes 'org.springframework.security.oauth2.client.registration.ClientRegistrationRepository', 'org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector', 'org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository' (MissingAlternativeUserDetailsManagerOrUserPropertiesConfigured)
+
+   ReactiveWebSecurityAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'reactor.core.publisher.Flux' (OnClassCondition)
+
+   SecurityAutoConfiguration.SecurityDataConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.security.data.repository.query.SecurityEvaluationContextExtension' (OnClassCondition)
+
+   ServletHttpExchangesAutoConfiguration:
+      Did not match:
+         - @ConditionalOnBean did not find required type 'org.springframework.boot.actuate.web.exchanges.HttpExchangeRepository' (OnBeanCondition)
+
+   ServletManagementContextAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties' (OnClassCondition)
+
+   ServletMappingsAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint' (OnClassCondition)
+
+   ServletWebSecurityAutoConfiguration.EnableWebSecurityConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (names: springSecurityFilterChain; SearchStrategy: all) found beans named springSecurityFilterChain (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.security.config.annotation.web.configuration.EnableWebSecurity' (OnClassCondition)
+
+   ServletWebSecurityAutoConfiguration.SecurityFilterChainConfiguration:
+      Did not match:
+         - AllNestedConditions 1 matched 1 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) found beans of type 'org.springframework.security.web.SecurityFilterChain' securityFilterChain; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+
+   ServletWebServerConfiguration#forwardedHeaderFilter:
+      Did not match:
+         - @ConditionalOnProperty (server.forward-headers-strategy=framework) did not find property 'server.forward-headers-strategy' (OnPropertyCondition)
+
+   SpringApplicationAdminJmxAutoConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.application.admin.enabled=true) did not find property 'spring.application.admin.enabled' (OnPropertyCondition)
+
+   SpringDocConfiguration#propertiesResolverForSchema:
+      Did not match:
+         - @ConditionalOnProperty (springdoc.api-docs.resolve-schema-properties) did not find property 'springdoc.api-docs.resolve-schema-properties' (OnPropertyCondition)
+
+   SpringDocConfiguration#propertyCustomizingConverter:
+      Did not match:
+         - @ConditionalOnBean (types: org.springdoc.core.customizers.PropertyCustomizer; SearchStrategy: all) did not find any beans of type org.springdoc.core.customizers.PropertyCustomizer (OnBeanCondition)
+
+   SpringDocConfiguration#springdocBeanFactoryPostProcessor:
+      Did not match:
+         - AnyNestedCondition 0 matched 2 did not; NestedCondition on CacheOrGroupedOpenApiCondition.OnCacheDisabled found non-matching nested conditions @ConditionalOnProperty (springdoc.cache.disabled) did not find property 'springdoc.cache.disabled'; NestedCondition on CacheOrGroupedOpenApiCondition.OnMultipleOpenApiSupportCondition AnyNestedCondition 0 matched 2 did not; NestedCondition on MultipleOpenApiSupportCondition.OnActuatorDifferentPort @ConditionalOnProperty (springdoc.show-actuator) did not find property 'springdoc.show-actuator'; NestedCondition on MultipleOpenApiSupportCondition.OnMultipleOpenApiSupportCondition AnyNestedCondition 0 matched 2 did not; NestedCondition on MultipleOpenApiGroupsCondition.OnGroupConfigProperty @ConditionalOnProperty (springdoc.group-configs[0].group) did not find property 'springdoc.group-configs[0].group'; NestedCondition on MultipleOpenApiGroupsCondition.OnGroupedOpenApiBean @ConditionalOnBean (types: org.springdoc.core.models.GroupedOpenApi; SearchStrategy: all) did not find any beans of type org.springdoc.core.models.GroupedOpenApi (CacheOrGroupedOpenApiCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.boot.context.properties.bind.BindResult' (OnClassCondition)
+
+   SpringDocConfiguration#springdocBeanFactoryPostProcessor2:
+      Did not match:
+         - @ConditionalOnMissingClass found unwanted class 'org.springframework.boot.context.properties.bind.BindResult' (OnClassCondition)
+
+   SpringDocConfiguration.SpringDocActuatorConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties' (OnClassCondition)
+
+   SpringDocConfiguration.SpringDocRepositoryRestConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.data.rest.core.config.RepositoryRestConfiguration' (OnClassCondition)
+
+   SpringDocConfiguration.SpringDocSpringDataWebPropertiesProvider:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties' (OnClassCondition)
+
+   SpringDocConfiguration.SpringDocWebFluxSupportConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'reactor.core.publisher.Flux' (OnClassCondition)
+
+   SpringDocDataRestConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.data.rest.core.config.RepositoryRestConfiguration' (OnClassCondition)
+
+   SpringDocFunctionCatalogConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.cloud.function.web.function.FunctionEndpointInitializer' (OnClassCondition)
+
+   SpringDocGroovyConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'groovy.lang.MetaClass' (OnClassCondition)
+
+   SpringDocHateoasConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.hateoas.server.LinkRelationProvider' (OnClassCondition)
+
+   SpringDocJacksonKotlinModuleConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'com.fasterxml.jackson.module.kotlin.KotlinModule' (OnClassCondition)
+
+   SpringDocJavadocConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'com.github.therapi.runtimejavadoc.CommentFormatter' (OnClassCondition)
+
+   SpringDocKotlinConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'kotlin.coroutines.Continuation' (OnClassCondition)
+
+   SpringDocKotlinxConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'kotlinx.coroutines.flow.Flow' (OnClassCondition)
+
+   SpringDocSecurityConfiguration.SpringDocSecurityOAuth2Configuration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService' (OnClassCondition)
+
+   SpringDocSecurityConfiguration.SpringSecurityLoginEndpointConfiguration#springSecurityLoginEndpointCustomiser:
+      Did not match:
+         - @ConditionalOnProperty (springdoc.show-login-endpoint) did not find property 'springdoc.show-login-endpoint' (OnPropertyCondition)
+
+   SpringDocSortConfiguration#delegatingMethodParameterCustomizer:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springdoc.core.customizers.DelegatingMethodParameterCustomizer; SearchStrategy: all) found beans of type 'org.springdoc.core.customizers.DelegatingMethodParameterCustomizer' delegatingMethodParameterCustomizer (OnBeanCondition)
+
+   SpringDocWebMvcConfiguration.SpringDocWebMvcActuatorConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.endpoint.web.servlet.WebMvcEndpointHandlerMapping' (OnClassCondition)
+
+   SwaggerConfig#springWebProvider:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springdoc.core.providers.SpringWebProvider; SearchStrategy: all) found beans of type 'org.springdoc.core.providers.SpringWebProvider' springWebProvider (OnBeanCondition)
+
+   SwaggerConfig#swaggerUiConfigParameters:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springdoc.core.properties.SwaggerUiConfigParameters; SearchStrategy: all) found beans of type 'org.springdoc.core.properties.SwaggerUiConfigParameters' org.springdoc.core.properties.SwaggerUiConfigParameters (OnBeanCondition)
+
+   SwaggerConfig#swaggerUiHome:
+      Did not match:
+         - @ConditionalOnProperty (springdoc.swagger-ui.use-root-path=true) did not find property 'springdoc.swagger-ui.use-root-path' (OnPropertyCondition)
+
+   SwaggerConfig.SwaggerActuatorWelcomeConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.endpoint.web.servlet.WebMvcEndpointHandlerMapping' (OnClassCondition)
+
+   TaskExecutorConfigurations.AsyncConfigurerWrapperConfiguration:
+      Did not match:
+         - @ConditionalOnBean (types: org.springframework.scheduling.annotation.AsyncConfigurer; SearchStrategy: all) did not find any beans of type org.springframework.scheduling.annotation.AsyncConfigurer (OnBeanCondition)
+
+   TaskExecutorConfigurations.SimpleAsyncTaskExecutorBuilderConfiguration#simpleAsyncTaskExecutorBuilderVirtualThreads:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springframework.boot.task.SimpleAsyncTaskExecutorBuilder; SearchStrategy: all) found beans of type 'org.springframework.boot.task.SimpleAsyncTaskExecutorBuilder' simpleAsyncTaskExecutorBuilder (OnBeanCondition)
+
+   TaskExecutorConfigurations.TaskExecutorConfiguration#applicationTaskExecutorVirtualThreads:
+      Did not match:
+         - @ConditionalOnThreading did not find VIRTUAL (OnThreadingCondition)
+
+   TaskSchedulingConfigurations.SimpleAsyncTaskSchedulerBuilderConfiguration#simpleAsyncTaskSchedulerBuilderVirtualThreads:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springframework.boot.task.SimpleAsyncTaskSchedulerBuilder; SearchStrategy: all) found beans of type 'org.springframework.boot.task.SimpleAsyncTaskSchedulerBuilder' simpleAsyncTaskSchedulerBuilder (OnBeanCondition)
+
+   TaskSchedulingConfigurations.TaskSchedulerConfiguration#taskSchedulerVirtualThreads:
+      Did not match:
+         - @ConditionalOnThreading did not find VIRTUAL (OnThreadingCondition)
+
+   TomcatMetricsAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'io.micrometer.core.instrument.binder.tomcat.TomcatMetrics' (OnClassCondition)
+
+   TomcatReactiveManagementContextAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.autoconfigure.web.server.ManagementContextFactory' (OnClassCondition)
+
+   TomcatReactiveWebServerAutoConfiguration:
+      Did not match:
+         - @ConditionalOnWebApplication did not find reactive web application classes (OnWebApplicationCondition)
+
+   TomcatServletManagementContextAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.autoconfigure.web.server.ManagementContextFactory' (OnClassCondition)
+
+   TomcatServletWebServerAutoConfiguration#tomcatForwardedHeaderFilterCustomizer:
+      Did not match:
+         - @ConditionalOnProperty (server.forward-headers-strategy=framework) did not find property 'server.forward-headers-strategy' (OnPropertyCondition)
+
+   TomcatWebServerConfiguration#tomcatVirtualThreadsProtocolHandlerCustomizer:
+      Did not match:
+         - @ConditionalOnThreading did not find VIRTUAL (OnThreadingCondition)
+
+   TransactionAutoConfiguration#transactionalOperator:
+      Did not match:
+         - @ConditionalOnSingleCandidate (types: org.springframework.transaction.ReactiveTransactionManager; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TransactionAutoConfiguration.AspectJTransactionManagementConfiguration:
+      Did not match:
+         - @ConditionalOnBean (types: org.springframework.transaction.aspectj.AbstractTransactionAspect; SearchStrategy: all) did not find any beans of type org.springframework.transaction.aspectj.AbstractTransactionAspect (OnBeanCondition)
+
+   TransactionAutoConfiguration.EnableTransactionManagementConfiguration.JdkDynamicAutoProxyConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.aop.proxy-target-class=false) did not find property 'spring.aop.proxy-target-class' (OnPropertyCondition)
+
+   UserDetailsServiceAutoConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springframework.security.authentication.AuthenticationManager,org.springframework.security.authentication.AuthenticationProvider,org.springframework.security.core.userdetails.UserDetailsService,org.springframework.security.authentication.AuthenticationManagerResolver,org.springframework.security.oauth2.jwt.JwtDecoder; SearchStrategy: all) found beans of type 'org.springframework.security.authentication.AuthenticationManager' authenticationManager and found beans of type 'org.springframework.security.core.userdetails.UserDetailsService' customUserDetailsService and found beans of type 'org.springframework.security.authentication.AuthenticationProvider' authenticationProvider (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.security.authentication.AuthenticationManager' (OnClassCondition)
+         - found 'session' scope (OnWebApplicationCondition)
+         - AnyNestedCondition 1 matched 2 did not; NestedCondition on MissingAlternativeUserDetailsManagerOrUserPropertiesConfigured.PasswordConfigured @ConditionalOnProperty (spring.security.user.password) did not find property 'spring.security.user.password'; NestedCondition on MissingAlternativeUserDetailsManagerOrUserPropertiesConfigured.NameConfigured @ConditionalOnProperty (spring.security.user.name) did not find property 'spring.security.user.name'; NestedCondition on MissingAlternativeUserDetailsManagerOrUserPropertiesConfigured.MissingAlternative @ConditionalOnMissingClass did not find unwanted classes 'org.springframework.security.oauth2.client.registration.ClientRegistrationRepository', 'org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector', 'org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository' (MissingAlternativeUserDetailsManagerOrUserPropertiesConfigured)
+
+   WebMvcAutoConfiguration#hiddenHttpMethodFilter:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.mvc.hiddenmethod.filter.enabled=true) did not find property 'spring.mvc.hiddenmethod.filter.enabled' (OnPropertyCondition)
+
+   WebMvcAutoConfiguration.ProblemDetailsErrorHandlingConfiguration:
+      Did not match:
+         - @ConditionalOnBooleanProperty (spring.mvc.problemdetails.enabled=true) did not find property 'spring.mvc.problemdetails.enabled' (OnPropertyCondition)
+
+   WebMvcAutoConfiguration.ResourceChainCustomizerConfiguration:
+      Did not match:
+         - @ConditionalOnEnabledResourceChain did not find class org.webjars.WebJarVersionLocator (OnEnabledResourceChainCondition)
+
+   WebMvcAutoConfiguration.WebMvcAutoConfigurationAdapter#beanNameViewResolver:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springframework.web.servlet.view.BeanNameViewResolver; SearchStrategy: all) found beans of type 'org.springframework.web.servlet.view.BeanNameViewResolver' beanNameViewResolver (OnBeanCondition)
+
+   WebMvcHealthEndpointExtensionAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.health.actuate.endpoint.HealthEndpoint' (OnClassCondition)
+
+   WebMvcMappingsAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint' (OnClassCondition)
+
+   WebMvcObservationAutoConfiguration:
+      Did not match:
+         - @ConditionalOnClass did not find required class 'org.springframework.boot.micrometer.observation.autoconfigure.ObservationProperties' (OnClassCondition)
+
+   XADataSourceAutoConfiguration:
+      Did not match:
+         - @ConditionalOnBean (types: org.springframework.boot.jdbc.XADataSourceWrapper; SearchStrategy: all) did not find any beans of type org.springframework.boot.jdbc.XADataSourceWrapper (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required classes 'javax.sql.DataSource', 'jakarta.transaction.TransactionManager', 'org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType' (OnClassCondition)
+
+
+Exclusions:
+-----------
+
+    org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+
+    org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+
+Unconditional classes:
+----------------------
+
+    org.springframework.boot.autoconfigure.context.ConfigurationPropertiesAutoConfiguration
+
+    org.springframework.boot.autoconfigure.ssl.SslAutoConfiguration
+
+    org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration
+
+    org.springframework.boot.autoconfigure.context.LifecycleAutoConfiguration
+
+    org.springdoc.core.configuration.SpringDocSpecPropertiesConfiguration
+
+    org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration
+
+    org.springframework.boot.autoconfigure.info.ProjectInfoAutoConfiguration
+
+
+
+2026-05-29T04:50:38.816+05:30  INFO 25940 --- [Cricbook] [           main] c.example.Cricbook.CricbookApplication   : Started CricbookApplication in 9.002 seconds (process running for 9.255)
+2026-05-29T04:50:38.817+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.b.a.ApplicationAvailabilityBean      : Application availability state LivenessState changed to CORRECT
+2026-05-29T04:50:38.819+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.jdbc.core.JdbcTemplate               : Executing SQL statement [ALTER TABLE turfs MODIFY COLUMN pitch_type VARCHAR(32) NOT NULL]
+2026-05-29T04:50:38.866+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.jdbc.core.JdbcTemplate               : Executing SQL statement [ALTER TABLE turfs MODIFY COLUMN box_type VARCHAR(32) NOT NULL]
+2026-05-29T04:50:38.873+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select prt1_0.id,prt1_0.created_at,prt1_0.expiry,prt1_0.token_hash,prt1_0.used,prt1_0.user_id from password_reset_tokens prt1_0 where prt1_0.expiry<?
+2026-05-29T04:50:38.893+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T04:50:38.901+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T04:50:38.908+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T04:50:38.927+05:30  INFO 25940 --- [Cricbook] [           main] c.e.C.config.LegacyTurfSchemaMigration   : Verified turf enum columns use VARCHAR(32).
+2026-05-29T04:50:38.932+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:50:38.951+05:30 DEBUG 25940 --- [Cricbook] [           main] org.hibernate.SQL                        : select au1_0.id from admin_users au1_0 where au1_0.email=? limit ?
+2026-05-29T04:50:38.956+05:30 DEBUG 25940 --- [Cricbook] [           main] org.hibernate.SQL                        : select ps1_0.id,ps1_0.settings_key,ps1_0.settings_value from platform_settings ps1_0 where ps1_0.settings_key=?
+2026-05-29T04:50:38.963+05:30 DEBUG 25940 --- [Cricbook] [           main] o.s.b.a.ApplicationAvailabilityBean      : Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
+2026-05-29T04:51:08.826+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:51:38.823+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T04:51:38.828+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T04:51:38.835+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T04:51:38.840+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:52:08.823+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:52:38.822+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T04:52:38.827+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T04:52:38.832+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T04:52:38.835+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:53:08.822+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:53:38.823+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T04:53:38.848+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T04:53:38.853+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T04:53:38.854+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:54:08.821+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:54:17.359+05:30  INFO 25940 --- [Cricbook] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-29T04:54:17.359+05:30  INFO 25940 --- [Cricbook] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-05-29T04:54:17.359+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2026-05-29T04:54:17.359+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2026-05-29T04:54:17.362+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@10f8967a
+2026-05-29T04:54:17.362+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@5ba0ce1a
+2026-05-29T04:54:17.362+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-05-29T04:54:17.363+05:30  INFO 25940 --- [Cricbook] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2026-05-29T04:54:17.374+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : POST "/api/v1/auth/login", parameters={}
+2026-05-29T04:54:17.379+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.Cricbook.controller.AuthController#login(LoginRequest)
+2026-05-29T04:54:17.382+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-1] org.hibernate.SQL                        : select t1_0.id,t1_0.currency,t1_0.domain,t1_0.name,t1_0.status,t1_0.theme,t1_0.timezone from tenants t1_0 where t1_0.domain=?
+2026-05-29T04:54:17.431+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [LoginRequest(username=null, password=password)]
+2026-05-29T04:54:17.462+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-1] .m.m.a.ExceptionHandlerExceptionResolver : Using @ExceptionHandler com.example.Cricbook.exception.GlobalExceptionHandler#handleValidationExceptions(MethodArgumentNotValidException, HttpServletRequest)
+2026-05-29T04:54:17.486+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-05-29T04:54:17.489+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [ApiErrorResponse(timestamp=2026-05-29T04:54:17.464675300+05:30, status=400, error=Bad Request, code= (truncated)...]
+2026-05-29T04:54:17.510+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-1] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.example.Cricbook.dto.AuthResponse> com.example.Cricbook.controller.AuthController.login(com.example.Cricbook.dto.LoginRequest): [Field error in object 'loginRequest' on field 'username': rejected value [null]; codes [NotBlank.loginRequest.username,NotBlank.username,NotBlank.java.lang.String,NotBlank]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginRequest.username,username]; arguments []; default message [username]]; default message [Email/Phone is required]] ]
+2026-05-29T04:54:17.510+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2026-05-29T04:54:38.825+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T04:54:38.851+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T04:54:38.856+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T04:54:38.859+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:55:00.947+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : POST "/api/v1/auth/login", parameters={}
+2026-05-29T04:55:00.947+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.Cricbook.controller.AuthController#login(LoginRequest)
+2026-05-29T04:55:00.948+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-2] org.hibernate.SQL                        : select t1_0.id,t1_0.currency,t1_0.domain,t1_0.name,t1_0.status,t1_0.theme,t1_0.timezone from tenants t1_0 where t1_0.domain=?
+2026-05-29T04:55:00.950+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [LoginRequest(username=9825244321, password=password)]
+2026-05-29T04:55:01.019+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-2] org.hibernate.SQL                        : select au1_0.id,au1_0.created_at,au1_0.email,au1_0.password,au1_0.role,au1_0.status,au1_0.updated_at from admin_users au1_0 where au1_0.email=?
+2026-05-29T04:55:01.022+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-2] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.name,u1_0.password,u1_0.phone,u1_0.preferred_language,u1_0.preferred_theme,u1_0.status,u1_0.tenant_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-29T04:55:01.025+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-2] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.name,u1_0.password,u1_0.phone,u1_0.preferred_language,u1_0.preferred_theme,u1_0.status,u1_0.tenant_id,u1_0.updated_at from users u1_0 where u1_0.phone=?
+2026-05-29T04:55:01.034+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-2] org.hibernate.SQL                        : select r1_0.user_id,r1_1.id,r1_1.name from user_roles r1_0 join roles r1_1 on r1_1.id=r1_0.role_id where r1_0.user_id=?
+2026-05-29T04:55:01.103+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-2] .m.m.a.ExceptionHandlerExceptionResolver : Using @ExceptionHandler com.example.Cricbook.exception.GlobalExceptionHandler#handleBadCredentialsException(BadCredentialsException, HttpServletRequest)
+2026-05-29T04:55:01.105+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-05-29T04:55:01.105+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [ApiErrorResponse(timestamp=2026-05-29T04:55:01.105003700+05:30, status=401, error=Unauthorized, code (truncated)...]
+2026-05-29T04:55:01.106+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-2] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.security.authentication.BadCredentialsException: Bad credentials]
+2026-05-29T04:55:01.106+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 401 UNAUTHORIZED
+2026-05-29T04:55:08.837+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:55:38.820+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select prt1_0.id,prt1_0.created_at,prt1_0.expiry,prt1_0.token_hash,prt1_0.used,prt1_0.user_id from password_reset_tokens prt1_0 where prt1_0.expiry<?
+2026-05-29T04:55:38.842+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T04:55:38.845+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T04:55:38.849+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T04:55:38.853+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:56:08.820+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:56:38.833+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T04:56:38.858+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T04:56:38.858+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T04:56:38.867+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:57:08.835+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:57:38.834+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T04:57:38.858+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T04:57:38.858+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T04:57:38.867+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:57:40.410+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] org.hibernate.SQL                        : select au1_0.id,au1_0.created_at,au1_0.email,au1_0.password,au1_0.role,au1_0.status,au1_0.updated_at from admin_users au1_0 where au1_0.email=?
+2026-05-29T04:57:40.412+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.name,u1_0.password,u1_0.phone,u1_0.preferred_language,u1_0.preferred_theme,u1_0.status,u1_0.tenant_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-29T04:57:40.412+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] org.hibernate.SQL                        : select r1_0.user_id,r1_1.id,r1_1.name from user_roles r1_0 join roles r1_1 on r1_1.id=r1_0.role_id where r1_0.user_id=?
+2026-05-29T04:57:40.416+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/settings", parameters={}
+2026-05-29T04:57:40.416+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.Cricbook.controller.PlayerSettingsController#getSettings(UserDetails)
+2026-05-29T04:57:40.416+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] org.hibernate.SQL                        : select t1_0.id,t1_0.currency,t1_0.domain,t1_0.name,t1_0.status,t1_0.theme,t1_0.timezone from tenants t1_0 where t1_0.domain=?
+2026-05-29T04:57:40.423+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.name,u1_0.password,u1_0.phone,u1_0.preferred_language,u1_0.preferred_theme,u1_0.status,u1_0.tenant_id,u1_0.updated_at from users u1_0 where u1_0.email=? or u1_0.phone=?
+2026-05-29T04:57:40.423+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] org.hibernate.SQL                        : select r1_0.user_id,r1_1.id,r1_1.name from user_roles r1_0 join roles r1_1 on r1_1.id=r1_0.role_id where r1_0.user_id=?
+2026-05-29T04:57:40.428+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] org.hibernate.SQL                        : select ps1_0.id,ps1_0.allow_friend_requests,ps1_0.allow_messages,ps1_0.allow_team_invites,ps1_0.auto_pay_splits,ps1_0.auto_waitlist_enabled,ps1_0.competition_level,ps1_0.created_at,ps1_0.currency,ps1_0.default_payment_method,ps1_0.download_data_requested,ps1_0.last_export_requested_at,ps1_0.login_method,ps1_0.nearby_only_matchmaking,ps1_0.preferred_skill_level,ps1_0.profile_visibility,ps1_0.quick_rebook_enabled,ps1_0.region_city,ps1_0.saved_upi_id,ps1_0.show_availability,ps1_0.show_location,ps1_0.show_stats,ps1_0.show_trust_score,ps1_0.timezone,ps1_0.trusted_only_matchmaking,ps1_0.two_factor_enabled,ps1_0.updated_at,ps1_0.user_id from player_settings ps1_0 where ps1_0.user_id=?
+2026-05-29T04:57:40.428+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] org.hibernate.SQL                        : select pp1_0.id,pp1_0.batting_style,pp1_0.bio,pp1_0.bowling_style,pp1_0.city,pp1_0.created_at,pp1_0.experience,pp1_0.matches_played,pp1_0.mvp_count,pp1_0.photo_url,pp1_0.position,pp1_0.preferred_time,pp1_0.rating,pp1_0.updated_at,pp1_0.user_id,pp1_0.wins from player_profiles pp1_0 where pp1_0.user_id=?
+2026-05-29T04:57:40.433+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] org.hibernate.SQL                        : select bp1_0.id,bp1_0.created_at,bp1_0.preferred_city,bp1_0.preferred_day,bp1_0.preferred_duration_minutes,bp1_0.preferred_team_id,bp1_0.preferred_time,bp1_0.updated_at,bp1_0.user_id from booking_preferences bp1_0 where bp1_0.user_id=?
+2026-05-29T04:57:40.443+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] org.hibernate.SQL                        : select np1_0.id,np1_0.channel,np1_0.created_at,np1_0.enabled,np1_0.frequency,np1_0.updated_at,np1_0.user_id from notification_preferences np1_0 where np1_0.user_id=?
+2026-05-29T04:57:40.456+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-05-29T04:57:40.459+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [PlayerSettingsResponse(profile=PlayerSettingsResponse.ProfileSection(userId=3, displayName=Utsav Pla (truncated)...]
+2026-05-29T04:57:40.465+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-29T04:58:08.833+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:58:10.950+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] org.hibernate.SQL                        : select au1_0.id,au1_0.created_at,au1_0.email,au1_0.password,au1_0.role,au1_0.status,au1_0.updated_at from admin_users au1_0 where au1_0.email=?
+2026-05-29T04:58:10.952+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.name,u1_0.password,u1_0.phone,u1_0.preferred_language,u1_0.preferred_theme,u1_0.status,u1_0.tenant_id,u1_0.updated_at from users u1_0 where u1_0.email=?
+2026-05-29T04:58:10.953+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] org.hibernate.SQL                        : select r1_0.user_id,r1_1.id,r1_1.name from user_roles r1_0 join roles r1_1 on r1_1.id=r1_0.role_id where r1_0.user_id=?
+2026-05-29T04:58:10.956+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/api/v1/settings", parameters={}
+2026-05-29T04:58:10.956+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.Cricbook.controller.PlayerSettingsController#getSettings(UserDetails)
+2026-05-29T04:58:10.956+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] org.hibernate.SQL                        : select t1_0.id,t1_0.currency,t1_0.domain,t1_0.name,t1_0.status,t1_0.theme,t1_0.timezone from tenants t1_0 where t1_0.domain=?
+2026-05-29T04:58:10.958+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.name,u1_0.password,u1_0.phone,u1_0.preferred_language,u1_0.preferred_theme,u1_0.status,u1_0.tenant_id,u1_0.updated_at from users u1_0 where u1_0.email=? or u1_0.phone=?
+2026-05-29T04:58:10.960+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] org.hibernate.SQL                        : select r1_0.user_id,r1_1.id,r1_1.name from user_roles r1_0 join roles r1_1 on r1_1.id=r1_0.role_id where r1_0.user_id=?
+2026-05-29T04:58:10.963+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] org.hibernate.SQL                        : select ps1_0.id,ps1_0.allow_friend_requests,ps1_0.allow_messages,ps1_0.allow_team_invites,ps1_0.auto_pay_splits,ps1_0.auto_waitlist_enabled,ps1_0.competition_level,ps1_0.created_at,ps1_0.currency,ps1_0.default_payment_method,ps1_0.download_data_requested,ps1_0.last_export_requested_at,ps1_0.login_method,ps1_0.nearby_only_matchmaking,ps1_0.preferred_skill_level,ps1_0.profile_visibility,ps1_0.quick_rebook_enabled,ps1_0.region_city,ps1_0.saved_upi_id,ps1_0.show_availability,ps1_0.show_location,ps1_0.show_stats,ps1_0.show_trust_score,ps1_0.timezone,ps1_0.trusted_only_matchmaking,ps1_0.two_factor_enabled,ps1_0.updated_at,ps1_0.user_id from player_settings ps1_0 where ps1_0.user_id=?
+2026-05-29T04:58:10.965+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] org.hibernate.SQL                        : select pp1_0.id,pp1_0.batting_style,pp1_0.bio,pp1_0.bowling_style,pp1_0.city,pp1_0.created_at,pp1_0.experience,pp1_0.matches_played,pp1_0.mvp_count,pp1_0.photo_url,pp1_0.position,pp1_0.preferred_time,pp1_0.rating,pp1_0.updated_at,pp1_0.user_id,pp1_0.wins from player_profiles pp1_0 where pp1_0.user_id=?
+2026-05-29T04:58:10.966+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] org.hibernate.SQL                        : select bp1_0.id,bp1_0.created_at,bp1_0.preferred_city,bp1_0.preferred_day,bp1_0.preferred_duration_minutes,bp1_0.preferred_team_id,bp1_0.preferred_time,bp1_0.updated_at,bp1_0.user_id from booking_preferences bp1_0 where bp1_0.user_id=?
+2026-05-29T04:58:10.968+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] org.hibernate.SQL                        : select np1_0.id,np1_0.channel,np1_0.created_at,np1_0.enabled,np1_0.frequency,np1_0.updated_at,np1_0.user_id from notification_preferences np1_0 where np1_0.user_id=?
+2026-05-29T04:58:10.971+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-05-29T04:58:10.971+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [PlayerSettingsResponse(profile=PlayerSettingsResponse.ProfileSection(userId=3, displayName=Utsav Pla (truncated)...]
+2026-05-29T04:58:10.972+05:30 DEBUG 25940 --- [Cricbook] [nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-29T04:58:38.827+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T04:58:38.848+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T04:58:38.850+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T04:58:38.855+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:59:08.832+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T04:59:38.826+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T04:59:38.826+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T04:59:38.826+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T04:59:38.836+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:00:08.828+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:00:38.830+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select prt1_0.id,prt1_0.created_at,prt1_0.expiry,prt1_0.token_hash,prt1_0.used,prt1_0.user_id from password_reset_tokens prt1_0 where prt1_0.expiry<?
+2026-05-29T05:00:38.851+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:00:38.854+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:00:38.854+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:00:38.854+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:01:08.830+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:01:38.829+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:01:38.853+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:01:38.855+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:01:38.858+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:02:08.830+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:02:38.830+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:02:38.835+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:02:38.837+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:02:38.839+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:03:08.828+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:03:38.828+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:03:38.853+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:03:38.857+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:03:38.862+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:04:08.829+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:04:38.826+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:04:38.831+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:04:38.833+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:04:38.834+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:05:08.823+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:05:38.826+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select prt1_0.id,prt1_0.created_at,prt1_0.expiry,prt1_0.token_hash,prt1_0.used,prt1_0.user_id from password_reset_tokens prt1_0 where prt1_0.expiry<?
+2026-05-29T05:05:38.847+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:05:38.850+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:05:38.853+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:05:38.854+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:06:08.824+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:06:38.825+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:06:38.847+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:06:38.850+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:06:38.854+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:07:08.825+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:07:38.827+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:07:38.852+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:07:38.856+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:07:38.859+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:08:08.821+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:08:38.835+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:08:38.839+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:08:38.843+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:08:38.846+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:09:08.822+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:09:38.838+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:09:38.843+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:09:38.847+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:09:38.848+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:10:08.832+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:10:38.833+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select prt1_0.id,prt1_0.created_at,prt1_0.expiry,prt1_0.token_hash,prt1_0.used,prt1_0.user_id from password_reset_tokens prt1_0 where prt1_0.expiry<?
+2026-05-29T05:10:38.849+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:10:38.851+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:10:38.852+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:10:38.853+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:11:08.832+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:11:38.834+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:11:38.853+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:11:38.853+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:11:38.853+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:12:08.834+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:12:38.834+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:12:38.838+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:12:38.840+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:12:38.842+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:13:08.835+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:13:38.831+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:13:38.852+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:13:38.854+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:13:38.854+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:14:08.832+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:14:38.829+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:14:38.847+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:14:38.849+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:14:38.849+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:15:08.832+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:15:38.830+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select prt1_0.id,prt1_0.created_at,prt1_0.expiry,prt1_0.token_hash,prt1_0.used,prt1_0.user_id from password_reset_tokens prt1_0 where prt1_0.expiry<?
+2026-05-29T05:15:38.847+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:15:38.847+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:15:38.847+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:15:38.847+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:16:08.830+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:16:38.827+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:16:38.848+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:16:38.850+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:16:38.852+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:17:08.826+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:17:38.828+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:17:38.831+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:17:38.838+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:17:38.842+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:18:08.828+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:18:38.826+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:18:38.847+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:18:38.849+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:18:38.853+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:19:08.822+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:19:38.827+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:19:38.830+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:19:38.834+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:19:38.837+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:20:08.824+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:20:38.824+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select prt1_0.id,prt1_0.created_at,prt1_0.expiry,prt1_0.token_hash,prt1_0.used,prt1_0.user_id from password_reset_tokens prt1_0 where prt1_0.expiry<?
+2026-05-29T05:20:38.846+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:20:38.849+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:20:38.852+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:20:38.855+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:21:08.823+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:21:38.835+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:21:38.846+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:21:38.850+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:21:38.853+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:22:08.827+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:22:38.841+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:22:38.865+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:22:38.868+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:22:38.872+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:23:08.834+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:23:38.839+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:23:38.860+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:23:38.861+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:23:38.862+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:24:08.835+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:24:38.836+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:24:38.840+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:24:38.843+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:24:38.846+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:25:08.837+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:25:38.834+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select prt1_0.id,prt1_0.created_at,prt1_0.expiry,prt1_0.token_hash,prt1_0.used,prt1_0.user_id from password_reset_tokens prt1_0 where prt1_0.expiry<?
+2026-05-29T05:25:38.839+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:25:38.842+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:25:38.844+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:25:38.846+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:26:08.836+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:26:38.831+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:26:38.834+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:26:38.838+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:26:38.840+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:27:08.832+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:27:38.830+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select o1_0.id,o1_0.expiry,o1_0.otp_code,o1_0.user_id,o1_0.verified from otps o1_0 where o1_0.expiry<?
+2026-05-29T05:27:38.836+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nq1_0.id,nq1_0.campaign_id,nq1_0.channel,nq1_0.created_at,nq1_0.deep_link,nq1_0.email,nq1_0.message,nq1_0.retry_count,nq1_0.status,nq1_0.title,nq1_0.user_id from notification_queue nq1_0 where nq1_0.status=? order by nq1_0.created_at limit ?
+2026-05-29T05:27:38.840+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select b1_0.id,b1_0.amount,b1_0.booking_date,b1_0.created_at,b1_0.expiry_time,b1_0.slot_id,b1_0.status,b1_0.tenant_id,b1_0.turf_id,b1_0.updated_at,b1_0.user_id from bookings b1_0 where b1_0.status=? and b1_0.expiry_time<?
+2026-05-29T05:27:38.845+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+2026-05-29T05:28:08.830+05:30 DEBUG 25940 --- [Cricbook] [   scheduling-1] org.hibernate.SQL                        : select nrq1_0.id,nrq1_0.attempts,nrq1_0.created_at,nrq1_0.next_attempt_at,nrq1_0.notification_id,nrq1_0.status from notification_retry_queue nrq1_0 where nrq1_0.status=? and nrq1_0.next_attempt_at<?
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  37:43 min
+[INFO] Finished at: 2026-05-29T05:28:11+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:4.0.6:run (default-cli) on project Cricbook: Process terminated with exit code: -1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

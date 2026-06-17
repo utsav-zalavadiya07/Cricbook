@@ -1,0 +1,499 @@
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <link>
+    <script>
+    <script>
+    <script>
+    <RootLayout>
+      <html lang="en" className="h-full ant..." suppressHydrationWarning={true}>
+        <body className="min-h-full...">
+          <script>
+          <ToastProvider>
+            <ThemeProvider>
+              <I18nProvider>
+                <div className="contents">
+                  <AuthBootstrap>
+                  <DomTranslator>
+                  <Header>
+                    <header className="theme-navb..." data-i18n-skip="true">
+                      <div className="mx-auto ma...">
+                        <div className="flex items...">
+                          <LinkComponent>
+                          <div className="hidden min...">
+                            <select
+                              value="Ahmedabad"
+                              onChange={function onChange}
+                              className="theme-input min-w-[132px] rounded-xl px-3 py-2 text-xs font-semibold outline-..."
+                              data-i18n-skip="true"
+-                             fdprocessedid="fro8cl"
+                            >
+                            <select
+                              value="en"
+                              onChange={function onChange}
+                              className="theme-input min-w-[124px] rounded-xl px-3 py-2 text-xs font-semibold outline-..."
+                              data-i18n-skip="true"
+-                             fdprocessedid="q7iw08"
+                            >
+                            <ThemeToggle compact={true} className="hidden 2xl...">
+                              <div className="theme-togg...">
+                                <button
+                                  type="button"
+                                  onClick={function onClick}
+                                  title="Light"
+                                  className="rounded-xl px-2.5 py-2 text-xs font-semibold transition theme-toggle-inac..."
+-                                 fdprocessedid="ywhsef"
+                                >
++                                 Light
+                                <button
+                                  type="button"
+                                  onClick={function onClick}
+                                  title="Dark"
+                                  className="rounded-xl px-2.5 py-2 text-xs font-semibold transition theme-toggle-acti..."
+-                                 fdprocessedid="rcxm79"
+                                >
++                                 Dark
+                                <button
+                                  type="button"
+                                  onClick={function onClick}
+                                  title="System"
+                                  className="rounded-xl px-2.5 py-2 text-xs font-semibold transition theme-toggle-inac..."
+-                                 fdprocessedid="2ig9wa"
+                                >
++                                 Auto
+                          ...
+                  ...
+                    <SegmentViewNode type="page" pagePath="personaliz...">
+                      <SegmentTrieNode>
+                      <ClientPageRoot Component={function AIRecommendationDashboard} serverProvidedParams={{...}}>
+                        <AIRecommendationDashboard params={Promise} searchParams={Promise}>
+                          <main className="theme-page...">
+                            <div className="mx-auto ma...">
+                              <section>
+                              <section className="theme-pane...">
+                                <div>
+                                <form onSubmit={function handleSearch} className="grid gap-3...">
+                                  <input
+                                    type="text"
+                                    value=""
+                                    onChange={function onChange}
+                                    placeholder="Try: premium evening turf in Surat under Rs 1200"
+                                    className="theme-input min-h-12 rounded-xl px-4 py-3 text-sm outline-none focus:bo..."
+-                                   fdprocessedid="r98g6"
+                                  >
+                                  <select
+                                    value="Surat"
+                                    onChange={function onChange}
+                                    className="theme-input min-h-12 rounded-xl px-4 py-3 text-sm outline-none focus:bo..."
+-                                   fdprocessedid="mlbsk5"
+                                  >
+                                  <button
+                                    type="submit"
+                                    className="min-h-12 rounded-xl bg-sky-600 px-6 py-3 text-sm font-bold text-white s..."
+                                    disabled={false}
+-                                   fdprocessedid="t3168"
+                                  >
++                                   Analyze Intent
+                              ...
+            ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <link>
+    <script>
+    <script>
+    <script>
+    <RootLayout>
+      <html lang="en" className="h-full ant..." suppressHydrationWarning={true}>
+        <body className="min-h-full...">
+          <script>
+          <ToastProvider>
+            <ThemeProvider>
+              <I18nProvider>
+                <div className="contents">
+                  <AuthBootstrap>
+                  <DomTranslator>
+                  <Header>
+                    <header className="theme-navb..." data-i18n-skip="true">
+                      <div className="mx-auto ma...">
+                        <div className="flex items...">
+                          <LinkComponent>
+                          <div className="hidden min...">
+                            <select
+                              value="Ahmedabad"
+                              onChange={function onChange}
+                              className="theme-input min-w-[132px] rounded-xl px-3 py-2 text-xs font-semibold outline-..."
+                              data-i18n-skip="true"
+-                             fdprocessedid="xqcwtt"
+                            >
+                            <select
+                              value="en"
+                              onChange={function onChange}
+                              className="theme-input min-w-[124px] rounded-xl px-3 py-2 text-xs font-semibold outline-..."
+                              data-i18n-skip="true"
+-                             fdprocessedid="5xobq"
+                            >
+                            <ThemeToggle compact={true} className="hidden 2xl...">
+                              <div className="theme-togg...">
+                                <button
+                                  type="button"
+                                  onClick={function onClick}
+                                  title="Light"
+                                  className="rounded-xl px-2.5 py-2 text-xs font-semibold transition theme-toggle-inac..."
+-                                 fdprocessedid="w0r98f"
+                                >
++                                 Light
+                                <button
+                                  type="button"
+                                  onClick={function onClick}
+                                  title="Dark"
+                                  className="rounded-xl px-2.5 py-2 text-xs font-semibold transition theme-toggle-acti..."
+-                                 fdprocessedid="zqcq2r"
+                                >
++                                 Dark
+                                <button
+                                  type="button"
+                                  onClick={function onClick}
+                                  title="System"
+                                  className="rounded-xl px-2.5 py-2 text-xs font-semibold transition theme-toggle-inac..."
+-                                 fdprocessedid="25o4um"
+                                >
++                                 Auto
+                          ...
+                  ...
+                    <div className="relative g...">
+                      <aside>
+                      <section className="flex w-ful...">
+                        <div className="w-full">
+                          <div>
+                          <div className="auth-form-...">
+                            <div>
+                            <div className="p-6 sm:p-7">
+                              <LoginForm>
+                                <div className="space-y-4">
+                                  <div className="auth-card-...">
+                                    <button
+                                      onClick={function onClick}
+                                      className="flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 ..."
+-                                     fdprocessedid="5vrbqh"
+                                    >
+                                    <button
+                                      onClick={function onClick}
+                                      className="flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 ..."
+-                                     fdprocessedid="lkekzl"
+                                    >
+                                  <div>
+                                  <div>
+                                    <label>
+                                    <div className="group rela...">
+                                      <div>
+                                      <input
+                                        type="text"
+                                        placeholder="example@mail.com or 98765..."
+                                        value=""
+                                        onChange={function onChange}
+                                        className="auth-form-field w-full rounded-2xl border py-3 pl-12 pr-4 text-sm o..."
+-                                       fdprocessedid="x0xsa"
+                                      >
+                                  <div>
+                                    <label>
+                                    <div className="group rela...">
+                                      <div>
+                                      <input
+                                        type="password"
+                                        placeholder="********"
+                                        value=""
+                                        onChange={function onChange}
+                                        onKeyDown={function onKeyDown}
+                                        className="auth-form-field w-full rounded-2xl border py-3 pl-12 pr-20 text-sm ..."
+-                                       fdprocessedid="njo1kf"
+                                      >
+                                      <button
+                                        type="button"
+                                        onClick={function onClick}
+                                        className="auth-copy-soft absolute right-3 top-1/2 -translate-y-1/2 rounded-lg..."
+-                                       fdprocessedid="rpbfr"
+                                      >
++                                       Show
+                                  <button
+                                    onClick={function onClick}
+                                    disabled={false}
+                                    className="w-full rounded-2xl bg-gradient-to-r py-3.5 font-bold text-white shadow-..."
+-                                   fdprocessedid="duhuqc"
+                                  >
++                                   Sign In as Player
+                                  ...
+            ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <link>
+    <script>
+    <script>
+    <script>
+    <RootLayout>
+      <html lang="en" className="h-full ant..." suppressHydrationWarning={true}>
+        <body className="min-h-full...">
+          <script>
+          <ToastProvider>
+            <ThemeProvider>
+              <I18nProvider>
+                <div className="contents">
+                  <AuthBootstrap>
+                  <DomTranslator>
+                  <Header>
+                    <header className="theme-navb..." data-i18n-skip="true">
+                      <div className="mx-auto ma...">
+                        <div className="flex items...">
+                          <LinkComponent>
+                          <div className="hidden min...">
+                            <select
+                              value="Ahmedabad"
+                              onChange={function onChange}
+                              className="theme-input min-w-[132px] rounded-xl px-3 py-2 text-xs font-semibold outline-..."
+                              data-i18n-skip="true"
+-                             fdprocessedid="04opz"
+                            >
+                            <select
+                              value="en"
+                              onChange={function onChange}
+                              className="theme-input min-w-[124px] rounded-xl px-3 py-2 text-xs font-semibold outline-..."
+                              data-i18n-skip="true"
+-                             fdprocessedid="ab9zj"
+                            >
+                            <ThemeToggle compact={true} className="hidden 2xl...">
+                              <div className="theme-togg...">
+                                <button
+                                  type="button"
+                                  onClick={function onClick}
+                                  title="Light"
+                                  className="rounded-xl px-2.5 py-2 text-xs font-semibold transition theme-toggle-inac..."
+-                                 fdprocessedid="riwgsv"
+                                >
++                                 Light
+                                <button
+                                  type="button"
+                                  onClick={function onClick}
+                                  title="Dark"
+                                  className="rounded-xl px-2.5 py-2 text-xs font-semibold transition theme-toggle-acti..."
+-                                 fdprocessedid="cxp6a4i"
+                                >
++                                 Dark
+                                <button
+                                  type="button"
+                                  onClick={function onClick}
+                                  title="System"
+                                  className="rounded-xl px-2.5 py-2 text-xs font-semibold transition theme-toggle-inac..."
+-                                 fdprocessedid="tmczpp"
+                                >
++                                 Auto
+                          ...
+                  ...
+                    <div className="relative g...">
+                      <aside>
+                      <section className="flex w-ful...">
+                        <div className="w-full">
+                          <div>
+                          <div className="auth-form-...">
+                            <div>
+                            <div className="p-6 sm:p-7">
+                              <LoginForm selectedRole="USER" onRoleChange={function handleRoleChange}>
+                                <div className="space-y-4">
+                                  <div className="auth-card-...">
+                                    <button
+                                      onClick={function onClick}
+                                      className="flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 ..."
+-                                     fdprocessedid="4rw2qn"
+                                    >
+                                    <button
+                                      onClick={function onClick}
+                                      className="flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 ..."
+-                                     fdprocessedid="gvu1xd"
+                                    >
+                                  <div>
+                                  <div>
+                                    <label>
+                                    <div className="group rela...">
+                                      <div>
+                                      <input
+                                        type="text"
+                                        placeholder="example@mail.com or 98765..."
+                                        value=""
+                                        onChange={function onChange}
+                                        className="auth-form-field w-full rounded-2xl border py-3 pl-12 pr-4 text-sm o..."
+-                                       fdprocessedid="etiorb"
+                                      >
+                                  <div>
+                                    <label>
+                                    <div className="group rela...">
+                                      <div>
+                                      <input
+                                        type="password"
+                                        placeholder="********"
+                                        value=""
+                                        onChange={function onChange}
+                                        onKeyDown={function onKeyDown}
+                                        className="auth-form-field w-full rounded-2xl border py-3 pl-12 pr-20 text-sm ..."
+-                                       fdprocessedid="p5zxt4"
+                                      >
+                                      <button
+                                        type="button"
+                                        onClick={function onClick}
+                                        className="auth-copy-soft absolute right-3 top-1/2 -translate-y-1/2 rounded-lg..."
+-                                       fdprocessedid="bz5o49"
+                                      >
++                                       Show
+                                  <button
+                                    onClick={function onClick}
+                                    disabled={false}
+                                    className="w-full rounded-2xl bg-gradient-to-r py-3.5 font-bold text-white shadow-..."
+-                                   fdprocessedid="de06up"
+                                  >
++                                   Sign In as Player
+                                  ...
+            ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <link>
+    <script>
+    <script>
+    <script>
+    <RootLayout>
+      <html lang="en" className="h-full ant..." suppressHydrationWarning={true}>
+        <body className="min-h-full...">
+          <script>
+          <ToastProvider>
+            <ThemeProvider>
+              <I18nProvider>
+                <div className="contents">
+                  <AuthBootstrap>
+                  <DomTranslator>
+                  <Header>
+                    <header className="theme-navb..." data-i18n-skip="true">
+                      <div className="mx-auto ma...">
+                        <div className="flex items...">
+                          <LinkComponent>
+                          <div className="hidden min...">
+                            <select
+                              value="Ahmedabad"
+                              onChange={function onChange}
+                              className="theme-input min-w-[132px] rounded-xl px-3 py-2 text-xs font-semibold outline-..."
+                              data-i18n-skip="true"
+-                             fdprocessedid="ncjht9"
+                            >
+                            <select
+                              value="en"
+                              onChange={function onChange}
+                              className="theme-input min-w-[124px] rounded-xl px-3 py-2 text-xs font-semibold outline-..."
+                              data-i18n-skip="true"
+-                             fdprocessedid="0vxf"
+                            >
+                            <ThemeToggle compact={true} className="hidden 2xl...">
+                              <div className="theme-togg...">
+                                <button
+                                  type="button"
+                                  onClick={function onClick}
+                                  title="Light"
+                                  className="rounded-xl px-2.5 py-2 text-xs font-semibold transition theme-toggle-inac..."
+-                                 fdprocessedid="xwf58c"
+                                >
++                                 Light
+                                <button
+                                  type="button"
+                                  onClick={function onClick}
+                                  title="Dark"
+                                  className="rounded-xl px-2.5 py-2 text-xs font-semibold transition theme-toggle-acti..."
+-                                 fdprocessedid="shy6fb"
+                                >
++                                 Dark
+                                <button
+                                  type="button"
+                                  onClick={function onClick}
+                                  title="System"
+                                  className="rounded-xl px-2.5 py-2 text-xs font-semibold transition theme-toggle-inac..."
+-                                 fdprocessedid="avttx"
+                                >
++                                 Auto
+                          ...
+                  ...
+                    <SegmentViewNode type="page" pagePath="personaliz...">
+                      <SegmentTrieNode>
+                      <ClientPageRoot Component={function AIRecommendationDashboard} serverProvidedParams={{...}}>
+                        <AIRecommendationDashboard params={Promise} searchParams={Promise}>
+                          <main className="theme-page...">
+                            <div className="mx-auto ma...">
+                              <section>
+                              <section className="theme-pane...">
+                                <div>
+                                <form onSubmit={function handleSearch} className="grid gap-3...">
+                                  <input
+                                    type="text"
+                                    value=""
+                                    onChange={function onChange}
+                                    placeholder="Try: premium evening turf in Surat under Rs 1200"
+                                    className="theme-input min-h-12 rounded-xl px-4 py-3 text-sm outline-none focus:bo..."
+-                                   fdprocessedid="ludkc8"
+                                  >
+                                  <select
+                                    value="Surat"
+                                    onChange={function onChange}
+                                    className="theme-input min-h-12 rounded-xl px-4 py-3 text-sm outline-none focus:bo..."
+-                                   fdprocessedid="kq1gqb"
+                                  >
+                                  <button
+                                    type="submit"
+                                    className="min-h-12 rounded-xl bg-sky-600 px-6 py-3 text-sm font-bold text-white s..."
+                                    disabled={false}
+-                                   fdprocessedid="gu4z99"
+                                  >
++                                   Analyze Intent
+                              ...
+            ...
+ 
+[browser] Error loading recommendations AxiosError: Request failed with status code 403 (app/personalized/page.tsx:32:15)
+⚠ Fast Refresh had to perform a full reload when ./modules/i18n/messages.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./modules/i18n/messages.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload

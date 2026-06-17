@@ -1,0 +1,151 @@
+Starting project at C:\Users\utsav\Java\Cricbook\mobile
+Using src/app as the root directory for Expo Router.
+Starting Metro Bundler
+Waiting on http://localhost:19006
+Logs for your project will appear below.
+Web node_modules\expo\AppEntry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 98.5% (129/130)
+Web node_modules\expo\AppEntry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (130/130)
+Web Bundled 14685ms node_modules\expo\AppEntry.js (417 modules)
+ LOG  [web] Logs will appear in the browser console
+Android node_modules\expo\AppEntry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Android node_modules\expo\AppEntry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.7% (681/682)
+Android node_modules\expo\AppEntry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (682/682)
+Android Bundled 7750ms node_modules\expo\AppEntry.js (844 modules)
+ ERROR  expo-notifications: Android Push notifications (remote notifications) functionality provided by expo-notifications was removed from Expo Go with the release of SDK 53. Use a development build instead of Expo Go. Read more at https://docs.expo.dev/develop/development-builds/introduction/.
+ WARN  `expo-notifications` functionality is not fully supported in Expo Go:
+We recommend you instead use a development build to avoid limitations. Learn more: https://expo.fyi/dev-client.
+ WARN  SafeAreaView has been deprecated and will be removed in a future release. Please use 'react-native-safe-area-context' instead. See https://github.com/th3rdwave/react-native-safe-area-context
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ WARN  Dispatched undefined or invalid action: undefined
+ ERROR  SyntaxError: C:\Users\utsav\Java\Cricbook\mobile\src\app\CricbookMobileApp.tsx: Identifier 't' has already been declared. (975:8)
+
+  973 |
+  974 |   // === EPIC 22 GLOBAL SPORTS HELPERS ===
+> 975 |   const t = (key: string, defaultValue: string) => {
+      |         ^
+  976 |     return translations[key] || defaultValue;
+  977 |   };
+  978 |
+    at constructor (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:365:19)
+    at TypeScriptParserMixin.raise (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:6616:19)
+    at TypeScriptScopeHandler.checkRedeclarationInScope (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:1619:19)
+    at TypeScriptScopeHandler.declareName (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:1585:12)
+    at TypeScriptScopeHandler.declareName (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:4892:11)
+    at TypeScriptParserMixin.declareNameFromIdentifier (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:7584:16)
+    at TypeScriptParserMixin.checkIdentifier (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:7580:12)
+    at TypeScriptParserMixin.checkLVal (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:7517:12)
+    at TypeScriptParserMixin.parseVarId (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13429:10)
+    at TypeScriptParserMixin.parseVarId (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9769:11)
+    at TypeScriptParserMixin.parseVar (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13400:12)
+    at TypeScriptParserMixin.parseVarStatement (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13247:10)
+    at TypeScriptParserMixin.parseVarStatement (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9425:31)
+    at TypeScriptParserMixin.parseStatementContent (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12868:23)
+    at TypeScriptParserMixin.parseStatementContent (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9525:18)
+    at TypeScriptParserMixin.parseStatementLike (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12784:17)
+    at TypeScriptParserMixin.parseStatementListItem (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12764:17)
+    at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13333:61)
+    at TypeScriptParserMixin.parseBlockBody (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13326:10)
+    at TypeScriptParserMixin.parseBlock (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13314:10)
+    at TypeScriptParserMixin.parseFunctionBody (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12117:24)
+    at TypeScriptParserMixin.parseFunctionBodyAndFinish (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12103:10)
+    at TypeScriptParserMixin.parseFunctionBodyAndFinish (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9189:18)
+    at C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13462:12
+    at TypeScriptParserMixin.withSmartMixTopicForbiddingContext (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12420:14)
+    at TypeScriptParserMixin.parseFunction (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13461:10)
+    at TypeScriptParserMixin.parseFunctionStatement (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13142:17)
+    at TypeScriptParserMixin.parseStatementContent (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12808:21)
+    at TypeScriptParserMixin.parseStatementContent (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9525:18)
+    at TypeScriptParserMixin.parseStatementLike (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12784:17)
+    at TypeScriptParserMixin.parseStatementListItem (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12764:17)
+    at TypeScriptParserMixin.parseExportDeclaration (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13951:17)
+    at TypeScriptParserMixin.parseExportDeclaration (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9646:85)
+    at TypeScriptParserMixin.maybeParseExportDeclaration (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13910:31)
+    at TypeScriptParserMixin.parseExport (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13829:29)
+    at TypeScriptParserMixin.parseExport (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9402:20)
+    at TypeScriptParserMixin.parseStatementContent (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12895:27)
+    at TypeScriptParserMixin.parseStatementContent (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9525:18)
+    at TypeScriptParserMixin.parseStatementLike (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12784:17)
+    at TypeScriptParserMixin.parseModuleItem (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12761:17)
+    at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13333:36)
+    at TypeScriptParserMixin.parseBlockBody (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13326:10)
+    at TypeScriptParserMixin.parseProgram (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12639:10)
+    at TypeScriptParserMixin.parseTopLevel (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12629:25)
+    at TypeScriptParserMixin.parse (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:14505:25)
+    at TypeScriptParserMixin.parse (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:10143:18)
+    at parse (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:14518:26)
+    at parser (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+ ERROR  SyntaxError: C:\Users\utsav\Java\Cricbook\mobile\src\app\CricbookMobileApp.tsx: Identifier 't' has already been declared. (1003:8)
+
+  1001 |
+  1002 |   // === EPIC 22 GLOBAL SPORTS HELPERS ===
+> 1003 |   const t = (key: string, defaultValue: string) => {
+       |         ^
+  1004 |     return translations[key] || defaultValue;
+  1005 |   };
+  1006 |
+    at constructor (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:365:19)
+    at TypeScriptParserMixin.raise (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:6616:19)
+    at TypeScriptScopeHandler.checkRedeclarationInScope (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:1619:19)
+    at TypeScriptScopeHandler.declareName (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:1585:12)
+    at TypeScriptScopeHandler.declareName (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:4892:11)
+    at TypeScriptParserMixin.declareNameFromIdentifier (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:7584:16)
+    at TypeScriptParserMixin.checkIdentifier (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:7580:12)
+    at TypeScriptParserMixin.checkLVal (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:7517:12)
+    at TypeScriptParserMixin.parseVarId (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13429:10)
+    at TypeScriptParserMixin.parseVarId (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9769:11)
+    at TypeScriptParserMixin.parseVar (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13400:12)
+    at TypeScriptParserMixin.parseVarStatement (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13247:10)
+    at TypeScriptParserMixin.parseVarStatement (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9425:31)
+    at TypeScriptParserMixin.parseStatementContent (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12868:23)
+    at TypeScriptParserMixin.parseStatementContent (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9525:18)
+    at TypeScriptParserMixin.parseStatementLike (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12784:17)
+    at TypeScriptParserMixin.parseStatementListItem (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12764:17)
+    at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13333:61)
+    at TypeScriptParserMixin.parseBlockBody (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13326:10)
+    at TypeScriptParserMixin.parseBlock (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13314:10)
+    at TypeScriptParserMixin.parseFunctionBody (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12117:24)
+    at TypeScriptParserMixin.parseFunctionBodyAndFinish (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12103:10)
+    at TypeScriptParserMixin.parseFunctionBodyAndFinish (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9189:18)
+    at C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13462:12
+    at TypeScriptParserMixin.withSmartMixTopicForbiddingContext (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12420:14)
+    at TypeScriptParserMixin.parseFunction (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13461:10)
+    at TypeScriptParserMixin.parseFunctionStatement (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13142:17)
+    at TypeScriptParserMixin.parseStatementContent (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12808:21)
+    at TypeScriptParserMixin.parseStatementContent (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9525:18)
+    at TypeScriptParserMixin.parseStatementLike (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12784:17)
+    at TypeScriptParserMixin.parseStatementListItem (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12764:17)
+    at TypeScriptParserMixin.parseExportDeclaration (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13951:17)
+    at TypeScriptParserMixin.parseExportDeclaration (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9646:85)
+    at TypeScriptParserMixin.maybeParseExportDeclaration (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13910:31)
+    at TypeScriptParserMixin.parseExport (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13829:29)
+    at TypeScriptParserMixin.parseExport (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9402:20)
+    at TypeScriptParserMixin.parseStatementContent (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12895:27)
+    at TypeScriptParserMixin.parseStatementContent (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:9525:18)
+    at TypeScriptParserMixin.parseStatementLike (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12784:17)
+    at TypeScriptParserMixin.parseModuleItem (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12761:17)
+    at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13333:36)
+    at TypeScriptParserMixin.parseBlockBody (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:13326:10)
+    at TypeScriptParserMixin.parseProgram (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12639:10)
+    at TypeScriptParserMixin.parseTopLevel (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:12629:25)
+    at TypeScriptParserMixin.parse (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:14505:25)
+    at TypeScriptParserMixin.parse (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:10143:18)
+    at parse (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\parser\lib\index.js:14518:26)
+    at parser (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (C:\Users\utsav\Java\Cricbook\mobile\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
