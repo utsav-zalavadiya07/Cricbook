@@ -859,15 +859,20 @@ export default function OwnerSlotsPage() {
             subtitle: "Control recurring slot availability. Use Calendar View for date-only blocks.",
           })}
           <div className="space-y-5 p-4 sm:p-5">
-            <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.35fr)]">
-              <SlotStatusCard label="Active slots" value={activeSlots.length} tone="emerald" />
-              <SlotStatusCard label="Disabled slots" value={disabledSlots.length} tone="red" />
-              <div className="theme-panel-soft rounded-2xl border p-4">
-                <p className="theme-title text-sm font-bold">Global impact</p>
-                <p className="theme-muted mt-1 text-xs leading-5">
-                  Disabled slots are hidden from every future booking day until you enable them again.
-                </p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border p-3 theme-panel-soft">
+              <div className="flex items-center gap-5">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+                  <span className="text-sm font-bold text-emerald-400">{activeSlots.length} Active Slots</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="flex h-2 w-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]"></span>
+                  <span className="text-sm font-bold text-red-400">{disabledSlots.length} Disabled Slots</span>
+                </div>
               </div>
+              <p className="theme-muted text-xs">
+                <span className="font-bold text-slate-300 dark:text-slate-200">Global impact:</span> Disabled slots are hidden from future booking days.
+              </p>
             </div>
 
             <div className="space-y-4 rounded-2xl border border-sky-500/15 bg-sky-500/10 p-3">

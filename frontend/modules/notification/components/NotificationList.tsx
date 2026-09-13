@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  archiveManyNotifications,
   deleteManyNotifications,
   getActiveAnnouncements,
   getNotificationSummary,
@@ -11,6 +10,7 @@ import {
   markManyAsRead,
 } from "../services/notificationService";
 import { Notification, NotificationAnnouncement, NotificationSummary } from "../types/notification.types";
+import { isNotificationRead } from "../utils/notificationState";
 import CompactSelect from "@/components/ui/CompactSelect";
 import NotificationItem from "./NotificationItem";
 
@@ -31,9 +31,6 @@ const emptySummary: NotificationSummary = {
   byChannel: {},
   byCategory: {},
 };
-
-const isNotificationRead = (notification: Notification) =>
-  Boolean(notification.read) || notification.status === "READ";
 
 function labelize(value: string) {
   return value
@@ -77,10 +74,11 @@ export default function NotificationList() {
   const [priority, setPriority] = useState("");
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [announcements, setAnnouncements] = useState<NotificationAnnouncement[]>([]);
-  const [busy, setBusy] = useState<"mark-all" | "bulk-read" | "bulk-archive" | "bulk-delete" | null>(null);
+  const [busy, setBusy] = useState<"mark-all" | "bulk-read" | "bulk-delete" | null>(null);
 
   const selectedCount = selectedIds.length;
-  const unreadCount = summary.unread || notifications.filter((notification) => !isNotificationRead(notification)).length;
+  const unreadCount =
+    summary.unread || notifications.filter((notification) => !isNotificationRead(notification) && !notification.archived).length;
   const sortedNotifications = useMemo(
     () => [...notifications].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
     [notifications]
@@ -167,11 +165,6 @@ export default function NotificationList() {
     }));
   };
 
-  const handleArchive = (id: number) => {
-    setNotifications((prev) => prev.filter((notification) => notification.id !== id));
-    setSelectedIds((prev) => prev.filter((selectedId) => selectedId !== id));
-  };
-
   const handleDelete = (id: number) => {
     setNotifications((prev) => prev.filter((notification) => notification.id !== id));
     setSelectedIds((prev) => prev.filter((selectedId) => selectedId !== id));
@@ -193,17 +186,6 @@ export default function NotificationList() {
     setBusy("bulk-read");
     try {
       await markManyAsRead(selectedIds);
-      await refreshAfterAction();
-    } finally {
-      setBusy(null);
-    }
-  };
-
-  const handleBulkArchive = async () => {
-    if (selectedIds.length === 0) return;
-    setBusy("bulk-archive");
-    try {
-      await archiveManyNotifications(selectedIds);
       await refreshAfterAction();
     } finally {
       setBusy(null);
@@ -347,9 +329,6 @@ export default function NotificationList() {
             <button onClick={handleBulkRead} disabled={busy !== null} className="rounded-lg bg-emerald-500/15 px-3 py-1.5 font-bold text-emerald-200 disabled:opacity-50">
               {busy === "bulk-read" ? "Updating..." : "Mark read"}
             </button>
-            <button onClick={handleBulkArchive} disabled={busy !== null} className="rounded-lg bg-slate-500/15 px-3 py-1.5 font-bold text-slate-200 disabled:opacity-50">
-              {busy === "bulk-archive" ? "Archiving..." : "Archive"}
-            </button>
             <button onClick={handleBulkDelete} disabled={busy !== null} className="rounded-lg bg-red-500/15 px-3 py-1.5 font-bold text-red-200 disabled:opacity-50">
               {busy === "bulk-delete" ? "Deleting..." : "Delete"}
             </button>
@@ -372,7 +351,6 @@ export default function NotificationList() {
             notification={notification}
             selected={selectedIds.includes(notification.id)}
             onSelect={toggleSelected}
-            onArchive={handleArchive}
             onDelete={handleDelete}
             onRead={handleRead}
           />

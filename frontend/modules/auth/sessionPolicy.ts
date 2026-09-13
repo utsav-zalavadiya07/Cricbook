@@ -108,6 +108,18 @@ export function canRoleAccessPath(role: string | null | undefined, pathname: str
   return access.roles ? access.roles.includes(role) : true;
 }
 
+export function getLandingPathForRole(role: string | null | undefined) {
+  if (!role) {
+    return "/search";
+  }
+
+  if (role === "OWNER" || ADMIN_ROLES.includes(role as typeof ADMIN_ROLES[number])) {
+    return role === "OWNER" ? "/owner/dashboard" : "/admin";
+  }
+
+  return "/search";
+}
+
 export function isSafeNextPath(value: string | null | undefined) {
   return Boolean(value && value.startsWith("/") && !value.startsWith("//") && !value.includes("://"));
 }

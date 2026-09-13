@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/modules/i18n/I18nProvider";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
+import { PageMetricCard, PageMetricGrid, PageSection, PageSectionHeader } from "@/components/ui/PageSurface";
 import { getOwnerDashboard } from "@/modules/owner/services/ownerService";
 import { Booking } from "@/modules/booking/types/booking.types";
 import { Turf } from "@/modules/turf/types/turf.types";
@@ -47,10 +48,14 @@ export default function OwnerDashboardPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="theme-title text-3xl font-bold">{t("owner.title")}</h1>
-          <p className="theme-muted mt-1 text-sm">{t("owner.subtitle")}</p>
-        </div>
+        <PageSection className="space-y-0">
+          <PageSectionHeader title={t("owner.title")} description={t("owner.subtitle")} />
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            <QuickAction href="/owner/slots" title="Manage Slots" body="Open calendar, block slots, and update pricing." />
+            <QuickAction href="/turf/my-turfs" title="Review Turfs" body="Check active, inactive, and maintenance venues." />
+            <QuickAction href="/owner/bookings" title="Booking Queue" body="Review upcoming bookings and cancellation requests." />
+          </div>
+        </PageSection>
 
         {loading && <p className="theme-muted py-20 text-center">{t("owner.loading")}</p>}
 
@@ -63,21 +68,18 @@ export default function OwnerDashboardPage() {
 
         {!loading && dashboard && (
           <>
-            <div className="grid gap-3 md:grid-cols-3">
-              <QuickAction href="/owner/slots" title="Manage Slots" body="Open calendar, block slots, and update pricing." />
-              <QuickAction href="/turf/my-turfs" title="Review Turfs" body="Check active, inactive, and maintenance venues." />
-              <QuickAction href="/owner/bookings" title="Booking Queue" body="Review upcoming bookings and cancellation requests." />
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <Metric title={t("owner.metric.todayBookings")} value={dashboard.todayBookings} />
-              <Metric title={t("owner.metric.monthlyRevenue")} value={`${t("common.currencyRs")} ${dashboard.monthlyRevenue}`} />
-              <Metric title={t("owner.metric.occupancy")} value={`${dashboard.occupancyPercent}%`} />
-              <Metric title={t("owner.metric.cancellation")} value={`${dashboard.cancellationPercent}%`} />
-            </div>
+            <PageSection>
+              <PageMetricGrid>
+                <PageMetricCard label={t("owner.metric.todayBookings")} value={dashboard.todayBookings} helper="Today" />
+                <PageMetricCard label={t("owner.metric.monthlyRevenue")} value={`${t("common.currencyRs")} ${dashboard.monthlyRevenue}`} helper="Current month" />
+                <PageMetricCard label={t("owner.metric.occupancy")} value={`${dashboard.occupancyPercent}%`} helper="Booked capacity" />
+                <PageMetricCard label={t("owner.metric.cancellation")} value={`${dashboard.cancellationPercent}%`} helper="Cancellation rate" />
+                <PageMetricCard label={t("owner.metric.totalBookings")} value={dashboard.totalBookings} helper="All-time bookings" />
+              </PageMetricGrid>
+            </PageSection>
 
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-              <section className="theme-panel flex min-h-[30rem] flex-col rounded-3xl p-6 xl:col-span-2">
+              <section className="theme-panel flex min-h-[24rem] flex-col rounded-2xl p-4 sm:p-5 xl:col-span-2">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <h2 className="theme-title break-words text-lg font-bold">{t("owner.section.revenueTrend")}</h2>
                   <span className="theme-soft text-xs">{t("owner.section.last14Days")}</span>
@@ -85,7 +87,7 @@ export default function OwnerDashboardPage() {
                 <OwnerRevenueChart points={dashboard.revenueSeries} currencyLabel={t("common.currencyRs")} />
               </section>
 
-              <section className="theme-panel rounded-3xl p-6">
+              <section className="theme-panel rounded-2xl p-4 sm:p-5">
                 <h2 className="theme-title break-words text-lg font-bold">{t("owner.section.turfOperations")}</h2>
                 <div className="mt-4 grid gap-3">
                   <Metric title={t("owner.metric.activeTurfs")} value={dashboard.activeTurfs} compact />
@@ -104,7 +106,7 @@ export default function OwnerDashboardPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-              <section className="theme-panel rounded-3xl p-6">
+              <section className="theme-panel rounded-2xl p-4 sm:p-5">
                 <h2 className="theme-title break-words text-lg font-bold">{t("owner.section.upcomingBookings")}</h2>
                 <div className="mt-4 space-y-3">
                   {dashboard.upcomingBookings.length === 0 && <Empty text={t("owner.empty.upcomingBookings")} />}
@@ -117,7 +119,7 @@ export default function OwnerDashboardPage() {
                 </div>
               </section>
 
-              <section className="theme-panel rounded-3xl p-6">
+              <section className="theme-panel rounded-2xl p-4 sm:p-5">
                 <h2 className="theme-title break-words text-lg font-bold">{t("owner.section.recentReviews")}</h2>
                 <div className="mt-4 space-y-3">
                   {dashboard.recentReviews.length === 0 && <Empty text={t("owner.empty.reviews")} />}
@@ -190,15 +192,15 @@ function OwnerRevenueChart({ points, currencyLabel }: { points: AnalyticsPoint[]
 
 function Metric({ title, value, compact = false }: { title: string; value: string | number; compact?: boolean }) {
   return (
-    <div className={`theme-panel rounded-2xl ${compact ? "p-4" : "p-5"}`}>
+    <div className={`theme-panel rounded-2xl ${compact ? "p-3.5" : "p-4"}`}>
       <p className="theme-soft break-words text-xs font-semibold uppercase leading-5 tracking-[0.22em]">{title}</p>
-      <p className={`${compact ? "mt-2 text-xl" : "mt-3 text-3xl"} theme-title break-words font-bold leading-tight`}>{value}</p>
+      <p className={`${compact ? "mt-2 text-lg" : "mt-2 text-2xl"} theme-title break-words font-bold leading-tight`}>{value}</p>
     </div>
   );
 }
 
 function Empty({ text }: { text: string }) {
-  return <p className="theme-card theme-muted rounded-2xl border-dashed p-6 text-center text-sm">{text}</p>;
+  return <p className="theme-card theme-muted rounded-2xl border-dashed p-4 text-center text-sm">{text}</p>;
 }
 
 function QuickAction({ href, title, body }: { href: string; title: string; body: string }) {

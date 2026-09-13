@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { archiveNotification, deleteNotification, markAsRead, trackMetric } from "../services/notificationService";
+import { deleteNotification, markAsRead, trackMetric } from "../services/notificationService";
 import { Notification } from "../types/notification.types";
+import { isNotificationArchived, isNotificationRead } from "../utils/notificationState";
 
 interface NotificationItemProps {
   notification: Notification;
   selected?: boolean;
   onSelect?: (id: number, selected: boolean) => void;
-  onArchive: (id: number) => void;
   onDelete: (id: number) => void;
   onRead: (id: number) => void;
 }
@@ -47,12 +47,10 @@ const priorityBg: Record<string, string> = {
   LOW: "border-slate-500/25 bg-slate-500/10 text-slate-400",
 };
 
-const isNotificationRead = (notification: Notification) =>
-  Boolean(notification.read) || notification.status === "READ";
-
-export default function NotificationItem({ notification, selected = false, onSelect, onArchive, onDelete, onRead }: NotificationItemProps) {
-  const [busy, setBusy] = useState<"read" | "archive" | "delete" | null>(null);
+export default function NotificationItem({ notification, selected = false, onSelect, onDelete, onRead }: NotificationItemProps) {
+  const [busy, setBusy] = useState<"read" | "delete" | null>(null);
   const isUnread = !isNotificationRead(notification);
+  const isArchived = isNotificationArchived(notification);
   const type = (notification.category ?? notification.type ?? "GENERAL").toUpperCase();
   const priority = (notification.priority ?? "NORMAL").toUpperCase();
 
@@ -62,17 +60,6 @@ export default function NotificationItem({ notification, selected = false, onSel
     try {
       await markAsRead(notification.id);
       onRead(notification.id);
-    } finally {
-      setBusy(null);
-    }
-  };
-
-  const handleArchive = async () => {
-    if (busy) return;
-    setBusy("archive");
-    try {
-      await archiveNotification(notification.id);
-      onArchive(notification.id);
     } finally {
       setBusy(null);
     }
@@ -117,13 +104,22 @@ export default function NotificationItem({ notification, selected = false, onSel
         </label>
       )}
 
-      <button
-        onClick={handleRead}
-        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-xs font-black ${typeBg[type] ?? typeBg.GENERAL}`}
-        aria-label={isUnread ? "Mark notification as read" : "Notification read"}
-      >
-        {typeLabel[type] ?? typeLabel.GENERAL}
-      </button>
+      {isUnread && !isArchived ? (
+        <button
+          onClick={handleRead}
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-xs font-black ${typeBg[type] ?? typeBg.GENERAL}`}
+          aria-label="Mark notification as read"
+        >
+          {typeLabel[type] ?? typeLabel.GENERAL}
+        </button>
+      ) : (
+        <div
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-xs font-black ${typeBg[type] ?? typeBg.GENERAL}`}
+          aria-label={isUnread ? "Notification unread" : "Notification read"}
+        >
+          {typeLabel[type] ?? typeLabel.GENERAL}
+        </div>
+      )}
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
@@ -164,7 +160,17 @@ export default function NotificationItem({ notification, selected = false, onSel
                 Open
               </Link>
             )}
-            {isUnread && (
+            {isArchived ? (
+              <span
+                className={`rounded-xl border px-3 py-2 text-xs font-bold ${
+                  isUnread
+                    ? "border-amber-500/25 bg-amber-500/10 text-amber-200"
+                    : "border-emerald-500/25 bg-emerald-500/10 text-emerald-200"
+                }`}
+              >
+                {isUnread ? "Unread" : "Read"}
+              </span>
+            ) : isUnread ? (
               <button
                 onClick={handleRead}
                 disabled={busy !== null}
@@ -172,16 +178,7 @@ export default function NotificationItem({ notification, selected = false, onSel
               >
                 {busy === "read" ? "Reading..." : "Mark read"}
               </button>
-            )}
-            {!notification.archived && notification.status !== "ARCHIVED" && (
-              <button
-                onClick={handleArchive}
-                disabled={busy !== null}
-                className="rounded-xl border border-slate-500/25 bg-slate-500/10 px-3 py-2 text-xs font-bold text-slate-300 transition hover:bg-slate-500/20 disabled:opacity-60"
-              >
-                {busy === "archive" ? "Archiving..." : "Archive"}
-              </button>
-            )}
+            ) : null}
             <button
               onClick={handleDelete}
               disabled={busy !== null}

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getNotifications, markAllAsRead, markAsRead } from "../services/notificationService";
 import { Notification } from "../types/notification.types";
+import { isNotificationRead } from "../utils/notificationState";
 
 const typeLabel: Record<string, string> = {
   BOOKING: "BK",
@@ -18,15 +19,12 @@ const typeLabel: Record<string, string> = {
   GENERAL: "GN",
 };
 
-const isNotificationRead = (notification: Notification) =>
-  Boolean(notification.read) || notification.status === "READ";
-
 export default function NotificationBell({ active = false, activeClass = "theme-nav-link-active" }: { active?: boolean; activeClass?: string }) {
   const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const unread = notifications.filter((n) => !isNotificationRead(n));
+  const unread = notifications.filter((n) => !isNotificationRead(n) && !n.archived);
   const selected = active || open;
 
   const fetchNotifications = async () => {
@@ -106,7 +104,7 @@ export default function NotificationBell({ active = false, activeClass = "theme-
 
           <div className="max-h-72 divide-y divide-white/10 overflow-y-auto">
             {notifications.length === 0 ? (
-              <div className="theme-muted flex flex-col items-center justify-center py-8 text-sm">
+              <div className="theme-muted flex flex-col items-center justify-center px-4 py-8 text-sm">
                 No notifications yet
               </div>
             ) : (
@@ -136,19 +134,17 @@ export default function NotificationBell({ active = false, activeClass = "theme-
             )}
           </div>
 
-          {notifications.length > 0 && (
-            <div className="border-t border-white/10 px-4 py-2.5">
-              <button
-                onClick={() => {
-                  router.push("/notifications");
-                  setOpen(false);
-                }}
-                className="w-full text-center text-xs text-emerald-600 transition hover:text-emerald-500 dark:text-emerald-300"
-              >
-                View all notifications
-              </button>
-            </div>
-          )}
+          <div className="border-t border-white/10 px-4 py-2.5">
+            <button
+              onClick={() => {
+                router.push("/notifications");
+                setOpen(false);
+              }}
+              className="w-full text-center text-xs text-emerald-600 transition hover:text-emerald-500 dark:text-emerald-300"
+            >
+              View all notifications
+            </button>
+          </div>
         </div>
       )}
     </div>

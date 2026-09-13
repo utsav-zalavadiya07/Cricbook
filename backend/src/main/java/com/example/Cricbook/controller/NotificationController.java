@@ -51,6 +51,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NotificationController {
 
+    private static final long AUTO_ARCHIVE_AFTER_DAYS = 7;
     private static final Set<String> VALID_FREQUENCIES = Set.of("INSTANT", "DAILY", "WEEKLY");
 
     private final NotificationRepository notificationRepository;
@@ -494,7 +495,9 @@ public class NotificationController {
     }
 
     private boolean isArchived(NotificationQueue notification) {
-        return notification.getArchivedAt() != null || "ARCHIVED".equalsIgnoreCase(status(notification));
+        return notification.getArchivedAt() != null
+                || "ARCHIVED".equalsIgnoreCase(status(notification))
+                || (notification.getCreatedAt() != null && !notification.getCreatedAt().isAfter(LocalDateTime.now().minusDays(AUTO_ARCHIVE_AFTER_DAYS)));
     }
 
     private String normalize(String value, String fallback) {

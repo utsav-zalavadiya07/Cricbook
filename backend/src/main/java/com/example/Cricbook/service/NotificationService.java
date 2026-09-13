@@ -35,6 +35,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NotificationService {
 
+    private static final long AUTO_ARCHIVE_AFTER_DAYS = 7;
+
     private final NotificationRepository repository;
     private final EmailService emailService;
     private final NotificationPreferenceRepository preferenceRepository;
@@ -291,7 +293,9 @@ public class NotificationService {
     }
 
     private boolean isArchived(NotificationQueue notification) {
-        return notification.getArchivedAt() != null || "ARCHIVED".equalsIgnoreCase(status(notification));
+        return notification.getArchivedAt() != null
+                || "ARCHIVED".equalsIgnoreCase(status(notification))
+                || (notification.getCreatedAt() != null && !notification.getCreatedAt().isAfter(java.time.LocalDateTime.now().minusDays(AUTO_ARCHIVE_AFTER_DAYS)));
     }
 
     private boolean userHasRole(User user, String role) {

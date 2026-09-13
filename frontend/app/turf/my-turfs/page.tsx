@@ -10,6 +10,7 @@ import { useTurfTaxonomy } from "@/modules/turf/hooks/useTurfTaxonomy";
 import { activateTurf, deactivateTurf, maintenanceTurf } from "@/modules/turf/services/turfService";
 import { Button, Input, Select } from "@/components/ui";
 import { useConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { PageMetricCard, PageMetricGrid, PageSection, PageSectionHeader } from "@/components/ui/PageSurface";
 import type { Turf } from "@/modules/turf/types/turf.types";
 
 const STATUS_FILTERS = [
@@ -29,16 +30,6 @@ const SORT_OPTIONS = [
 
 function normalizeStatus(status?: string) {
   return status || "ACTIVE";
-}
-
-function MetricCard({ label, value, helper }: { label: string; value: string | number; helper: string }) {
-  return (
-    <div className="theme-card rounded-2xl p-4">
-      <p className="theme-soft text-xs font-black uppercase tracking-[0.22em]">{label}</p>
-      <p className="theme-title mt-2 text-2xl font-black">{value}</p>
-      <p className="theme-muted mt-1 text-xs">{helper}</p>
-    </div>
-  );
 }
 
 function LoadingGrid() {
@@ -192,30 +183,28 @@ export default function MyTurfsPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <section className="theme-panel overflow-hidden rounded-[2rem] p-5 sm:p-6">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-            <div className="max-w-3xl">
-              <p className="theme-accent-owner text-xs font-black uppercase tracking-[0.28em]">Owner turf inventory</p>
-              <h1 className="theme-title mt-2 text-3xl font-black leading-tight sm:text-4xl">My Turfs</h1>
-              <p className="theme-muted mt-2 text-sm sm:text-base">
-                Manage venues, slot readiness, pricing, and operational status from one focused owner workspace.
-              </p>
-            </div>
-            <Button tone="owner" onClick={openCreateDialog} className="w-full sm:w-auto">
-              + Add Turf
-            </Button>
-          </div>
+        <PageSection>
+          <PageSectionHeader
+            eyebrow="Owner turf inventory"
+            title="My Turfs"
+            description="Manage venues, slot readiness, pricing, and operational status from one focused owner workspace."
+            actions={
+              <Button tone="owner" onClick={openCreateDialog} className="w-full sm:w-auto">
+                + Add Turf
+              </Button>
+            }
+          />
 
-          <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
-            <MetricCard label="Total" value={metrics.total} helper="Registered venues" />
-            <MetricCard label="Active" value={metrics.active} helper="Bookable now" />
-            <MetricCard label="Maintenance" value={metrics.maintenance} helper="Temporarily paused" />
-            <MetricCard label="Inactive" value={metrics.inactive} helper="Hidden from users" />
-            <MetricCard label="Avg price" value={metrics.averagePrice ? `Rs ${metrics.averagePrice}` : "-"} helper="Per hour" />
-          </div>
-        </section>
+          <PageMetricGrid>
+            <PageMetricCard label="Total" value={metrics.total} helper="Registered venues" />
+            <PageMetricCard label="Active" value={metrics.active} helper="Bookable now" />
+            <PageMetricCard label="Maintenance" value={metrics.maintenance} helper="Temporarily paused" />
+            <PageMetricCard label="Inactive" value={metrics.inactive} helper="Hidden from users" />
+            <PageMetricCard label="Avg price" value={metrics.averagePrice ? `Rs ${metrics.averagePrice}` : "-"} helper="Per hour" />
+          </PageMetricGrid>
+        </PageSection>
 
-        <section className="theme-panel rounded-[1.75rem] p-4 sm:p-5">
+        <PageSection className="space-y-4">
           <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_220px_220px]">
             <Input
               value={query}
@@ -257,7 +246,7 @@ export default function MyTurfsPage() {
               </button>
             )}
           </div>
-        </section>
+        </PageSection>
 
         {error && <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">{error}</div>}
 

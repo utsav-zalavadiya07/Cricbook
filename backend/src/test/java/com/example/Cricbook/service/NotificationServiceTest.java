@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -186,5 +187,24 @@ public class NotificationServiceTest {
         assertEquals(3, nq.getRetryCount());
         verify(repository).save(nq);
         verify(analyticsService, never()).recordSend(any());
+    }
+
+    @Test
+    void testPlatformAnalyticsCountsAutoArchivedNotifications() {
+        NotificationQueue fresh = new NotificationQueue();
+        fresh.setStatus("SENT");
+        fresh.setCreatedAt(LocalDateTime.now().minusDays(2));
+
+        NotificationQueue old = new NotificationQueue();
+        old.setStatus("SENT");
+        old.setCreatedAt(LocalDateTime.now().minusDays(8));
+
+        when(repository.findAll()).thenReturn(List.of(fresh, old));
+        when(notificationAnalyticsRepository.findAll()).thenReturn(List.of());
+
+        NotificationDtos.NotificationAnalyticsResponse response = notificationService.platformAnalytics();
+
+        assertEquals(2, response.getTotal());
+        assertEquals(1, response.getArchived());
     }
 }

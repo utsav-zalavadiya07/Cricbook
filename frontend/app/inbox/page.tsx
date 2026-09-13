@@ -10,17 +10,10 @@ import {
   trackMetric,
   triggerEvent
 } from "@/modules/notification/services/notificationService";
+import { Notification } from "@/modules/notification/types/notification.types";
+import { isNotificationArchived, isNotificationRead } from "@/modules/notification/utils/notificationState";
 
 type FolderName = "ALL" | "TODAY" | "THIS_WEEK" | "ARCHIVE";
-type InboxNotification = {
-  id: number;
-  title: string;
-  message: string;
-  channel: string;
-  status: string;
-  deepLink?: string;
-  createdAt?: string;
-};
 
 type Recommendation = {
   type: string;
@@ -29,7 +22,7 @@ type Recommendation = {
 };
 
 export default function InboxCenterPage() {
-  const [notifications, setNotifications] = useState<InboxNotification[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [activeFolder, setActiveFolder] = useState<FolderName>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
@@ -53,8 +46,8 @@ export default function InboxCenterPage() {
       setRecommendations(recRes.data || []);
 
       // Calculate unreads
-      const nextNotifications = (notifRes.data || []) as InboxNotification[];
-      const unreads = nextNotifications.filter((notification) => notification.status !== "READ").length;
+      const nextNotifications = (notifRes.data || []) as Notification[];
+      const unreads = nextNotifications.filter((notification) => !isNotificationRead(notification) && !isNotificationArchived(notification)).length;
       setUnreadsCount(unreads);
 
       nextNotifications.forEach((notification) => {
@@ -79,9 +72,13 @@ export default function InboxCenterPage() {
 
   const handleRead = async (id: number) => {
     try {
+      const target = notifications.find((notification) => notification.id === id);
+      if (!target || isNotificationRead(target) || isNotificationArchived(target)) {
+        return;
+      }
       await markAsRead(id);
       setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, status: "READ" } : n))
+        prev.map((n) => (n.id === id ? { ...n, status: "READ", read: true, readAt: new Date().toISOString() } : n))
       );
       setUnreadsCount((prev) => Math.max(0, prev - 1));
     } catch (err) {
@@ -91,8 +88,15 @@ export default function InboxCenterPage() {
 
   const handleArchive = async (id: number) => {
     try {
+      const target = notifications.find((notification) => notification.id === id);
+      if (!target || isNotificationArchived(target)) {
+        return;
+      }
       await archiveNotification(id);
-      setNotifications((prev) => prev.filter((n) => n.id !== id));
+      setNotifications((prev) => prev.filter((notification) => notification.id !== id));
+      if (!isNotificationRead(target)) {
+        setUnreadsCount((prev) => Math.max(0, prev - 1));
+      }
       setStatusMsg("Notification moved to Archive folder.");
       setTimeout(() => setStatusMsg(""), 3000);
     } catch (err) {
@@ -297,12 +301,12 @@ export default function InboxCenterPage() {
                   <div
                     key={n.id}
                     className={`p-4 rounded-xl border flex flex-col justify-between md:flex-row md:items-center gap-4 transition-all ${
-                      n.status !== "READ" ? "bg-emerald-500/5 border-emerald-500/10" : "bg-black/10 border-white/5"
+                      !isNotificationRead(n) && !isNotificationArchived(n) ? "bg-emerald-500/5 border-emerald-500/10" : "bg-black/10 border-white/5"
                     }`}
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        {n.status !== "READ" && (
+                        {!isNotificationRead(n) && !isNotificationArchived(n) && (
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         )}
                         <h4 className="font-bold text-slate-200 text-sm">{n.title}</h4>
@@ -323,7 +327,7 @@ export default function InboxCenterPage() {
                           Open Link
                         </button>
                       )}
-                      {n.status !== "READ" && (
+                      {!isNotificationRead(n) && !isNotificationArchived(n) && (
                         <button
                           onClick={() => handleRead(n.id)}
                           className="px-2.5 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold rounded-lg transition-all"
@@ -331,12 +335,24 @@ export default function InboxCenterPage() {
                           Mark Read
                         </button>
                       )}
-                      <button
-                        onClick={() => handleArchive(n.id)}
-                        className="px-2.5 py-1 bg-red-500/5 hover:bg-red-500/10 text-red-400 border border-red-500/10 text-[10px] font-bold rounded-lg transition-all"
-                      >
-                        Archive
-                      </button>
+                      {!isNotificationArchived(n) ? (
+                        <button
+                          onClick={() => handleArchive(n.id)}
+                          className="px-2.5 py-1 bg-red-500/5 hover:bg-red-500/10 text-red-400 border border-red-500/10 text-[10px] font-bold rounded-lg transition-all"
+                        >
+                          Archive
+                        </button>
+                      ) : (
+                        <span
+                          className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold ${
+                            isNotificationRead(n)
+                              ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300"
+                              : "bg-amber-500/10 border-amber-500/20 text-amber-300"
+                          }`}
+                        >
+                          {isNotificationRead(n) ? "Read" : "Unread"}
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
