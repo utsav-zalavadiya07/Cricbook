@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useMemo, useState } from "react";
 import { getGovernanceFederations, getGovernanceRankings, GovernanceMap } from "@/modules/governance/services/governanceService";
@@ -50,10 +51,10 @@ export default function GovernancePage() {
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.26em] text-emerald-300">Federation Governance</p>
-              <h1 className="mt-3 text-3xl font-black theme-title sm:text-4xl">Sports governance and ranking directory</h1>
-              <p className="mt-3 max-w-3xl text-sm leading-6 theme-soft">
-                Track active federations, state and district associations, national rankings, player licensing readiness, and integrity visibility from one public portal.
-              </p>
+              <h1 className="mt-3 text-3xl font-black theme-title sm:text-4xl">Sports governance and ranking directory
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Sports governance and ranking directory information" focusable={false}>Track active federations, state and district associations, national rankings, player licensing readiness, and integrity visibility from one public portal.</TileInfo>
+              </span></h1>
             </div>
             <select
               value={sport}

@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { FormEvent, useEffect, useState } from "react";
 import { getMyTrustProfile, getTrustAttendance, submitTrustReport, TrustAttendance, TrustReportReason, TrustScore } from "@/modules/trust/services/trustService";
@@ -70,10 +71,10 @@ export default function TrustPage() {
           <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
             <div>
               <p className="theme-accent text-xs font-black uppercase tracking-[0.34em]">Trust profile</p>
-              <h1 className="theme-title mt-3 text-4xl font-black tracking-tight sm:text-6xl">Reliability that follows every match.</h1>
-              <p className="theme-muted mt-4 max-w-3xl text-base leading-7">
-                Your Cricbook trust score reflects attendance, punctuality, cancellations, reports, payment behavior, and match completion.
-              </p>
+              <h1 className="theme-title mt-3 text-4xl font-black tracking-tight sm:text-6xl">Reliability that follows every match.
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Reliability that follows every match. information" focusable={false}>Your Cricbook trust score reflects attendance, punctuality, cancellations, reports, payment behavior, and match completion.</TileInfo>
+              </span></h1>
               <div className="mt-5 flex flex-wrap gap-2">
                 {(profile?.badges || []).map((badge) => <span key={badge} className="theme-badge rounded-full px-3 py-1 text-xs font-bold">{badge}</span>)}
               </div>

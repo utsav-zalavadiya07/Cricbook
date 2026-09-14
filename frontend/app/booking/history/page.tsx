@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -185,10 +186,10 @@ export default function BookingHistoryPage() {
             <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
               <div>
                 <p className="theme-kicker text-xs font-black uppercase tracking-[0.24em]">Booking history</p>
-                <h1 className="theme-title mt-3 text-3xl font-black tracking-tight sm:text-4xl">My Bookings</h1>
-                <p className="theme-muted mt-2 max-w-2xl text-sm leading-6">
-                  Review every turf reservation with schedule, payment state, booking status, amount, and quick actions in one grid.
-                </p>
+                <h1 className="theme-title mt-3 text-3xl font-black tracking-tight sm:text-4xl">My Bookings
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="My Bookings information" focusable={false}>Review every turf reservation with schedule, payment state, booking status, amount, and quick actions in one grid.</TileInfo>
+              </span></h1>
               </div>
               <Link
                 href="/search"

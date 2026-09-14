@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { TileInfo } from "./TileInfo";
 
 export function PageSection({
   children,
@@ -25,8 +26,16 @@ export function PageSectionHeader({
     <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
       <div className="min-w-0 max-w-3xl">
         {eyebrow ? <p className="theme-accent-owner text-[11px] font-black uppercase tracking-[0.24em]">{eyebrow}</p> : null}
-        <h1 className="theme-title mt-2 text-2xl font-black leading-tight sm:text-[2rem]">{title}</h1>
-        {description ? <p className="theme-muted mt-2 max-w-2xl text-sm sm:text-[15px]">{description}</p> : null}
+        <div className="mt-2">
+          <h1 className="theme-title text-2xl font-black leading-tight sm:text-[2rem]">
+            {title}
+            {description ? (
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label={`${title} information`} focusable={false}>{description}</TileInfo>
+              </span>
+            ) : null}
+          </h1>
+        </div>
       </div>
       {actions ? <div className="flex shrink-0 items-start">{actions}</div> : null}
     </div>
@@ -44,13 +53,15 @@ export function PageMetricCard({
 }: {
   label: string;
   value: string | number;
-  helper: string;
+  helper?: string;
 }) {
   return (
     <div className="theme-card rounded-xl p-3.5 sm:p-4">
-      <p className="theme-soft text-[10px] font-black uppercase tracking-[0.22em]">{label}</p>
+      <div className="flex min-w-0 items-center gap-2">
+        <p className="theme-soft min-w-0 break-words text-[10px] font-black uppercase leading-5 tracking-[0.22em]">{label}</p>
+        {helper ? <TileInfo variant="standard" label={`${label} information`}>{helper}</TileInfo> : null}
+      </div>
       <p className="theme-title mt-2 text-xl font-black leading-tight">{value}</p>
-      <p className="theme-muted mt-1 text-xs leading-5">{helper}</p>
     </div>
   );
 }

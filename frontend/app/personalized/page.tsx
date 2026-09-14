@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -64,12 +65,10 @@ export default function AIRecommendationDashboard() {
               <span className="theme-badge inline-flex items-center rounded-full px-3 py-1 text-xs font-bold">
                 Match-day intelligence active
               </span>
-              <h1 className="theme-title mt-4 text-4xl font-black tracking-tight sm:text-5xl">
-                Your cricket booking cockpit
-              </h1>
-              <p className="theme-muted mt-3 max-w-2xl text-base leading-7">
-                Find turfs based on budget, timing, location, team needs, and previous booking behavior.
-              </p>
+              <h1 className="theme-title mt-4 text-4xl font-black tracking-tight sm:text-5xl">Your cricket booking cockpit
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Your cricket booking cockpit information" focusable={false}>Find turfs based on budget, timing, location, team needs, and previous booking behavior.</TileInfo>
+              </span></h1>
               <div className="mt-6 grid gap-3 sm:grid-cols-3">
                 <HeroBenefit title="Smarter picks" body="Recommended turfs for your city and play pattern." />
                 <HeroBenefit title="Peak slot signals" body="Spot high-demand timings before they fill up." />

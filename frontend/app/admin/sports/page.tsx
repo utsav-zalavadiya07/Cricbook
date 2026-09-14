@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { TileInfo } from "@/components/ui";
 import {
   AdminSportConfigPayload,
   AdminSportsDashboard,
@@ -286,9 +287,11 @@ function Panel({ title, subtitle, children }: { title: string; subtitle: string;
 function MetricCard({ label, value, detail, compact = false }: { label: string; value: string | number; detail: string; compact?: boolean }) {
   return (
     <div className={`rounded-3xl border border-white/10 bg-slate-900/80 ${compact ? "p-4" : "p-5"}`}>
-      <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">{label}</p>
+      <div className="flex min-w-0 items-start justify-between gap-2">
+        <p className="min-w-0 break-words text-xs font-black uppercase leading-5 tracking-[0.2em] text-slate-500">{label}</p>
+        <TileInfo label={`${label} information`}>{detail}</TileInfo>
+      </div>
       <p className="mt-3 text-2xl font-black text-white">{value}</p>
-      <p className="mt-2 text-xs font-semibold text-slate-400">{detail}</p>
     </div>
   );
 }

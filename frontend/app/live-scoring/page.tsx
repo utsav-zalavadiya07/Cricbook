@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Button, Card, Field, Input, Select, Textarea } from "@/components/ui";
+import {  Button, Card, Field, Input, Select, Textarea , TileInfo } from "@/components/ui";
 import {
   completeLiveScore,
   createLiveScore,
@@ -148,8 +148,10 @@ export default function LiveScoringPage() {
         <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="theme-soft text-xs font-black uppercase tracking-[0.2em]">EPIC 28 Match Experience</p>
-            <h1 className="theme-title mt-1 text-3xl font-black">Live Scoring Center</h1>
-            <p className="theme-muted mt-1 text-sm">Ball-by-ball scoring, digital scorecards, commentary, live stream updates, and tournament sync.</p>
+            <h1 className="theme-title mt-1 text-3xl font-black">Live Scoring Center
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Live Scoring Center information" focusable={false}>Ball-by-ball scoring, digital scorecards, commentary, live stream updates, and tournament sync.</TileInfo>
+              </span></h1>
           </div>
           <div className="flex flex-wrap gap-2">
             <StatusPill label={streamConnected ? "Stream live" : "Polling fallback"} tone={streamConnected ? "success" : "warning"} />

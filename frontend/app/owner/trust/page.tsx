@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
@@ -49,10 +50,10 @@ export default function OwnerTrustPage() {
       <main className="space-y-8">
         <section className="theme-panel-strong rounded-[2rem] p-6">
           <p className="theme-accent-owner text-xs font-black uppercase tracking-[0.34em]">Owner Trust Controls</p>
-          <h1 className="theme-title mt-3 text-3xl font-black sm:text-5xl">Approve reliable players. Flag risky behavior early.</h1>
-          <p className="theme-muted mt-3 max-w-3xl text-sm leading-6">
-            Track attendance, identify high-risk bookings, and use player trust signals before repeated no-shows hurt your turf operations.
-          </p>
+          <h1 className="theme-title mt-3 text-3xl font-black sm:text-5xl">Approve reliable players. Flag risky behavior early.
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Approve reliable players. Flag risky behavior early. information" focusable={false}>Track attendance, identify high-risk bookings, and use player trust signals before repeated no-shows hurt your turf operations.</TileInfo>
+              </span></h1>
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">

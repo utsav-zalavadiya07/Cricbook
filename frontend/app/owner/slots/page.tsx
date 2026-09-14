@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import api from "@/services/api";
@@ -1511,8 +1512,12 @@ export default function OwnerSlotsPage() {
         {/* Global Page Header & Turf Selector */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-white/10 pb-6">
           <div>
-            <h1 className="theme-title text-3xl font-black tracking-tight">Slot Manager</h1>
-            <p className="theme-muted mt-1 text-sm">Manage slot templates, daily schedules, dynamic pricing, and holiday rules.</p>
+            <div>
+            <h1 className="theme-title text-3xl font-black tracking-tight">Slot Manager
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Slot Manager information" focusable={false}>Manage slot templates, daily schedules, dynamic pricing, and holiday rules.</TileInfo>
+              </span></h1>
+          </div>
           </div>
           <div className="w-full sm:w-72 shrink-0">
             <label className="block">

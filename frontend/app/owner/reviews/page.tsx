@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
@@ -60,8 +61,12 @@ export default function OwnerReviewsPage() {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="theme-title text-3xl font-bold">Reviews</h1>
-          <p className="theme-muted mt-1 text-sm">Track average rating, recent reviews and turf-wise feedback.</p>
+          <div>
+            <h1 className="theme-title text-3xl font-bold">Reviews
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Reviews information" focusable={false}>Track average rating, recent reviews and turf-wise feedback.</TileInfo>
+              </span></h1>
+          </div>
         </div>
 
         {error && <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">{error}</p>}

@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -61,8 +62,10 @@ export default function TeamWorkspacePage() {
       <div className="mx-auto max-w-7xl space-y-8">
         <section className="theme-panel-strong rounded-[2rem] p-6 sm:p-8">
           <p className="theme-accent text-xs font-black uppercase tracking-[0.34em]">EPIC 26 · Team Workspace</p>
-          <h1 className="theme-title mt-3 text-4xl font-black sm:text-6xl">{workspace.teamName}</h1>
-          <p className="theme-muted mt-3 max-w-3xl text-sm leading-6">{workspace.goals || "Team availability, lineup, polls, finance, announcements and attendance in one place."}</p>
+          <h1 className="theme-title mt-3 text-4xl font-black sm:text-6xl">{workspace.teamName}
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="{workspace.teamName} information" focusable={false}>{workspace.goals || "Team availability, lineup, polls, finance, announcements and attendance in one place."}</TileInfo>
+              </span></h1>
           <div className="mt-6 grid gap-3 sm:grid-cols-5">
             <Metric label="Members" value={workspace.memberCount} />
             <Metric label="Available Today" value={workspace.availableToday} />

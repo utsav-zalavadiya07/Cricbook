@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -44,8 +45,10 @@ export default function SmartPage() {
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 px-4 py-8 sm:px-6">
       <div className="mx-auto max-w-7xl space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-white">Smart Platform</h1>
-          <p className="mt-1 text-sm text-slate-400">Recommendations, player suggestions and demand-based pricing.</p>
+          <h1 className="text-3xl font-bold text-white">Smart Platform
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Smart Platform information" focusable={false}>Recommendations, player suggestions and demand-based pricing.</TileInfo>
+              </span></h1>
         </div>
 
         <div className="grid gap-3 rounded-2xl border border-white/10 bg-white/5 p-5 md:grid-cols-3">

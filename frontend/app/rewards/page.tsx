@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import { getGrowthDashboard, getLoyaltyBalance, getLoyaltyHistory, redeemLoyaltyPoints } from "@/modules/membership/services/subscriptionService";
@@ -76,10 +77,10 @@ export default function RewardsDashboard() {
     <main className="theme-page-player min-h-screen px-4 py-6 sm:px-6 lg:px-8">
       <div className="w-full space-y-8">
         <div>
-          <h1 className="theme-title text-3xl font-extrabold">Loyalty Rewards</h1>
-          <p className="theme-muted mt-1.5 text-sm">
-            Earn points for turf slot bookings, tournament events, and friend invites. Redeem for wallet balance!
-          </p>
+          <h1 className="theme-title text-3xl font-extrabold">Loyalty Rewards
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Loyalty Rewards information" focusable={false}>Earn points for turf slot bookings, tournament events, and friend invites. Redeem for wallet balance!</TileInfo>
+              </span></h1>
         </div>
 
         {message && (

@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useCallback, useEffect, useState } from "react";
 import { useI18n } from "@/modules/i18n/I18nProvider";
@@ -99,8 +100,10 @@ export default function PlayerSubscriptionCenter() {
     <main className="theme-page-player min-h-screen px-4 py-6 sm:px-6 lg:px-8">
       <div className="w-full space-y-8">
         <div>
-          <h1 className="theme-title text-3xl font-extrabold tracking-tight">{t("subscription.title")}</h1>
-          <p className="theme-muted mt-1.5 text-sm">{t("subscription.subtitle")}</p>
+          <h1 className="theme-title text-3xl font-extrabold tracking-tight">{t("subscription.title")}
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Page information" focusable={false}>{t("subscription.subtitle")}</TileInfo>
+              </span></h1>
         </div>
 
         {message && (

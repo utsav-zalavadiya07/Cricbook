@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { FormEvent, useEffect, useState } from "react";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
@@ -55,8 +56,10 @@ export default function OwnerResalePage() {
       <main className="space-y-6">
         <section className="theme-panel-strong rounded-[2rem] p-6">
           <p className="theme-accent-owner text-xs font-black uppercase tracking-[0.34em]">Resale Rules</p>
-          <h1 className="theme-title mt-3 text-3xl font-black sm:text-5xl">Recover cancelled slots without losing control.</h1>
-          <p className="theme-muted mt-3 max-w-3xl text-sm leading-6">Set resale permissions, trust restrictions, transfer windows, and track recovered booking revenue.</p>
+          <h1 className="theme-title mt-3 text-3xl font-black sm:text-5xl">Recover cancelled slots without losing control.
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Recover cancelled slots without losing control. information" focusable={false}>Set resale permissions, trust restrictions, transfer windows, and track recovered booking revenue.</TileInfo>
+              </span></h1>
         </section>
 
         <section className="grid gap-4 sm:grid-cols-4">

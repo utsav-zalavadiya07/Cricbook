@@ -7,3 +7,4 @@ export { Input, Textarea } from "./Input";
 export { MultiSelect } from "./MultiSelect";
 export { Select } from "./Select";
 export type { SelectOption } from "./Select";
+export { TileInfo } from "./TileInfo";

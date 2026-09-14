@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { TileInfo } from "@/components/ui";
 import {
   AdminFederationGovernanceDashboard,
   AdminFederationGovernanceMap,
@@ -405,9 +406,11 @@ export default function AdminGovernancePage() {
 function MetricCard({ label, value, detail }: { label: string; value: unknown; detail: string }) {
   return (
     <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
-      <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">{label}</p>
+      <div className="flex min-w-0 items-start justify-between gap-2">
+        <p className="min-w-0 break-words text-xs font-black uppercase leading-5 tracking-[0.18em] text-slate-500">{label}</p>
+        <TileInfo label={`${label} information`}>{detail}</TileInfo>
+      </div>
       <p className="mt-3 text-3xl font-black text-white">{formatNumber(value)}</p>
-      <p className="mt-1 text-xs font-bold text-slate-400">{detail}</p>
     </div>
   );
 }

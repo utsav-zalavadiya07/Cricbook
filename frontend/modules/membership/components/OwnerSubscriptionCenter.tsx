@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
@@ -158,10 +159,10 @@ export default function OwnerSubscriptionCenter() {
           <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
             <div className="max-w-3xl">
               <p className="theme-accent-owner text-xs font-black uppercase tracking-[0.34em]">Owner Subscription Center</p>
-              <h1 className="theme-title mt-3 text-3xl font-black">Owner plans, featured listings and billing.</h1>
-              <p className="theme-muted mt-2 text-sm">
-                Manage owner-only plans separately from player premium so portal billing, turf promotion, and invoice history do not overlap.
-              </p>
+              <h1 className="theme-title mt-3 text-3xl font-black">Owner plans, featured listings and billing.
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Owner plans, featured listings and billing. information" focusable={false}>Manage owner-only plans separately from player premium so portal billing, turf promotion, and invoice history do not overlap.</TileInfo>
+              </span></h1>
             </div>
             <div className="theme-panel-soft rounded-2xl p-4">
               <label className="theme-soft text-xs font-bold uppercase tracking-wider" htmlFor="owner-subscription-turf">

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/modules/i18n/I18nProvider";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
+import { TileInfo } from "@/components/ui";
 import { PageMetricCard, PageMetricGrid, PageSection, PageSectionHeader } from "@/components/ui/PageSurface";
 import { getOwnerDashboard } from "@/modules/owner/services/ownerService";
 import { Booking } from "@/modules/booking/types/booking.types";
@@ -205,9 +206,20 @@ function Empty({ text }: { text: string }) {
 
 function QuickAction({ href, title, body }: { href: string; title: string; body: string }) {
   return (
-    <Link href={href} className="theme-card group rounded-2xl p-4 transition hover:-translate-y-0.5 hover:border-sky-400/40">
-      <p className="theme-title font-bold group-hover:text-sky-600 dark:group-hover:text-sky-300">{title}</p>
-      <p className="theme-muted mt-1 text-sm leading-5">{body}</p>
+    <Link 
+      href={href} 
+      className="theme-card group flex items-center justify-between rounded-2xl p-4 transition-all duration-300 hover:-translate-y-1 hover:border-sky-400/50 hover:shadow-md dark:hover:border-sky-500/50 dark:hover:shadow-[0_4px_20px_rgba(14,165,233,0.1)]"
+    >
+      <div className="flex min-w-0 items-center gap-2">
+        <p className="theme-title min-w-0 break-words font-bold group-hover:text-sky-600 dark:group-hover:text-sky-300">{title}</p>
+        <TileInfo variant="standard" label={`${title} information`} focusable={false}>{body}</TileInfo>
+      </div>
+      
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sky-500 text-white shadow-sm transition-all duration-300 group-hover:bg-sky-600 dark:bg-sky-500/10 dark:text-sky-400 dark:group-hover:bg-sky-500/20 dark:group-hover:text-sky-300 dark:shadow-none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-0.5">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </div>
     </Link>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -81,8 +82,10 @@ export default function AIAssistantPage() {
               AI
             </div>
             <div>
-              <h1 className="theme-title text-lg font-bold">Cricbook Chat AI</h1>
-              <p className="text-xs font-medium text-emerald-700 dark:text-emerald-400">Available now / NLP Engine v2.1</p>
+              <h1 className="theme-title text-lg font-bold">Cricbook Chat AI
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Cricbook Chat AI information" focusable={false}>Available now / NLP Engine v2.1</TileInfo>
+              </span></h1>
             </div>
           </div>
           <Link href="/personalized" className="theme-card rounded-xl px-3.5 py-2 text-xs font-semibold theme-muted transition hover:border-emerald-400/40 hover:text-current">

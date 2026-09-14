@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useCallback, useEffect, useState } from "react";
 import { useI18n } from "@/modules/i18n/I18nProvider";
@@ -84,8 +85,10 @@ export default function WalletPage() {
     <main className="theme-page-player min-h-screen px-4 py-8 sm:px-6">
       <div className="mx-auto max-w-6xl space-y-6">
         <div>
-          <h1 className="theme-title text-3xl font-bold">{t("wallet.title")}</h1>
-          <p className="theme-muted mt-1 text-sm">{t("wallet.subtitle")}</p>
+          <h1 className="theme-title text-3xl font-bold">{t("wallet.title")}
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Page information" focusable={false}>{t("wallet.subtitle")}</TileInfo>
+              </span></h1>
         </div>
 
         {loading && <p className="theme-muted py-20 text-center">{t("wallet.loading")}</p>}

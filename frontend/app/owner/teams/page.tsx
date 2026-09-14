@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
@@ -23,8 +24,12 @@ export default function OwnerTeamsPage() {
       <main className="space-y-6">
         <section className="theme-panel-strong rounded-[2rem] p-6">
           <p className="theme-accent-owner text-xs font-black uppercase tracking-[0.34em]">Top Teams</p>
-          <h1 className="theme-title mt-3 text-3xl font-black sm:text-5xl">Community teams driving repeat bookings.</h1>
-          <p className="theme-muted mt-3 max-w-3xl text-sm leading-6">Track team activity, availability responses, finance movement, and attendance reliability.</p>
+          <div className="mt-3">
+            <h1 className="theme-title text-3xl font-black sm:text-5xl">Community teams driving repeat bookings.
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Teams information" focusable={false}>Track team activity, availability responses, finance movement, and attendance reliability.</TileInfo>
+              </span></h1>
+          </div>
         </section>
         <section className="grid gap-4 sm:grid-cols-5">
           <Metric label="Teams" value={analytics?.totalTeams ?? 0} />

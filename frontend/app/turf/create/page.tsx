@@ -1,3 +1,4 @@
+import { TileInfo } from "@/components/ui";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
 import TurfForm from "@/modules/turf/components/TurfForm";
 
@@ -9,10 +10,10 @@ export default function CreateTurfPage() {
       <div className="mx-auto max-w-2xl">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="theme-title text-2xl font-bold">Create New Turf</h1>
-          <p className="theme-muted mt-1 text-sm">
-            Fill in the details to list your cricket turf on Cricbook.
-          </p>
+          <h1 className="theme-title text-2xl font-bold">Create New Turf
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Create New Turf information" focusable={false}>Fill in the details to list your cricket turf on Cricbook.</TileInfo>
+              </span></h1>
         </div>
 
         {/* Form card */}

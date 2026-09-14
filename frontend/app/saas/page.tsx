@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useMemo, useState } from "react";
 import { getSaasMarketplaceModules, getSaasRegions, getSaasTenantContext, SaasMap } from "@/modules/saas/services/saasPlatformService";
@@ -53,10 +54,10 @@ export default function SaasPage() {
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.26em] text-emerald-300">EPIC 36 SaaS Platform</p>
-              <h1 className="mt-3 text-3xl font-black theme-title sm:text-4xl">Tenant context, white-label readiness and marketplace modules</h1>
-              <p className="mt-3 max-w-3xl text-sm leading-6 theme-soft">
-                Preview how Truf Sports resolves tenant branding, enabled features, regional readiness and add-on modules for global white-label deployments.
-              </p>
+              <h1 className="mt-3 text-3xl font-black theme-title sm:text-4xl">Tenant context, white-label readiness and marketplace modules
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Tenant context, white-label readiness and marketplace modules information" focusable={false}>Preview how Truf Sports resolves tenant branding, enabled features, regional readiness and add-on modules for global white-label deployments.</TileInfo>
+              </span></h1>
             </div>
             <button onClick={() => void loadSaas(tenantId ? Number(tenantId) : undefined)} className="rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-black text-white hover:bg-emerald-400">
               Refresh SaaS

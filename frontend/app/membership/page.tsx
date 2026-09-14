@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import { getMembershipPlans, getMyMemberships, subscribeMembership } from "@/modules/membership/services/membershipService";
@@ -75,8 +76,10 @@ export default function MembershipPage() {
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 px-4 py-8 sm:px-6">
       <div className="mx-auto max-w-7xl space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-white">Membership</h1>
-          <p className="mt-1 text-sm text-slate-400">Premium discounts, priority slots and owner featured listings.</p>
+          <h1 className="text-3xl font-bold text-white">Membership
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Membership information" focusable={false}>Premium discounts, priority slots and owner featured listings.</TileInfo>
+              </span></h1>
         </div>
 
         {status && <p className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-emerald-200">{status}</p>}

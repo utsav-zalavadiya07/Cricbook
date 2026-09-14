@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
@@ -178,10 +179,10 @@ export default function OwnerSettingsPage() {
           <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
             <div>
               <p className="theme-accent-owner text-xs font-black uppercase tracking-[0.34em]">{translateText("Owner Business Control Center")}</p>
-              <h1 className="theme-title mt-3 text-4xl font-black tracking-tight">{translateText("Owner Settings")}</h1>
-              <p className="theme-muted mt-3 max-w-3xl text-sm leading-6">
-                {translateText("Configure business identity, turf operations, booking policies, pricing, payments, staff access, automation, and exports from one professional control center.")}
-              </p>
+              <h1 className="theme-title mt-3 text-4xl font-black tracking-tight">{translateText("Owner Settings")}
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Page information" focusable={false}>{translateText("Configure business identity, turf operations, booking policies, pricing, payments, staff access, automation, and exports from one professional control center.")}</TileInfo>
+              </span></h1>
             </div>
             <div className="grid gap-3 sm:grid-cols-4 xl:min-w-[620px]">
               <MetricCard label={translateText("Readiness")} value={`${readiness}%`} />

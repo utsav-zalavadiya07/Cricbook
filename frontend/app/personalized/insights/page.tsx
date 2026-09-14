@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { TileInfo } from "@/components/ui";
 
 export default function CareerInsightsPage() {
   const statistics = {
@@ -19,8 +20,10 @@ export default function CareerInsightsPage() {
       <div className="mx-auto max-w-5xl space-y-8">
         <div className="flex flex-col gap-4 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="theme-title text-3xl font-black tracking-tight">Career Insights and Analytics</h1>
-            <p className="theme-muted mt-1 text-sm">Player profile signals, performance trends, and slot scheduling recommendations.</p>
+            <h1 className="theme-title text-3xl font-black tracking-tight">Career Insights and Analytics
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Career Insights and Analytics information" focusable={false}>Player profile signals, performance trends, and slot scheduling recommendations.</TileInfo>
+              </span></h1>
           </div>
           <Link href="/personalized" className="theme-card w-fit rounded-xl px-4 py-2 text-xs font-semibold theme-muted transition hover:border-emerald-400/40 hover:text-current">
             Back to Personalized Feed
@@ -70,9 +73,11 @@ export default function CareerInsightsPage() {
 function Metric({ label, value, body, tone }: { label: string; value: string | number; body: string; tone: "emerald" | "sky" }) {
   return (
     <div className="theme-panel rounded-[20px] p-6">
-      <span className="theme-muted text-xs font-semibold uppercase tracking-wider">{label}</span>
+      <div className="flex min-w-0 items-start justify-between gap-2">
+        <span className="theme-muted min-w-0 break-words text-xs font-semibold uppercase leading-5 tracking-wider">{label}</span>
+        <TileInfo label={`${label} information`}>{body}</TileInfo>
+      </div>
       <p className={`mt-2 text-4xl font-black ${tone === "emerald" ? "text-emerald-700 dark:text-emerald-300" : "text-sky-700 dark:text-sky-300"}`}>{value}</p>
-      <p className="theme-muted mt-3 text-xs">{body}</p>
     </div>
   );
 }

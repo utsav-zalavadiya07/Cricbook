@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { ReactNode, useEffect, useState } from "react";
 import {
@@ -221,10 +222,10 @@ export default function SocialPage() {
           <p className="theme-kicker text-xs font-semibold uppercase tracking-[0.3em]">Epic 13 / Social Ecosystem</p>
           <div className="mt-4 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <h1 className="theme-title text-3xl font-black tracking-tight sm:text-4xl">Create teams, fill matches, keep players inside Cricbook.</h1>
-              <p className="theme-muted mt-2 max-w-3xl text-sm">
-                This workspace covers match setup, player discovery, social activity, team and match chat, and personal match history so the product behaves like a community platform instead of a one-off booking tool.
-              </p>
+              <h1 className="theme-title text-3xl font-black tracking-tight sm:text-4xl">Create teams, fill matches, keep players inside Cricbook.
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Create teams, fill matches, keep players inside Cricbook. information" focusable={false}>This workspace covers match setup, player discovery, social activity, team and match chat, and personal match history so the product behaves like a community platform instead of a one-off booking tool.</TileInfo>
+              </span></h1>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <HeroStat label="Open matches" value={matches.length} />

@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import Link from "next/link";
 import { type ReactNode } from "react";
@@ -252,10 +253,10 @@ export default function MarketplacePage() {
           <p className="theme-accent text-xs font-black uppercase tracking-[0.34em]">EPIC 29 · Sports Commerce Marketplace</p>
           <div className="mt-4 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
             <div>
-              <h1 className="theme-title text-4xl font-black tracking-tight sm:text-6xl">Buy gear, rent kits, and recover unused slots.</h1>
-              <p className="theme-muted mt-4 max-w-3xl text-base leading-7">
-                Browse sports equipment, rental kits, seller inventory, and last-minute cricket slot transfers from one marketplace.
-              </p>
+              <h1 className="theme-title text-4xl font-black tracking-tight sm:text-6xl">Buy gear, rent kits, and recover unused slots.
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Buy gear, rent kits, and recover unused slots. information" focusable={false}>Browse sports equipment, rental kits, seller inventory, and last-minute cricket slot transfers from one marketplace.</TileInfo>
+              </span></h1>
             </div>
             <div className="theme-card-strong rounded-3xl p-4">
               <div className="grid gap-3 sm:grid-cols-[1fr_auto]">

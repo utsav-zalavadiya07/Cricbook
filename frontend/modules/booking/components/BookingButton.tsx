@@ -25,6 +25,7 @@ export default function BookingButton({ bookingData, price, paymentMeta = {} }: 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const inFlight = useRef(false);
+  const isPlanLimitError = /limit reached|upgrade your subscription|current .* plan/i.test(error);
 
   const handleBooking = async () => {
     if (inFlight.current) return;
@@ -62,8 +63,38 @@ export default function BookingButton({ bookingData, price, paymentMeta = {} }: 
   return (
     <div className="space-y-3">
       {error && (
-        <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-xl">
-          {error}
+        <div className="space-y-3">
+          <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+            {error}
+          </div>
+          {isPlanLimitError ? (
+            <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/10 p-4 text-sm shadow-lg shadow-emerald-950/20">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <p className="font-bold text-emerald-200">Upgrade your plan to continue booking</p>
+                  <p className="mt-1 text-xs leading-5 text-slate-400">
+                    Choose a higher player plan to increase or remove your monthly booking limit.
+                  </p>
+                </div>
+                <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={() => router.push("/pricing")}
+                    className="rounded-xl bg-emerald-500 px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-400"
+                  >
+                    Upgrade Plan
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => router.push("/subscription")}
+                    className="rounded-xl border border-white/10 px-4 py-2 text-xs font-bold text-slate-200 transition hover:bg-white/10"
+                  >
+                    View Plan
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       )}
       <button

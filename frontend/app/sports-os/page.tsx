@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -98,10 +99,10 @@ export default function SportsOsPage() {
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.26em] text-emerald-300">EPIC 34 Sports OS</p>
-              <h1 className="mt-3 text-3xl font-black theme-title sm:text-4xl">Public sports infrastructure, grants, census and impact tracking</h1>
-              <p className="mt-3 max-w-3xl text-sm leading-6 theme-soft">
-                Discover public facilities, track civic sports infrastructure, register volunteers, and apply for government sports development grants through one Sports OS layer.
-              </p>
+              <h1 className="mt-3 text-3xl font-black theme-title sm:text-4xl">Public sports infrastructure, grants, census and impact tracking
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Public sports infrastructure, grants, census and impact tracking information" focusable={false}>Discover public facilities, track civic sports infrastructure, register volunteers, and apply for government sports development grants through one Sports OS layer.</TileInfo>
+              </span></h1>
             </div>
             <button onClick={() => void loadSportsOs()} className="rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-black text-white hover:bg-emerald-400">
               Refresh Sports OS

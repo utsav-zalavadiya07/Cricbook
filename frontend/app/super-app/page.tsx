@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { TileInfo } from "@/components/ui";
 import {
   SuperAppMap,
   addSportsTimelineEvent,
@@ -110,10 +111,10 @@ export default function SuperAppPage() {
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.26em] text-emerald-300">EPIC 33 Sports Super App</p>
-              <h1 className="mt-3 text-3xl font-black theme-title sm:text-4xl">One identity, wallet, membership, rewards and sports passport</h1>
-              <p className="mt-3 max-w-3xl text-sm leading-6 theme-soft">
-                Unify bookings, tournaments, academy, career, governance, rewards, membership, reputation, family accounts, and timeline into one sports profile.
-              </p>
+              <h1 className="mt-3 text-3xl font-black theme-title sm:text-4xl">One identity, wallet, membership, rewards and sports passport
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="One identity, wallet, membership, rewards and sports passport information" focusable={false}>Unify bookings, tournaments, academy, career, governance, rewards, membership, reputation, family accounts, and timeline into one sports profile.</TileInfo>
+              </span></h1>
             </div>
             <button onClick={() => void loadDashboard()} className="rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-black text-white hover:bg-emerald-400">
               Refresh Super App
@@ -236,9 +237,11 @@ function Panel({ title, subtitle, children }: { title: string; subtitle: string;
 function MetricCard({ label, value, detail }: { label: string; value: string; detail: string }) {
   return (
     <div className="theme-card rounded-3xl border p-5">
-      <p className="text-xs font-black uppercase tracking-[0.18em] theme-soft">{label}</p>
+      <div className="flex min-w-0 items-start justify-between gap-2">
+        <p className="min-w-0 break-words text-xs font-black uppercase leading-5 tracking-[0.18em] theme-soft">{label}</p>
+        <TileInfo label={`${label} information`}>{detail}</TileInfo>
+      </div>
       <p className="mt-3 text-3xl font-black theme-title">{value}</p>
-      <p className="mt-2 text-xs font-bold theme-soft">{detail}</p>
     </div>
   );
 }

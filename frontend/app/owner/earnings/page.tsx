@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
@@ -127,10 +128,14 @@ export default function OwnerEarningsPage() {
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="theme-soft text-xs font-black uppercase tracking-[0.32em]">EPIC 9 · Revenue Operations</p>
-              <h1 className="theme-title mt-3 text-4xl font-black">Revenue, settlements and payout control.</h1>
-              <p className="theme-muted mt-3 max-w-3xl">
-                Track paid bookings, refund impact, commission, GST on commission, settlement status, and owner payout readiness from one place.
-              </p>
+              <div className="mt-3">
+            <h1 className="theme-title text-4xl font-black">Revenue, settlements and payout control.
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Earnings information" focusable={false}>
+                  Track paid bookings, refund impact, commission, GST on commission, settlement status, and owner payout readiness from one place.
+                </TileInfo>
+              </span></h1>
+          </div>
             </div>
             <div className="flex flex-wrap gap-3">
               <button className="theme-button-secondary" disabled={busy} onClick={handleExport}>Export CSV</button>

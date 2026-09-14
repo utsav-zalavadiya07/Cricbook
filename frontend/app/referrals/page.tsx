@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import { getGrowthDashboard, getReferralCode, claimReferral, getMyReferrals } from "@/modules/membership/services/subscriptionService";
@@ -75,10 +76,10 @@ export default function ReferralsPage() {
     <main className="theme-page-player min-h-screen px-4 py-6 sm:px-6 lg:px-8">
       <div className="w-full space-y-8">
         <div>
-          <h1 className="text-3xl font-extrabold text-white">Referrals Program</h1>
-          <p className="mt-1.5 text-sm text-slate-400">
-            Invite friends to join Cricbook! Both earn massive loyalty points upon their first confirmed slot booking.
-          </p>
+          <h1 className="text-3xl font-extrabold text-white">Referrals Program
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Referrals Program information" focusable={false}>Invite friends to join Cricbook! Both earn massive loyalty points upon their first confirmed slot booking.</TileInfo>
+              </span></h1>
         </div>
 
         {message && (

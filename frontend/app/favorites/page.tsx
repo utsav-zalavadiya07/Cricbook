@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
@@ -42,8 +43,10 @@ export default function FavoritesPage() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="theme-title text-3xl font-bold">Saved Turfs</h1>
-            <p className="theme-muted mt-1 text-sm">Keep track of turfs you want to compare or book later.</p>
+            <h1 className="theme-title text-3xl font-bold">Saved Turfs
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Saved Turfs information" focusable={false}>Keep track of turfs you want to compare or book later.</TileInfo>
+              </span></h1>
           </div>
           <Link href="/search" className="w-fit rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-400">
             Find More Turfs

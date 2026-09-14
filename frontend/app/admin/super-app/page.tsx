@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { TileInfo } from "@/components/ui";
 import {
   SuperAppMap,
   getAdminSuperAppAudit,
@@ -195,9 +196,11 @@ function Panel({ title, subtitle, children }: { title: string; subtitle: string;
 function MetricCard({ label, value, detail, compact = false }: { label: string; value: string; detail: string; compact?: boolean }) {
   return (
     <div className={`rounded-[1.5rem] border border-white/10 bg-slate-900/80 ${compact ? "p-4" : "p-5"}`}>
-      <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">{label}</p>
+      <div className="flex min-w-0 items-start justify-between gap-2">
+        <p className="min-w-0 break-words text-[10px] font-black uppercase leading-5 tracking-[0.22em] text-slate-500">{label}</p>
+        <TileInfo label={`${label} information`}>{detail}</TileInfo>
+      </div>
       <p className={`mt-2 font-black text-white ${compact ? "text-2xl" : "text-3xl"}`}>{value}</p>
-      <p className="mt-2 text-xs leading-5 text-slate-400">{detail}</p>
     </div>
   );
 }

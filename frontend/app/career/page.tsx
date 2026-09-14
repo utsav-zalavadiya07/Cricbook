@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { TileInfo } from "@/components/ui";
 import {
   CareerMap,
   CareerProfilePayload,
@@ -141,10 +142,10 @@ export default function CareerPage() {
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.26em] text-emerald-300">EPIC 31 · Sports Career</p>
-              <h1 className="theme-title mt-3 text-3xl font-black sm:text-4xl">Build your verified sports career profile</h1>
-              <p className="theme-muted mt-3 max-w-3xl text-sm leading-6">
-                Create a digital sports profile, generate a resume, submit achievements for verification, and apply to trials, scholarships, and recruitment opportunities.
-              </p>
+              <h1 className="theme-title mt-3 text-3xl font-black sm:text-4xl">Build your verified sports career profile
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Build your verified sports career profile information" focusable={false}>Create a digital sports profile, generate a resume, submit achievements for verification, and apply to trials, scholarships, and recruitment opportunities.</TileInfo>
+              </span></h1>
             </div>
             <button onClick={() => void loadCareer()} className="rounded-2xl bg-emerald-400 px-5 py-3 text-sm font-black text-slate-950 hover:bg-emerald-300">
               Refresh marketplace
@@ -277,9 +278,11 @@ function Panel({ title, subtitle, children }: { title: string; subtitle: string;
 function MetricCard({ label, value, detail, compact = false }: { label: string; value: unknown; detail: string; compact?: boolean }) {
   return (
     <div className={`theme-card rounded-[1.5rem] border ${compact ? "p-4" : "p-5"}`}>
-      <p className="theme-muted text-[10px] font-black uppercase tracking-[0.22em]">{label}</p>
+      <div className="flex min-w-0 items-start justify-between gap-2">
+        <p className="theme-muted min-w-0 break-words text-[10px] font-black uppercase leading-5 tracking-[0.22em]">{label}</p>
+        <TileInfo label={`${label} information`}>{detail}</TileInfo>
+      </div>
       <p className={`theme-title mt-2 font-black ${compact ? "text-2xl" : "text-3xl"}`}>{formatNumber(value)}</p>
-      <p className="theme-muted mt-2 text-xs">{detail}</p>
     </div>
   );
 }

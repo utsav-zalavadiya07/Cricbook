@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import Link from "next/link";
 import { useI18n } from "@/modules/i18n/I18nProvider";
@@ -47,12 +48,10 @@ export default function ProfilePage() {
     <div className={`min-h-screen ${isOwner || isAdmin ? "theme-page-owner" : "theme-page-player"}`}>
       <div className="mx-auto max-w-6xl space-y-6 px-4 py-8 sm:px-6">
         <div>
-          <h1 className="theme-title text-3xl font-bold">
-            {isAdmin ? t("profile.adminTitle") : isOwner ? t("profile.ownerTitle") : t("profile.playerTitle")}
-          </h1>
-          <p className="theme-muted mt-1 text-sm">
-            {isAdmin ? t("profile.adminSubtitle") : isOwner ? t("profile.ownerSubtitle") : t("profile.playerSubtitle")}
-          </p>
+          <h1 className="theme-title text-3xl font-bold">{isAdmin ? t("profile.adminTitle") : isOwner ? t("profile.ownerTitle") : t("profile.playerTitle")}
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label={`${isAdmin ? t("profile.adminTitle") : isOwner ? t("profile.ownerTitle") : t("profile.playerTitle")} information`} focusable={false}>{isAdmin ? t("profile.adminSubtitle") : isOwner ? t("profile.ownerSubtitle") : t("profile.playerSubtitle")}</TileInfo>
+              </span></h1>
         </div>
 
         <ProfileCard user={user} role={currentRole} stats={{ bookings: bookings.length, reviews: reviews.length, adminAnalytics, ownerDashboard, ownerTurfs }} />

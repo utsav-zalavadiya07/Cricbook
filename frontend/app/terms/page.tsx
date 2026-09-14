@@ -1,3 +1,4 @@
+import { TileInfo } from "@/components/ui";
 export const metadata = { title: "Terms of Service | Cricbook" };
 
 export default function TermsPage() {
@@ -5,10 +6,10 @@ export default function TermsPage() {
     <main className="theme-page min-h-screen px-4 py-10 sm:px-6">
       <section className="mx-auto max-w-4xl rounded-3xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-6 shadow-xl sm:p-8">
         <p className="text-sm font-black uppercase tracking-[0.24em] text-sky-400">Cricbook Legal</p>
-        <h1 className="theme-title mt-3 text-4xl font-black tracking-tight">Terms of Service</h1>
-        <p className="theme-muted mt-3 leading-7">
-          These terms outline the expected use of Cricbook for turf booking, owner operations, payments, tournaments, and related platform features.
-        </p>
+        <h1 className="theme-title mt-3 text-4xl font-black tracking-tight">Terms of Service
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Terms of Service information" focusable={false}>These terms outline the expected use of Cricbook for turf booking, owner operations, payments, tournaments, and related platform features.</TileInfo>
+              </span></h1>
         <div className="mt-8 grid gap-5">
           {[
             ["Account responsibility", "Keep your login details secure, provide accurate profile information, and use the correct player or owner portal for your role."],

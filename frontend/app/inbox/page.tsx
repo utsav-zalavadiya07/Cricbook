@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
@@ -149,8 +150,10 @@ export default function InboxCenterPage() {
         <div className="flex items-center gap-3">
           <span className="text-xl">📥</span>
           <div>
-            <h1 className="text-base font-bold text-white tracking-wide">Communication Hub</h1>
-            <p className="text-[10px] text-slate-400">Manage transactional inbox alerts and campaigns.</p>
+            <h1 className="text-base font-bold text-white tracking-wide">Communication Hub
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Communication Hub information" focusable={false}>Manage transactional inbox alerts and campaigns.</TileInfo>
+              </span></h1>
           </div>
         </div>
         <div className="flex gap-2">

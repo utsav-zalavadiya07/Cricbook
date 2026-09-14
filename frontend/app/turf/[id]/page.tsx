@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -155,8 +156,10 @@ export default function TurfDetailPage() {
 
               <div className="flex flex-col gap-5 p-6 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                  <h1 className="theme-title text-3xl font-bold">{turf.name}</h1>
-                  <p className="theme-muted mt-2 text-sm">{turf.city} / {turf.location}</p>
+                  <h1 className="theme-title text-3xl font-bold">{turf.name}
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="{turf.name} information" focusable={false}>{turf.city} / {turf.location}</TileInfo>
+              </span></h1>
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Pill>{turf.pitchType}</Pill>
                     <Pill>{turf.boxType}</Pill>

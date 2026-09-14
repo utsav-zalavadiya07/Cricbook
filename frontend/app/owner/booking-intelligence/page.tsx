@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
@@ -30,8 +31,10 @@ export default function OwnerBookingIntelligencePage() {
       <div className="space-y-6">
         <section className="theme-panel rounded-[2rem] p-6 sm:p-8">
           <p className="theme-accent-owner text-xs font-black uppercase tracking-[0.34em]">{t("rebook.ownerEpic")}</p>
-          <h1 className="theme-title mt-3 text-3xl font-black sm:text-5xl">{t("rebook.ownerTitle")}</h1>
-          <p className="theme-muted mt-3 max-w-3xl text-sm leading-6">{t("rebook.ownerSubtitle")}</p>
+          <h1 className="theme-title mt-3 text-3xl font-black sm:text-5xl">{t("rebook.ownerTitle")}
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Page information" focusable={false}>{t("rebook.ownerSubtitle")}</TileInfo>
+              </span></h1>
         </section>
 
         {status && <div className="theme-panel-soft rounded-2xl p-4 text-sm font-semibold text-amber-600 dark:text-amber-200">{status}</div>}

@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
@@ -118,8 +119,12 @@ export default function OwnerBookingsPage() {
         <header className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.28em] text-sky-400">Owner Operations</p>
-            <h1 className="theme-title mt-2 text-3xl font-black">Booking command center</h1>
-            <p className="theme-muted mt-1 text-sm">Manage arrivals, check-ins, no-shows, cancellations, revenue, and booking history from one workspace.</p>
+            <div>
+            <h1 className="theme-title mt-2 text-3xl font-black">Booking command center
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Booking command center information" focusable={false}>Manage arrivals, check-ins, no-shows, cancellations, revenue, and booking history from one workspace.</TileInfo>
+              </span></h1>
+          </div>
           </div>
           <div className="theme-card rounded-2xl px-4 py-3 text-sm">
             <span className="theme-soft">Visible value</span>

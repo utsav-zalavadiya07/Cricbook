@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import { getPricingPage, startSubscription } from "@/modules/membership/services/subscriptionService";
@@ -42,12 +43,10 @@ export default function PricingPage() {
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400 border border-emerald-500/20">
             A/B Pricing Variant: <span className="font-extrabold">{variant}</span>
           </span>
-          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
-            Choose Your <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">Power Tier</span>
-          </h1>
-          <p className="mx-auto max-w-3xl text-base text-slate-400">
-            Unlock priority booking slots, advanced report counters, turf search prioritization, and custom campaigns.
-          </p>
+          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">Choose Your <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">Power Tier</span>
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Choose Your Power Tier information" focusable={false}>Unlock priority booking slots, advanced report counters, turf search prioritization, and custom campaigns.</TileInfo>
+              </span></h1>
 
           <p className="mx-auto max-w-2xl text-xs font-semibold uppercase tracking-[0.28em] text-emerald-300">
             Player premium only

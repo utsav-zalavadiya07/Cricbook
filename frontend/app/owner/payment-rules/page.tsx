@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
@@ -36,8 +37,12 @@ export default function OwnerPaymentRulesPage() {
       <div className="space-y-6">
         <section className="theme-panel rounded-[2rem] p-6 sm:p-8">
           <p className="theme-soft text-xs font-bold uppercase tracking-[0.28em]">EPIC 28</p>
-          <h1 className="theme-title mt-3 text-3xl font-black sm:text-5xl">Payment Rules</h1>
-          <p className="theme-muted mt-3 max-w-3xl text-sm leading-6">Protect owner revenue with minimum collection thresholds, smart reminders, and split-payment visibility.</p>
+          <div className="mt-3">
+            <h1 className="theme-title text-3xl font-black sm:text-5xl">Payment Rules
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Payment Rules information" focusable={false}>Protect owner revenue with minimum collection thresholds, smart reminders, and split-payment visibility.</TileInfo>
+              </span></h1>
+          </div>
         </section>
         {status && <div className="theme-panel-soft rounded-2xl p-4 text-sm font-semibold text-sky-600 dark:text-sky-300">{status}</div>}
         <div className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">

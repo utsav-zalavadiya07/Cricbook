@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import { useI18n } from "@/modules/i18n/I18nProvider";
@@ -38,8 +39,10 @@ export default function WeatherPage() {
           <p className="theme-accent text-xs font-black uppercase tracking-[0.34em]">{t("weather.epic")}</p>
           <div className="mt-4 grid gap-8 xl:grid-cols-[1.3fr_0.7fr] xl:items-end">
             <div>
-              <h1 className="theme-title text-4xl font-black sm:text-6xl">{t("weather.title")}</h1>
-              <p className="theme-muted mt-4 max-w-3xl text-base leading-7">{t("weather.subtitle")}</p>
+              <h1 className="theme-title text-4xl font-black sm:text-6xl">{t("weather.title")}
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Page information" focusable={false}>{t("weather.subtitle")}</TileInfo>
+              </span></h1>
             </div>
             <div className="theme-panel-soft rounded-3xl p-5">
               <label className="theme-title text-xs font-black uppercase tracking-wider">{t("label.city")}</label>

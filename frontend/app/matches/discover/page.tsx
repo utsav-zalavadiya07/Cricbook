@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { FormEvent, useEffect, useState } from "react";
 import {
@@ -92,10 +93,10 @@ export default function MatchDiscoverPage() {
           <p className="theme-accent text-xs font-black uppercase tracking-[0.34em]">EPIC 24 · Smart Matchmaking</p>
           <div className="mt-3 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
             <div>
-              <h1 className="theme-title text-4xl font-black tracking-tight sm:text-6xl">Fill your match without WhatsApp spam.</h1>
-              <p className="theme-muted mt-4 max-w-3xl text-base leading-7">
-                Create open cricket matches, rank nearby available players, filter by trust score, and let players join instantly.
-              </p>
+              <h1 className="theme-title text-4xl font-black tracking-tight sm:text-6xl">Fill your match without WhatsApp spam.
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Fill your match without WhatsApp spam. information" focusable={false}>Create open cricket matches, rank nearby available players, filter by trust score, and let players join instantly.</TileInfo>
+              </span></h1>
             </div>
             <div className="theme-card-strong rounded-3xl p-4">
               <div className="grid gap-3 sm:grid-cols-3">
