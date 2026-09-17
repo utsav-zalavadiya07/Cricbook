@@ -22,6 +22,8 @@ export const getCurrentSubscription = (type?: SubscriptionPlanType) =>
   api.get("/subscription/current", { params: type ? { type } : undefined });
 export const cancelSubscription = (type?: SubscriptionPlanType) =>
   api.post("/subscription/cancel", null, { params: type ? { type } : undefined });
+export const setAutoRenew = (enabled: boolean, type?: SubscriptionPlanType) =>
+  api.post("/subscription/auto-renew", null, { params: { enabled, ...(type ? { type } : {}) } });
 
 // BILLING & INVOICES
 export const getMyInvoices = (type?: SubscriptionPlanType) =>

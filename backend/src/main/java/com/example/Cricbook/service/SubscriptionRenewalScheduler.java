@@ -91,8 +91,16 @@ public class SubscriptionRenewalScheduler {
                 // Charge successful
                 walletService.debitWallet(user, price, "RENEWAL_CHARGE", "Auto-renew " + plan.getName() + " subscription");
 
-                sub.setStartDate(LocalDateTime.now());
-                sub.setEndDate(LocalDateTime.now().plusDays(plan.getDurationDays()));
+                LocalDateTime renewalStart = LocalDateTime.now().withNano(0);
+                LocalDateTime renewalEnd;
+                if (plan.getDurationDays() > 0 && plan.getDurationDays() % 30 == 0 && plan.getDurationDays() <= 365) {
+                    renewalEnd = renewalStart.plusMonths(plan.getDurationDays() / 30);
+                } else {
+                    renewalEnd = renewalStart.plusDays(plan.getDurationDays());
+                }
+
+                sub.setStartDate(renewalStart);
+                sub.setEndDate(renewalEnd);
                 sub.setStatus(MembershipStatus.ACTIVE);
                 subscriptionRepository.save(sub);
 

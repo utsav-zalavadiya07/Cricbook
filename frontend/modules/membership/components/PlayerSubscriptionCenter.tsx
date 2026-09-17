@@ -2,9 +2,18 @@
 import { TileInfo } from "@/components/ui";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { useI18n } from "@/modules/i18n/I18nProvider";
-import { cancelSubscription, downloadInvoice, getCurrentSubscription, getMyInvoices, triggerRenewalTest } from "@/modules/membership/services/subscriptionService";
+import {
+  cancelSubscription,
+  downloadInvoice,
+  getCurrentSubscription,
+  getMyInvoices,
+  setAutoRenew,
+  triggerRenewalTest,
+} from "@/modules/membership/services/subscriptionService";
 import type { Invoice, Subscription } from "@/modules/membership/types";
+import { formatDateTime } from "@/utils/dateFormatter";
 
 const PLAYER_SUBSCRIPTION_TYPE = "USER_PREMIUM" as const;
 
@@ -14,6 +23,10 @@ export default function PlayerSubscriptionCenter() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+
+  // Auto-renew confirmation modal state
+  const [confirmAutoRenewModal, setConfirmAutoRenewModal] = useState<"ENABLE" | "DISABLE" | null>(null);
+  const [isTogglingAutoRenew, setIsTogglingAutoRenew] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -59,16 +72,30 @@ export default function PlayerSubscriptionCenter() {
     return () => window.clearTimeout(timer);
   }, [loadData]);
 
-  const handleCancelAutoRenew = () => {
-    cancelSubscription(PLAYER_SUBSCRIPTION_TYPE)
-      .then(() => {
-        setMessage({ text: t("subscription.success.autoRenewOff"), type: "success" });
-        loadData();
-      })
-      .catch((err) => {
-        const errorMsg = err.response?.data?.error || t("subscription.error.autoRenewOff");
-        setMessage({ text: errorMsg, type: "error" });
+  const handleConfirmToggleAutoRenew = async () => {
+    if (!confirmAutoRenewModal) return;
+    const targetEnable = confirmAutoRenewModal === "ENABLE";
+    setIsTogglingAutoRenew(true);
+    setMessage(null);
+    try {
+      await setAutoRenew(targetEnable, PLAYER_SUBSCRIPTION_TYPE);
+      setMessage({
+        text: targetEnable
+          ? "Auto-renewal successfully enabled! Your plan will renew automatically on expiry."
+          : "Auto-renewal turned off. Your plan remains active until its expiration date.",
+        type: "success",
       });
+      setConfirmAutoRenewModal(null);
+      await loadData();
+    } catch (err: unknown) {
+      const apiErr = err as { response?: { data?: { message?: string; error?: string } } };
+      setMessage({
+        text: apiErr.response?.data?.message || apiErr.response?.data?.error || "Failed to update auto-renewal setting.",
+        type: "error",
+      });
+    } finally {
+      setIsTogglingAutoRenew(false);
+    }
   };
 
   const handleTriggerRenewTest = () => {
@@ -99,11 +126,24 @@ export default function PlayerSubscriptionCenter() {
   return (
     <main className="theme-page-player min-h-screen px-4 py-6 sm:px-6 lg:px-8">
       <div className="w-full space-y-8">
-        <div>
-          <h1 className="theme-title text-3xl font-extrabold tracking-tight">{t("subscription.title")}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="theme-title text-3xl font-extrabold tracking-tight">
+              {t("subscription.title")}
               <span className="inline-flex align-middle ml-3 mb-1">
-                <TileInfo label="Page information" focusable={false}>{t("subscription.subtitle")}</TileInfo>
-              </span></h1>
+                <TileInfo label="Page information" focusable={false}>
+                  {t("subscription.subtitle")}
+                </TileInfo>
+              </span>
+            </h1>
+          </div>
+
+          <Link
+            href="/pricing"
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-500/15 transition hover:opacity-90 active:scale-95"
+          >
+            Upgrade or Change Plan →
+          </Link>
         </div>
 
         {message && (
@@ -141,22 +181,43 @@ export default function PlayerSubscriptionCenter() {
                     <PlanDetail label={t("subscription.status")} value={sub.status} valueClassName={sub.status === "ACTIVE" ? "text-emerald-400" : "text-amber-400"} />
                     <PlanDetail label={t("subscription.price")} value={`Rs ${sub.price}`} />
                     <PlanDetail label={t("subscription.billingPeriod")} value={`${sub.durationDays} Days`} />
-                    <PlanDetail label={t("subscription.startsAt")} value={sub.startDate.slice(0, 10)} mutedValue />
-                    <PlanDetail label={t("subscription.endsAt")} value={sub.endDate.slice(0, 10)} mutedValue />
+                    <PlanDetail label={t("subscription.startsAt")} value={formatDateTime(sub.startDate)} mutedValue />
+                    <PlanDetail label={t("subscription.endsAt")} value={formatDateTime(sub.endDate)} mutedValue />
                     <PlanDetail
                       label={t("subscription.autoRenewal")}
                       value={sub.autoRenew ? t("subscription.enabled") : t("subscription.disabled")}
-                      valueClassName={sub.autoRenew ? "text-emerald-400" : "text-red-400"}
+                      valueClassName={sub.autoRenew ? "text-emerald-400" : "text-amber-400"}
                     />
                   </div>
 
-                  {sub.autoRenew && sub.price > 0 && (
-                    <button
-                      onClick={handleCancelAutoRenew}
-                      className="w-full mt-4 rounded-xl border border-red-500/20 bg-red-500/15 py-2.5 text-xs font-bold text-red-300 transition-all hover:bg-red-500/25 active:scale-95"
-                    >
-                      {t("subscription.turnOffAutoRenew")}
-                    </button>
+                  <Link
+                    href="/pricing"
+                    className="block text-center w-full mt-3 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 py-2.5 text-xs font-bold text-emerald-300 transition-all hover:bg-emerald-500/30 active:scale-95"
+                  >
+                    Manage / Upgrade Tier
+                  </Link>
+
+                  {/* Auto-Renewal Toggle Button (Always visible for paid plans) */}
+                  {Number(sub.price || 0) > 0 && (
+                    <div className="pt-1">
+                      {sub.autoRenew ? (
+                        <button
+                          type="button"
+                          onClick={() => setConfirmAutoRenewModal("DISABLE")}
+                          className="w-full rounded-xl border border-red-500/25 bg-red-500/10 py-2.5 text-xs font-bold text-red-300 transition-all hover:bg-red-500/20 active:scale-95 flex items-center justify-center gap-2"
+                        >
+                          Turn Off Auto-Renew
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setConfirmAutoRenewModal("ENABLE")}
+                          className="w-full rounded-xl border border-emerald-500/30 bg-emerald-500/15 py-2.5 text-xs font-bold text-emerald-300 transition-all hover:bg-emerald-500/25 active:scale-95 flex items-center justify-center gap-2 shadow-sm shadow-emerald-500/10"
+                        >
+                          ↻ Enable Auto-Renew
+                        </button>
+                      )}
+                    </div>
                   )}
 
                   <div className="theme-border border-t pt-4 space-y-2">
@@ -199,6 +260,107 @@ export default function PlayerSubscriptionCenter() {
           </div>
         )}
       </div>
+
+      {/* Auto-Renewal Confirmation Dialog */}
+      {/* Auto-Renewal Confirmation Dialog */}
+      {confirmAutoRenewModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 backdrop-blur-[2px] p-4 animate-in fade-in duration-150"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isTogglingAutoRenew) {
+              setConfirmAutoRenewModal(null);
+            }
+          }}
+        >
+          <div className="relative w-full max-w-md rounded-2xl border border-slate-700/60 bg-[#0f172a]/95 p-6 sm:p-7 shadow-2xl shadow-black/40 space-y-5 text-white">
+            <button
+              onClick={() => setConfirmAutoRenewModal(null)}
+              disabled={isTogglingAutoRenew}
+              aria-label="Close dialog"
+              className="absolute top-4 right-4 rounded-lg p-1.5 text-slate-400 hover:text-white hover:bg-white/10 transition"
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Centered Icon Badge */}
+            {confirmAutoRenewModal === "ENABLE" ? (
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shadow-lg shadow-emerald-500/5">
+                <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </div>
+            ) : (
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 shadow-lg shadow-rose-500/5">
+                <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+              </div>
+            )}
+
+            {/* Header Content */}
+            <div className="text-center space-y-1.5">
+              <h3 className="text-xl font-bold tracking-tight text-white">
+                {confirmAutoRenewModal === "ENABLE" ? "Enable Automatic Renewal?" : "Turn Off Automatic Renewal?"}
+              </h3>
+              <p className="text-xs text-slate-300 max-w-sm mx-auto leading-relaxed">
+                {confirmAutoRenewModal === "ENABLE"
+                  ? `Your ${sub?.planName} plan will renew automatically on ${formatDateTime(sub?.endDate)} using your wallet balance.`
+                  : `Your current membership perks remain fully active until ${formatDateTime(sub?.endDate)}, but the plan will expire without any automatic wallet deductions.`}
+              </p>
+            </div>
+
+            {/* Plan Info Box */}
+            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3.5 space-y-2 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">Current Plan:</span>
+                <span className="font-bold text-white">{sub?.planName} Plan</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">Valid Until:</span>
+                <span className="font-semibold text-emerald-400">{formatDateTime(sub?.endDate)}</span>
+              </div>
+              <div className="flex justify-between items-center border-t border-white/5 pt-2">
+                <span className="text-slate-400">Auto-Renewal:</span>
+                <span className={`font-bold ${confirmAutoRenewModal === "ENABLE" ? "text-emerald-400" : "text-rose-400"}`}>
+                  {confirmAutoRenewModal === "ENABLE" ? "Will be Enabled" : "Will be Disabled"}
+                </span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-1">
+              <button
+                type="button"
+                onClick={() => setConfirmAutoRenewModal(null)}
+                disabled={isTogglingAutoRenew}
+                className="flex-1 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-semibold text-slate-300 hover:bg-white/10 hover:text-white transition active:scale-95 disabled:opacity-50"
+              >
+                {confirmAutoRenewModal === "ENABLE" ? "Keep Disabled" : "Keep Auto-Renew"}
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmToggleAutoRenew}
+                disabled={isTogglingAutoRenew}
+                className={`flex-1 rounded-xl py-2.5 text-xs font-bold text-white shadow-lg transition active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 ${
+                  confirmAutoRenewModal === "ENABLE"
+                    ? "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/20"
+                    : "bg-rose-600 hover:bg-rose-500 shadow-rose-600/20"
+                }`}
+              >
+                {isTogglingAutoRenew ? (
+                  <span className="h-3.5 w-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin"></span>
+                ) : confirmAutoRenewModal === "ENABLE" ? (
+                  "Confirm & Enable"
+                ) : (
+                  "Yes, Turn Off"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
@@ -235,7 +397,7 @@ function InvoiceRow({
           </span>
         </div>
         <h4 className="theme-title text-sm font-bold">{invoice.planName} Plan</h4>
-        <p className="theme-soft text-2xs">{issuedLabel}: {invoice.createdAt.slice(0, 10)}</p>
+        <p className="theme-soft text-2xs">{issuedLabel}: {formatDateTime(invoice.createdAt)}</p>
       </div>
 
       <div className="flex items-center justify-between sm:justify-end gap-6">

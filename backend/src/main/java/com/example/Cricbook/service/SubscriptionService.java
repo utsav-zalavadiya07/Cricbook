@@ -35,6 +35,7 @@ public class SubscriptionService {
     private final FeatureAccessRepository featureAccessRepository;
     private final WalletRepository walletRepository;
     private final RevenueExperimentService revenueExperimentService;
+    private final org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
 
     @Transactional
     public void ensureDefaultPlans() {
@@ -119,6 +120,35 @@ public class SubscriptionService {
             }
         }
 
+        // Validate single active plan and tier upgrade rules before deducting money
+        List<Subscription> activeSubs = subscriptionRepository.findDetailedActiveSubscriptionsByType(
+                user.getId(), MembershipStatus.ACTIVE, LocalDateTime.now(), plan.getType());
+
+        Subscription activePaidSub = activeSubs.stream()
+                .filter(s -> s.getPlan() != null && s.getPlan().getPrice().compareTo(BigDecimal.ZERO) > 0)
+                .max(java.util.Comparator.comparing(s -> s.getPlan().getPrice()))
+                .orElse(null);
+
+        if (activePaidSub != null) {
+            MembershipPlan currentPlan = activePaidSub.getPlan();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            String formattedExpiry = activePaidSub.getEndDate() != null
+                    ? activePaidSub.getEndDate().format(formatter)
+                    : "the end of your billing cycle";
+
+            // Rule 1: Cannot repurchase the same plan while it is active
+            if (currentPlan.getId().equals(plan.getId()) || currentPlan.getName().equalsIgnoreCase(plan.getName())) {
+                throw new ApiException("You already have an active " + currentPlan.getName() + " plan valid until " + formattedExpiry + ". You cannot repurchase the same plan while it is active.");
+            }
+
+            // Rule 2: Cannot downgrade to a lower plan while current plan is active
+            if (plan.getPrice().compareTo(currentPlan.getPrice()) <= 0) {
+                throw new ApiException("You cannot switch to a lower plan (" + plan.getName() + ") while your " + currentPlan.getName() + " plan is active until " + formattedExpiry + ". You can switch to another plan once your current plan expires.");
+            }
+
+            log.info("User {} is upgrading subscription from {} to {}", user.getEmail(), currentPlan.getName(), plan.getName());
+        }
+
         // Apply A/B price experiment (15% discount for PRO plan under Variant B)
         BigDecimal price = plan.getPrice();
         String variant = revenueExperimentService.getAssignedVariant(user.getId());
@@ -150,17 +180,20 @@ public class SubscriptionService {
             walletService.debitWallet(user, price, "SUBSCRIPTION_CHARGE", "Purchased " + plan.getName() + " membership");
         }
 
-        // Expire any existing active subscription of the same type
-        List<Subscription> activeSubs = subscriptionRepository.findActiveSubscriptions(user.getId(), MembershipStatus.ACTIVE, LocalDateTime.now());
+        // Supersede any previous active subscriptions of the same type
         for (Subscription sub : activeSubs) {
-            if (sub.getPlan().getType() == plan.getType()) {
-                sub.setStatus(MembershipStatus.CANCELLED);
-                subscriptionRepository.save(sub);
-            }
+            sub.setStatus(MembershipStatus.CANCELLED);
+            subscriptionRepository.save(sub);
         }
 
-        LocalDateTime startDate = LocalDateTime.now();
-        LocalDateTime endDate = startDate.plusDays(plan.getDurationDays());
+        // Calculate exact start and expiration dates (matching exact day and time)
+        LocalDateTime startDate = LocalDateTime.now().withNano(0);
+        LocalDateTime endDate;
+        if (plan.getDurationDays() > 0 && plan.getDurationDays() % 30 == 0 && plan.getDurationDays() <= 365) {
+            endDate = startDate.plusMonths(plan.getDurationDays() / 30);
+        } else {
+            endDate = startDate.plusDays(plan.getDurationDays());
+        }
 
         Subscription subscription = subscriptionRepository.save(Subscription.builder()
                 .user(user)
@@ -180,6 +213,12 @@ public class SubscriptionService {
 
         // Calculate 18% GST Tax
         BigDecimal taxAmount = price.multiply(BigDecimal.valueOf(0.18)).setScale(2, RoundingMode.HALF_UP);
+
+        try {
+            jdbcTemplate.execute("ALTER TABLE invoices MODIFY COLUMN booking_id bigint DEFAULT NULL");
+        } catch (Exception e) {
+            log.warn("Could not alter invoices table", e);
+        }
 
         // Generate Invoice
         String invoiceNum = "INV-" + System.currentTimeMillis() + "-" + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
@@ -260,14 +299,19 @@ public class SubscriptionService {
 
     @Transactional
     public Subscription cancelSubscription(String username, String type) {
+        return setAutoRenew(username, type, false);
+    }
+
+    @Transactional
+    public Subscription setAutoRenew(String username, String type, boolean enabled) {
         User user = userRepository.findByEmailOrPhone(username)
                 .orElseThrow(() -> new ApiException("User not found"));
 
         MembershipPlanType planType = resolvePlanType(type, user);
         Subscription activeSub = subscriptionRepository.findFirstDetailedActiveSubscriptionByType(user.getId(), LocalDateTime.now(), planType)
-                .orElseThrow(() -> new ApiException("No active paid subscription found to cancel"));
+                .orElseThrow(() -> new ApiException("No active paid subscription found"));
 
-        activeSub.setAutoRenew(false);
+        activeSub.setAutoRenew(enabled);
         return subscriptionRepository.save(activeSub);
     }
 
