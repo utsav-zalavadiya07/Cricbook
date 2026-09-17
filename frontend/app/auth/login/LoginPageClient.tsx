@@ -38,8 +38,8 @@ export default function LoginPageClient() {
     const requestedPath = safeNextPath(searchParams.get("next"), "");
     const fallbackPath = getLandingPathForRole(role);
     const nextPath = requestedPath && canRoleAccessPath(role, requestedPath) ? requestedPath : fallbackPath;
-    router.replace(nextPath);
-  }, [hydrated, role, router, searchParams, token]);
+    window.location.replace(nextPath);
+  }, [hydrated, role, searchParams, token]);
 
   const handleRoleChange = (role: LoginRole) => {
     setSelectedRole(role);

@@ -19,6 +19,7 @@ import {
 } from "@/modules/owner/services/ownerService";
 import { Booking } from "@/modules/booking/types/booking.types";
 import { useToast } from "@/modules/ui/ToastProvider";
+import { formatDate, formatDateTime } from "@/utils/dateFormatter";
 
 const STATUS_FILTERS = [
   { label: "All", value: "" },
@@ -251,7 +252,7 @@ export default function OwnerBookingsPage() {
                       <div key={item.id} className="theme-panel-soft rounded-2xl p-3">
                         <p className="theme-title text-sm font-bold">{item.eventType.replaceAll("_", " ")}</p>
                         <p className="theme-muted mt-1 text-xs">{item.details}</p>
-                        <p className="theme-soft mt-2 text-[11px]">{item.performedBy} · {item.createdAt ? new Date(item.createdAt).toLocaleString() : "--"}</p>
+                        <p className="theme-soft mt-2 text-[11px]">{item.performedBy} · {item.createdAt ? formatDateTime(item.createdAt) : "--"}</p>
                       </div>
                     ))}
                   </div>
@@ -302,7 +303,7 @@ function BookingRow({
             <p className="theme-title font-black">{booking.turfName || `Turf #${booking.turfId}`}</p>
             <span className={`rounded-full px-3 py-1 text-[11px] font-black ${statusTone(booking.status)}`}>{booking.status.replaceAll("_", " ")}</span>
           </div>
-          <p className="theme-muted mt-1 text-sm">{booking.bookingDate} · {booking.startTime || "--"} - {booking.endTime || "--"}</p>
+          <p className="theme-muted mt-1 text-sm">{formatDate(booking.bookingDate)} · {booking.startTime || "--"} - {booking.endTime || "--"}</p>
           <p className="theme-soft mt-1 text-xs">
             #{booking.id} · {booking.playerName || "Player"} · {booking.playerPhone || booking.playerEmail || "No contact"}
           </p>

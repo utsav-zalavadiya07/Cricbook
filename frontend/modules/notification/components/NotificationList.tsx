@@ -163,11 +163,13 @@ export default function NotificationList() {
       unread: Math.max(0, prev.unread - 1),
       read: prev.read + 1,
     }));
+    window.dispatchEvent(new Event("notifications-updated"));
   };
 
   const handleDelete = (id: number) => {
     setNotifications((prev) => prev.filter((notification) => notification.id !== id));
     setSelectedIds((prev) => prev.filter((selectedId) => selectedId !== id));
+    window.dispatchEvent(new Event("notifications-updated"));
   };
 
   const handleMarkAll = async () => {
@@ -176,6 +178,7 @@ export default function NotificationList() {
       await markAllAsRead();
       setNotifications((prev) => prev.map((notification) => ({ ...notification, status: "READ", read: true, readAt: new Date().toISOString() })));
       setSummary((prev) => ({ ...prev, read: prev.read + prev.unread, unread: 0 }));
+      window.dispatchEvent(new Event("notifications-updated"));
     } finally {
       setBusy(null);
     }
@@ -187,6 +190,7 @@ export default function NotificationList() {
     try {
       await markManyAsRead(selectedIds);
       await refreshAfterAction();
+      window.dispatchEvent(new Event("notifications-updated"));
     } finally {
       setBusy(null);
     }
@@ -198,6 +202,7 @@ export default function NotificationList() {
     try {
       await deleteManyNotifications(selectedIds);
       await refreshAfterAction();
+      window.dispatchEvent(new Event("notifications-updated"));
     } finally {
       setBusy(null);
     }

@@ -8,6 +8,8 @@ import { TileInfo } from "@/components/ui";
 import { PageMetricCard, PageMetricGrid, PageSection, PageSectionHeader } from "@/components/ui/PageSurface";
 import { getOwnerDashboard } from "@/modules/owner/services/ownerService";
 import { Booking } from "@/modules/booking/types/booking.types";
+
+import { formatDate } from "@/utils/dateFormatter";
 import { Turf } from "@/modules/turf/types/turf.types";
 
 type AnalyticsPoint = {
@@ -22,6 +24,8 @@ type OwnerDashboard = {
   todayRevenue: number;
   monthlyRevenue: number;
   totalRevenue: number;
+  last14DaysRevenue: number;
+  revenueGrowthPercent: number;
   occupancyPercent: number;
   cancellationPercent: number;
   activeTurfs: number;
@@ -81,9 +85,44 @@ export default function OwnerDashboardPage() {
 
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
               <section className="theme-panel flex min-h-[24rem] flex-col rounded-2xl p-4 sm:p-5 xl:col-span-2">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <h2 className="theme-title break-words text-lg font-bold">{t("owner.section.revenueTrend")}</h2>
-                  <span className="theme-soft text-xs">{t("owner.section.last14Days")}</span>
+                <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/5 pb-6">
+                  <div>
+                    <h2 className="theme-title text-2xl font-bold">
+                      {t("owner.section.revenueTrend") || "Revenue Trend"}
+                      <span className="inline-flex align-middle ml-3 mb-1">
+                        <TileInfo label="Revenue Trend information" focusable={false}>Visual breakdown of revenue generated over the last 14 days.</TileInfo>
+                      </span>
+                    </h2>
+                    <p className="theme-muted mt-1 text-sm">Daily revenue trend · {t("owner.section.last14Days") || "Last 14 days"}</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-8">
+                    <div className="flex flex-col">
+                      <span className="theme-soft text-xs font-medium">Total Revenue</span>
+                      <span className="theme-title mt-1 text-xl font-bold">{t("common.currencyRs")}{(dashboard.last14DaysRevenue || 0).toLocaleString()}</span>
+                      <span className={`mt-1 flex items-center gap-1 text-xs font-semibold ${(dashboard.revenueGrowthPercent || 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                        {(dashboard.revenueGrowthPercent || 0) !== 0 && (
+                          <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d={(dashboard.revenueGrowthPercent || 0) > 0 ? "M5 10l7-7m0 0l7 7m-7-7v18" : "M19 14l-7 7m0 0l-7-7m7 7V3"} />
+                          </svg>
+                        )}
+                        {(dashboard.revenueGrowthPercent || 0) > 0 ? '+' : ''}{(dashboard.revenueGrowthPercent || 0)}%
+                      </span>
+                    </div>
+                    <div className="theme-panel-soft h-12 w-px" />
+                    <div className="flex flex-col">
+                      <span className="theme-soft text-xs font-medium">Avg. Daily Revenue</span>
+                      <span className="theme-title mt-1 text-xl font-bold">{t("common.currencyRs")}{Math.round((dashboard.last14DaysRevenue || 0) / 14).toLocaleString()}</span>
+                      <span className={`mt-1 flex items-center gap-1 text-xs font-semibold ${(dashboard.revenueGrowthPercent || 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                        {(dashboard.revenueGrowthPercent || 0) !== 0 && (
+                          <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d={(dashboard.revenueGrowthPercent || 0) > 0 ? "M5 10l7-7m0 0l7 7m-7-7v18" : "M19 14l-7 7m0 0l-7-7m7 7V3"} />
+                          </svg>
+                        )}
+                        {(dashboard.revenueGrowthPercent || 0) > 0 ? '+' : ''}{(dashboard.revenueGrowthPercent || 0)}%
+                      </span>
+                    </div>
+                  </div>
                 </div>
                 <OwnerRevenueChart points={dashboard.revenueSeries} currencyLabel={t("common.currencyRs")} />
               </section>
@@ -114,7 +153,7 @@ export default function OwnerDashboardPage() {
                   {dashboard.upcomingBookings.map((booking) => (
                     <div key={booking.id} className="theme-panel-soft rounded-2xl p-4">
                       <p className="theme-title break-words font-semibold">{booking.turfName || `Turf #${booking.turfId}`}</p>
-                      <p className="theme-muted mt-1 break-words text-sm">{booking.bookingDate} - {booking.startTime || "--"} - {booking.endTime || "--"}</p>
+                      <p className="theme-muted mt-1 break-words text-sm">{formatDate(booking.bookingDate)} - {booking.startTime || "--"} - {booking.endTime || "--"}</p>
                     </div>
                   ))}
                 </div>
@@ -135,57 +174,95 @@ export default function OwnerDashboardPage() {
               </section>
             </div>
           </>
+
         )}
       </div>
     </DashboardLayout>
   );
 }
 
+function formatCurrency(val: number, label: string) {
+  if (val >= 1000) return `${label}${(val / 1000).toFixed(1)}K`;
+  return `${label}${val}`;
+}
+
 function OwnerRevenueChart({ points, currencyLabel }: { points: AnalyticsPoint[]; currencyLabel: string }) {
-  const maxRevenue = Math.max(...points.map((item) => Number(item.revenue) || 0), 1);
+  const maxRevenue = Math.max(...points.map((item) => Number(item.revenue) || 0), 1000);
   const hasRevenue = points.some((item) => Number(item.revenue) > 0);
 
-  if (points.length === 0) {
-    return <Empty text="No revenue trend data available yet." />;
-  }
+  // Y-axis ticks (e.g., 50K, 40K, 30K, 20K, 10K, 0)
+  const yTicks = [1, 0.8, 0.6, 0.4, 0.2, 0];
 
   return (
-    <div className="theme-panel-soft mt-5 flex min-h-[18rem] flex-1 rounded-2xl p-4">
-      <div className="relative flex min-h-[16rem] w-full flex-1 overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 bottom-8 top-0 flex flex-col justify-between">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <span key={index} className="border-t border-slate-300/50 dark:border-white/10" />
+    <div className="mt-6 flex flex-1 flex-col">
+      {/* Chart Area */}
+      <div className="relative flex min-h-[20rem] w-full flex-1">
+        {/* Background Grid & Y-Axis */}
+        <div className="absolute inset-x-0 bottom-6 top-6 flex flex-col justify-between">
+          {yTicks.map((tick) => (
+            <div key={tick} className="flex w-full items-center gap-4">
+              <span className="theme-soft w-8 text-right text-xs font-medium">{tick === 0 ? "0" : formatCurrency(maxRevenue * tick, "").replace(currencyLabel, "")}</span>
+              <div className="flex-1 border-t border-dashed border-white/5" />
+            </div>
           ))}
         </div>
 
-        <div className="relative z-10 flex w-full items-stretch gap-2">
+        {/* Bars Container */}
+        <div className="relative z-10 ml-12 flex flex-1 items-stretch justify-around px-2 pb-10 pt-6">
           {points.map((point) => {
             const revenue = Number(point.revenue) || 0;
-            const height = revenue > 0 ? Math.max((revenue / maxRevenue) * 100, 10) : 2;
+            const height = revenue > 0 ? Math.max((revenue / maxRevenue) * 100, 2) : 0;
 
             return (
-              <div key={point.date} className="flex min-w-0 flex-1 flex-col items-center">
-                <div className="flex w-full flex-1 items-end">
-                  <div
-                    className="w-full rounded-t-lg bg-gradient-to-t from-emerald-500/80 to-sky-400/90 shadow-[0_0_22px_rgba(14,165,233,0.18)] transition-[height]"
-                    style={{ height: `${height}%` }}
-                    title={`${currencyLabel} ${revenue}`}
-                  />
+              <div key={point.date} className="group relative flex h-full w-full max-w-[48px] flex-col items-center justify-end">
+                {/* Value above bar */}
+                <div className={`mb-1 whitespace-nowrap text-[11px] font-bold tracking-tight text-teal-400 opacity-0 transition-opacity group-hover:opacity-100 ${revenue > 0 ? "sm:opacity-100" : ""}`}>
+                  {revenue > 0 ? formatCurrency(revenue, currencyLabel) : ""}
                 </div>
-                <span className="theme-soft mt-2 truncate text-[10px]">{point.date.slice(5)}</span>
+                {/* The Bar */}
+                <div
+                  className="z-10 w-full rounded-t-[4px] bg-gradient-to-b from-[#0ea5e9] to-[#10b981] transition-all duration-500 ease-out"
+                  style={{ height: `${height}%`, minHeight: revenue > 0 ? "4px" : "0px" }}
+                  title={`${currencyLabel} ${revenue}`}
+                />
+                {/* X Axis Label */}
+                <div className="theme-soft absolute -bottom-10 flex flex-col items-center whitespace-nowrap text-[10px] leading-tight">
+                  <span className="font-semibold opacity-80">
+                    {(() => {
+                      const [y, m, d] = point.date.split("-").map(Number);
+                      return new Date(y, m - 1, d).toLocaleDateString("en-US", { weekday: "short" });
+                    })()}
+                  </span>
+                  <span>
+                    {point.date.split("-")[2]}-{point.date.split("-")[1]}-{point.date.split("-")[0]}
+                  </span>
+                </div>
               </div>
             );
           })}
-        </div>
-
-        {!hasRevenue && (
-          <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex h-[calc(100%-2rem)] items-center justify-center">
-            <div className="theme-card rounded-2xl px-5 py-3 text-center shadow-sm">
-              <p className="theme-title text-sm font-semibold">No revenue recorded yet</p>
-              <p className="theme-muted mt-1 text-xs">Revenue bars will expand here as bookings are paid.</p>
+          
+          {!hasRevenue && (
+            <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+              <div className="theme-panel-soft rounded-2xl px-6 py-4 text-center backdrop-blur-sm">
+                <p className="theme-title text-sm font-semibold">No revenue recorded yet</p>
+                <p className="theme-muted mt-1 text-xs">Bars will appear here as bookings are paid.</p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+      </div>
+
+      {/* Footer / Legend */}
+      <div className="mt-8 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="h-3 w-3 rounded-full bg-gradient-to-b from-[#0ea5e9] to-[#10b981]" />
+          <span className="theme-title text-sm font-medium">Revenue</span>
+        </div>
+        <button className="theme-panel flex items-center gap-2 rounded-lg border border-white/10 px-3 py-1.5 text-xs font-medium transition hover:border-white/20">
+          <svg className="theme-soft h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+          Last 14 days
+          <svg className="theme-soft ml-1 h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+        </button>
       </div>
     </div>
   );

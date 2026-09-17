@@ -50,7 +50,8 @@ public class OwnerDashboardService {
         List<Booking> revenueBookings = bookings.stream()
                 .filter(booking -> booking.getStatus() == BookingStatus.CONFIRMED
                         || booking.getStatus() == BookingStatus.CHECKED_IN
-                        || booking.getStatus() == BookingStatus.COMPLETED)
+                        || booking.getStatus() == BookingStatus.COMPLETED
+                        || booking.getStatus() == BookingStatus.NO_SHOW)
                 .toList();
 
         BigDecimal totalRevenue = sumRevenue(revenueBookings);
@@ -58,16 +59,42 @@ public class OwnerDashboardService {
                 .filter(booking -> today.equals(booking.getBookingDate()))
                 .toList());
         BigDecimal monthlyRevenue = sumRevenue(revenueBookings.stream()
-                .filter(booking -> !booking.getBookingDate().isBefore(monthStart))
+                .filter(booking -> !booking.getBookingDate().isBefore(monthStart) && !booking.getBookingDate().isAfter(today.withDayOfMonth(today.lengthOfMonth())))
                 .toList());
+
+        LocalDate current14Start = today.minusDays(13);
+        LocalDate previous14Start = today.minusDays(27);
+        LocalDate previous14End = today.minusDays(14);
+
+        BigDecimal last14DaysRevenue = sumRevenue(revenueBookings.stream()
+                .filter(booking -> !booking.getBookingDate().isBefore(current14Start))
+                .toList());
+
+        BigDecimal previous14DaysRevenue = sumRevenue(revenueBookings.stream()
+                .filter(booking -> !booking.getBookingDate().isBefore(previous14Start) && !booking.getBookingDate().isAfter(previous14End))
+                .toList());
+
+        double revenueGrowthPercent = 0.0;
+        if (previous14DaysRevenue.compareTo(BigDecimal.ZERO) > 0) {
+            revenueGrowthPercent = round((last14DaysRevenue.subtract(previous14DaysRevenue).doubleValue() / previous14DaysRevenue.doubleValue()) * 100.0);
+        } else if (last14DaysRevenue.compareTo(BigDecimal.ZERO) > 0) {
+            revenueGrowthPercent = 100.0;
+        }
 
         long totalBookings = bookings.size();
         long cancelled = bookings.stream()
-                .filter(booking -> booking.getStatus() == BookingStatus.CANCELLED || booking.getStatus() == BookingStatus.EXPIRED)
+                .filter(booking -> booking.getStatus() == BookingStatus.CANCELLED || booking.getStatus() == BookingStatus.EXPIRED || booking.getStatus() == BookingStatus.REFUNDED)
                 .count();
 
         double cancellationPercent = totalBookings == 0 ? 0 : round((cancelled * 100.0) / totalBookings);
-        double occupancyPercent = turfs.isEmpty() ? 0 : round((revenueBookings.size() * 100.0) / Math.max(turfs.size() * 30.0, 1.0));
+
+        List<Booking> currentMonthBookings = revenueBookings.stream()
+                .filter(booking -> !booking.getBookingDate().isBefore(monthStart) && !booking.getBookingDate().isAfter(today.withDayOfMonth(today.lengthOfMonth())))
+                .toList();
+        
+        // Use an estimated max capacity of 30 days * 10 slots = 300 per turf
+        double maxMonthlyCapacity = Math.max(turfs.size() * 300.0, 1.0);
+        double occupancyPercent = turfs.isEmpty() ? 0 : round((currentMonthBookings.size() * 100.0) / maxMonthlyCapacity);
 
         TurfResponse popularTurf = turfs.stream()
                 .max(Comparator.comparing(turf -> turf.getTotalReviews() == null ? 0 : turf.getTotalReviews()))
@@ -75,11 +102,13 @@ public class OwnerDashboardService {
                 .orElse(null);
 
         return OwnerDashboardResponse.builder()
-                .todayBookings(bookings.stream().filter(booking -> today.equals(booking.getBookingDate())).count())
+                .todayBookings(bookings.stream().filter(booking -> today.equals(booking.getBookingDate()) && booking.getStatus() != BookingStatus.CANCELLED && booking.getStatus() != BookingStatus.EXPIRED && booking.getStatus() != BookingStatus.REFUNDED).count())
                 .totalBookings(totalBookings)
                 .todayRevenue(todayRevenue)
                 .monthlyRevenue(monthlyRevenue)
                 .totalRevenue(totalRevenue)
+                .last14DaysRevenue(last14DaysRevenue)
+                .revenueGrowthPercent(revenueGrowthPercent)
                 .occupancyPercent(occupancyPercent)
                 .cancellationPercent(cancellationPercent)
                 .activeTurfs(turfs.stream().filter(turf -> turf.getStatus() == TurfStatus.ACTIVE).count())
@@ -87,7 +116,7 @@ public class OwnerDashboardService {
                 .maintenanceTurfs(turfs.stream().filter(turf -> turf.getStatus() == TurfStatus.MAINTENANCE).count())
                 .popularTurf(popularTurf)
                 .revenueSeries(buildRevenueSeries(revenueBookings, today.minusDays(13), today))
-                .upcomingBookings(bookingService.getOwnerBookings(BookingStatus.CONFIRMED).stream().limit(8).toList())
+                .upcomingBookings(bookingService.getUpcomingOwnerBookings(username).stream().limit(8).toList())
                 .recentReviews(reviewService.getOwnerReviews(username).stream().limit(6).toList())
                 .build();
     }

@@ -1,5 +1,7 @@
 import type { Booking } from "@/modules/booking/types/booking.types";
 
+import { formatDate } from "@/utils/dateFormatter";
+
 type BookingListProps = {
   bookings?: Booking[];
 };
@@ -20,7 +22,7 @@ export default function BookingList({ bookings }: BookingListProps) {
           <div>
             <h4 className="text-lg font-semibold text-white">{b.turfName || `Turf #${b.turfId}`}</h4>
             <p className="mt-1 text-sm text-slate-400">
-              {b.startTime || "--"} to {b.endTime || "--"} - {b.bookingDate ? new Date(b.bookingDate).toLocaleDateString("en-IN") : "Date pending"}
+              {b.startTime || "--"} to {b.endTime || "--"} - {b.bookingDate ? formatDate(b.bookingDate) : "Date pending"}
             </p>
             <p className="text-sm text-slate-500">{b.turfCity || b.turfLocation || "Location pending"}</p>
           </div>

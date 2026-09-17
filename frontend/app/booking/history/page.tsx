@@ -8,6 +8,7 @@ import { DataGrid, type DataGridColumn } from "@/components/ui/DataGrid";
 import { cancelBooking, getMyBookings } from "@/modules/booking/services/bookingService";
 import { Booking } from "@/modules/booking/types/booking.types";
 import { useToast } from "@/modules/ui/ToastProvider";
+import { formatDate, formatDateTime } from "@/utils/dateFormatter";
 
 const statusColors: Record<string, string> = {
   CONFIRMED: "border-emerald-500/30 bg-emerald-500/12 text-emerald-600 dark:text-emerald-300",
@@ -318,19 +319,7 @@ function ActionButton({ booking, onCancel }: { booking: BookingGridRow; onCancel
   );
 }
 
-function formatDate(value: string) {
-  if (!value) return "--";
-  const date = new Date(`${value}T00:00:00`);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
-}
 
-function formatDateTime(value?: string) {
-  if (!value) return "--";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
-}
 
 function formatTimeRange(booking: Booking) {
   if (!booking.startTime && !booking.endTime) return "--";

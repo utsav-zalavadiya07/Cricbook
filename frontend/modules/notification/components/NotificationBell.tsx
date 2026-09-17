@@ -41,9 +41,14 @@ export default function NotificationBell({ active = false, activeClass = "theme-
       void fetchNotifications();
     }, 0);
     const interval = setInterval(fetchNotifications, 30000);
+    
+    const onUpdate = () => void fetchNotifications();
+    window.addEventListener("notifications-updated", onUpdate);
+    
     return () => {
       window.clearTimeout(timer);
       clearInterval(interval);
+      window.removeEventListener("notifications-updated", onUpdate);
     };
   }, []);
 

@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { TileInfo } from "@/components/ui";
+import { formatDateTime } from "@/utils/dateFormatter";
 
 export type AdminRowAction = {
   label: string;
@@ -335,9 +336,5 @@ export function formatAdminDate(value?: string) {
   if (!value) {
     return "-";
   }
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return value;
-  }
-  return new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(parsed);
+  return formatDateTime(value);
 }

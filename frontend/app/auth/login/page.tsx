@@ -1,7 +1,12 @@
 import LoginPageClient from "./LoginPageClient";
+import { Suspense } from "react";
 
 export const metadata = { title: "Login | Cricbook" };
 
 export default function LoginPage() {
-  return <LoginPageClient />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginPageClient />
+    </Suspense>
+  );
 }

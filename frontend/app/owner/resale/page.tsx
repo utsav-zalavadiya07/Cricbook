@@ -11,6 +11,7 @@ import {
   updateOwnerResaleRules,
 } from "@/modules/resale/services/resaleService";
 import { useToast } from "@/modules/ui/ToastProvider";
+import { formatDate } from "@/utils/dateFormatter";
 
 export default function OwnerResalePage() {
   const { toast } = useToast();
@@ -88,7 +89,7 @@ export default function OwnerResalePage() {
               {(analytics?.recentListings || []).map((listing) => (
                 <article key={listing.id} className="theme-panel-soft rounded-2xl p-4">
                   <p className="theme-title font-black">{listing.turfName}</p>
-                  <p className="theme-muted mt-1 text-sm">{listing.bookingDate} · {listing.startTime} · ₹{listing.price}</p>
+                  <p className="theme-muted mt-1 text-sm">{formatDate(listing.bookingDate)} · {listing.startTime} · ₹{listing.price}</p>
                   <p className="theme-muted mt-3 text-xs">{listing.status} · Seller trust {listing.sellerTrustScore}</p>
                 </article>
               ))}

@@ -36,6 +36,7 @@ import {
   SlotWaitlist,
 } from "@/modules/resale/services/resaleService";
 import { useToast } from "@/modules/ui/ToastProvider";
+import { formatDate, formatDateTime } from "@/utils/dateFormatter";
 
 export default function MarketplacePage() {
   const { toast } = useToast();
@@ -427,7 +428,7 @@ function TravelPackageCard({ item, onReserve }: { item: TravelPackage; onReserve
         </div>
         <span className="theme-badge rounded-full px-3 py-1 text-[10px] font-black">{item.packageType}</span>
       </div>
-      <p className="theme-muted mt-3 text-xs">{item.startDate} to {item.endDate} · {item.availableCapacity} seats left</p>
+      <p className="theme-muted mt-3 text-xs">{formatDate(item.startDate)} to {formatDate(item.endDate)} · {item.availableCapacity} seats left</p>
       <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-bold">
         {item.includesAccommodation && <span className="theme-panel-soft rounded-full px-3 py-1">Hotel</span>}
         {item.includesTransport && <span className="theme-panel-soft rounded-full px-3 py-1">Transport</span>}
@@ -452,7 +453,7 @@ function TravelEventCard({ item, onReserve }: { item: TravelEvent; onReserve: (e
         </div>
         <span className="theme-badge rounded-full px-3 py-1 text-[10px] font-black">{item.eventType}</span>
       </div>
-      <p className="theme-muted mt-3 text-xs">{item.startsAt?.replace("T", " ").slice(0, 16)} · {item.availableCapacity} spots left</p>
+      <p className="theme-muted mt-3 text-xs">{formatDateTime(item.startsAt)} · {item.availableCapacity} spots left</p>
       <div className="mt-4 flex items-center justify-between gap-3">
         <p className="theme-accent font-black">Rs {lowestTicket?.price ?? item.basePrice}</p>
         <button onClick={() => onReserve(item)} disabled={!lowestTicket} className="rounded-xl bg-emerald-500 px-4 py-2 text-xs font-black text-white disabled:cursor-not-allowed disabled:opacity-50">Ticket</button>
@@ -521,7 +522,7 @@ function ListingGrid({ title, loading, listings, onBuy }: { title: string; loadi
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="theme-title font-black">{listing.turfName}</p>
-                <p className="theme-muted mt-1 text-sm">{listing.city} · {listing.bookingDate} · {listing.startTime}</p>
+                <p className="theme-muted mt-1 text-sm">{listing.city} · {formatDate(listing.bookingDate)} · {listing.startTime}</p>
               </div>
               <span className="theme-badge rounded-full px-3 py-1 text-xs font-black">₹{listing.price}</span>
             </div>

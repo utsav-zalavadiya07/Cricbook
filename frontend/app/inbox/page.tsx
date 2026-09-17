@@ -110,7 +110,7 @@ export default function InboxCenterPage() {
     setTimeout(() => setStatusMsg(""), 4000);
   };
 
-  const handleDeepLinkClick = async (notif: InboxNotification) => {
+  const handleDeepLinkClick = async (notif: Notification) => {
     try {
       await trackMetric(notif.id, "click");
       await markAsRead(notif.id);

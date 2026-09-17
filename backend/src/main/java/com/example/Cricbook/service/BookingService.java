@@ -272,6 +272,26 @@ public class BookingService {
     }
 
     @Transactional(readOnly = true)
+    public List<BookingResponse> getUpcomingOwnerBookings(String username) {
+        User owner = findUser(username)
+                .orElseThrow(() -> ApiException.notFound("User account was not found."));
+
+        Map<Long, String> paymentStatuses = paymentStatusesForOwner(owner.getId());
+        Map<Long, TrustAttendance> attendanceByBooking = attendanceForOwner(owner.getId());
+        LocalDateTime now = LocalDateTime.now();
+
+        return bookingsForOwner(owner.getId()).stream()
+                .filter(booking -> booking.getStatus() == BookingStatus.CONFIRMED)
+                .filter(booking -> {
+                    LocalDateTime slotStart = booking.getBookingDate().atTime(booking.getSlot().getStartTime());
+                    return slotStart.isAfter(now);
+                })
+                .sorted(Comparator.comparing(booking -> booking.getBookingDate().atTime(booking.getSlot().getStartTime())))
+                .map(booking -> mapToResponse(booking, paymentStatuses.get(booking.getId()), attendanceByBooking.get(booking.getId())))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<BookingResponse> getOwnerBookings(BookingStatus status) {
         return getOwnerBookings(status, null, null, null);
     }
@@ -607,6 +627,33 @@ public class BookingService {
             );
             
             log.info("Expired booking: {}", booking.getId());
+        }
+    }
+
+    @Scheduled(fixedRate = 600000)
+    @Transactional
+    public void markNoShows() {
+        LocalDateTime cutoffTime = LocalDateTime.now().minusMinutes(30);
+        
+        List<Booking> activeBookings = bookingRepository.findByStatus(BookingStatus.CONFIRMED).stream()
+                .filter(b -> {
+                    LocalDateTime slotStart = b.getBookingDate().atTime(b.getSlot().getStartTime());
+                    return slotStart.isBefore(cutoffTime);
+                })
+                .toList();
+
+        for (Booking booking : activeBookings) {
+            booking.setStatus(BookingStatus.NO_SHOW);
+            bookingRepository.save(booking);
+            
+            bookingTimelineRepository.save(BookingTimeline.builder()
+                    .booking(booking)
+                    .eventType("NO_SHOW_MARKED")
+                    .performedBy("System")
+                    .details("Auto-marked as No-Show after 30 minutes grace period.")
+                    .build());
+
+            log.info("Auto-marked booking as NO_SHOW: {}", booking.getId());
         }
     }
 
