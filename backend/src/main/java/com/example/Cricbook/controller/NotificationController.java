@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NotificationController {
 
-    private static final long AUTO_ARCHIVE_AFTER_DAYS = 7;
+    private static final long AUTO_ARCHIVE_AFTER_DAYS = 30;
     private static final Set<String> VALID_FREQUENCIES = Set.of("INSTANT", "DAILY", "WEEKLY");
 
     private final NotificationRepository notificationRepository;

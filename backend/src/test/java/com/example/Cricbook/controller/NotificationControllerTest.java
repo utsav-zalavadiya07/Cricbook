@@ -65,11 +65,11 @@ class NotificationControllerTest {
     private NotificationController controller;
 
     @Test
-    void getMyNotificationsMovesWeekOldItemsIntoArchiveView() {
+    void getMyNotificationsMovesMonthOldItemsIntoArchiveView() {
         User user = User.builder().id(7L).email("owner@test.com").build();
         NotificationQueue freshUnread = notification(1L, "Fresh", LocalDateTime.now().minusDays(1), null, null, "SENT");
-        NotificationQueue archivedRead = notification(2L, "Archived read", LocalDateTime.now().minusDays(8), LocalDateTime.now().minusDays(7), null, "SENT");
-        NotificationQueue archivedUnread = notification(3L, "Archived unread", LocalDateTime.now().minusDays(9), null, null, "SENT");
+        NotificationQueue archivedRead = notification(2L, "Archived read", LocalDateTime.now().minusDays(35), LocalDateTime.now().minusDays(34), null, "SENT");
+        NotificationQueue archivedUnread = notification(3L, "Archived unread", LocalDateTime.now().minusDays(40), null, null, "SENT");
 
         when(userRepository.findByEmailOrPhone("owner@test.com")).thenReturn(Optional.of(user));
         when(notificationRepository.findByUserIdOrderByCreatedAtDesc(7L)).thenReturn(List.of(freshUnread, archivedRead, archivedUnread));
@@ -77,8 +77,7 @@ class NotificationControllerTest {
         ResponseEntity<List<NotificationResponse>> allResponse = controller.getMyNotifications(principal(), "ALL", null, null, null, null, null, null);
         ResponseEntity<List<NotificationResponse>> archivedResponse = controller.getMyNotifications(principal(), "ARCHIVED", null, null, null, null, null, null);
 
-        assertEquals(1, allResponse.getBody().size());
-        assertEquals(1L, allResponse.getBody().get(0).getId());
+        assertEquals(3, allResponse.getBody().size());
 
         assertEquals(2, archivedResponse.getBody().size());
         NotificationResponse readArchived = archivedResponse.getBody().stream().filter(item -> item.getId() == 2L).findFirst().orElseThrow();
@@ -94,8 +93,8 @@ class NotificationControllerTest {
         User user = User.builder().id(7L).email("owner@test.com").build();
         NotificationQueue freshUnread = notification(1L, "Fresh", LocalDateTime.now().minusDays(1), null, null, "SENT");
         NotificationQueue freshRead = notification(2L, "Fresh read", LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1), null, "SENT");
-        NotificationQueue archivedRead = notification(3L, "Archived read", LocalDateTime.now().minusDays(8), LocalDateTime.now().minusDays(7), null, "SENT");
-        NotificationQueue archivedUnread = notification(4L, "Archived unread", LocalDateTime.now().minusDays(9), null, null, "SENT");
+        NotificationQueue archivedRead = notification(3L, "Archived read", LocalDateTime.now().minusDays(35), LocalDateTime.now().minusDays(34), null, "SENT");
+        NotificationQueue archivedUnread = notification(4L, "Archived unread", LocalDateTime.now().minusDays(40), null, null, "SENT");
 
         when(userRepository.findByEmailOrPhone("owner@test.com")).thenReturn(Optional.of(user));
         when(notificationRepository.findByUserIdOrderByCreatedAtDesc(7L)).thenReturn(List.of(freshUnread, freshRead, archivedRead, archivedUnread));

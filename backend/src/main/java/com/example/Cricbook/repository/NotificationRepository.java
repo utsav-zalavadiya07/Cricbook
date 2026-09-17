@@ -38,6 +38,10 @@ public interface NotificationRepository extends JpaRepository<NotificationQueue,
     int archiveMany(@Param("userId") Long userId, @Param("ids") List<Long> ids);
 
     @Modifying
+    @Query("UPDATE NotificationQueue n SET n.status = 'ARCHIVED', n.archivedAt = CURRENT_TIMESTAMP WHERE n.createdAt < :cutoff AND n.status != 'ARCHIVED' AND n.archivedAt IS NULL")
+    int autoArchiveOlderThan(@Param("cutoff") java.time.LocalDateTime cutoff);
+
+    @Modifying
     @Query("DELETE FROM NotificationQueue n WHERE n.id = :id AND n.userId = :userId")
     int deleteByIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
 
