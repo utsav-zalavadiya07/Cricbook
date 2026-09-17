@@ -90,18 +90,19 @@ class NotificationControllerTest {
     }
 
     @Test
-    void getSummaryExcludesAutoArchivedNotificationsFromUnreadCount() {
+    void getSummaryExcludesAutoArchivedNotificationsFromActiveCounts() {
         User user = User.builder().id(7L).email("owner@test.com").build();
         NotificationQueue freshUnread = notification(1L, "Fresh", LocalDateTime.now().minusDays(1), null, null, "SENT");
-        NotificationQueue archivedRead = notification(2L, "Archived read", LocalDateTime.now().minusDays(8), LocalDateTime.now().minusDays(7), null, "SENT");
-        NotificationQueue archivedUnread = notification(3L, "Archived unread", LocalDateTime.now().minusDays(9), null, null, "SENT");
+        NotificationQueue freshRead = notification(2L, "Fresh read", LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1), null, "SENT");
+        NotificationQueue archivedRead = notification(3L, "Archived read", LocalDateTime.now().minusDays(8), LocalDateTime.now().minusDays(7), null, "SENT");
+        NotificationQueue archivedUnread = notification(4L, "Archived unread", LocalDateTime.now().minusDays(9), null, null, "SENT");
 
         when(userRepository.findByEmailOrPhone("owner@test.com")).thenReturn(Optional.of(user));
-        when(notificationRepository.findByUserIdOrderByCreatedAtDesc(7L)).thenReturn(List.of(freshUnread, archivedRead, archivedUnread));
+        when(notificationRepository.findByUserIdOrderByCreatedAtDesc(7L)).thenReturn(List.of(freshUnread, freshRead, archivedRead, archivedUnread));
 
         ResponseEntity<NotificationSummaryResponse> response = controller.getSummary(principal());
 
-        assertEquals(3, response.getBody().getTotal());
+        assertEquals(4, response.getBody().getTotal());
         assertEquals(1, response.getBody().getUnread());
         assertEquals(1, response.getBody().getRead());
         assertEquals(2, response.getBody().getArchived());

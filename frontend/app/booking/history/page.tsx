@@ -7,6 +7,7 @@ import { useConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { DataGrid, type DataGridColumn } from "@/components/ui/DataGrid";
 import { cancelBooking, getMyBookings } from "@/modules/booking/services/bookingService";
 import { Booking } from "@/modules/booking/types/booking.types";
+import { extractApiErrorMessage } from "@/modules/ui/apiNotificationService";
 import { useToast } from "@/modules/ui/ToastProvider";
 import { formatDate, formatDateTime } from "@/utils/dateFormatter";
 
@@ -94,8 +95,9 @@ export default function BookingHistoryPage() {
       await Promise.all(ids.map((id) => cancelBooking(id)));
       refreshBookings();
       showSuccess("Booking Cancelled", "Your booking was cancelled successfully.");
-    } catch {
-      showError("Cancellation Failed", "Could not cancel booking.");
+    } catch (err: unknown) {
+      const detail = extractApiErrorMessage(err, "Could not cancel booking.");
+      showError("Cancellation Failed", detail);
     }
   };
 

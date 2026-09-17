@@ -300,65 +300,74 @@ export default function InboxCenterPage() {
               </div>
             ) : (
               <div className="space-y-3">
-                {notifications.map((n) => (
-                  <div
-                    key={n.id}
-                    className={`p-4 rounded-xl border flex flex-col justify-between md:flex-row md:items-center gap-4 transition-all ${
-                      !isNotificationRead(n) && !isNotificationArchived(n) ? "bg-emerald-500/5 border-emerald-500/10" : "bg-black/10 border-white/5"
-                    }`}
-                  >
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        {!isNotificationRead(n) && !isNotificationArchived(n) && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        )}
-                        <h4 className="font-bold text-slate-200 text-sm">{n.title}</h4>
-                        <span className="px-1.5 py-0.2 bg-slate-800 text-slate-400 rounded text-[9px] font-mono tracking-wide">
-                          {n.channel}
-                        </span>
+                {notifications.map((n) => {
+                  const isUnread = !isNotificationRead(n) && !isNotificationArchived(n);
+                  return (
+                    <div
+                      key={n.id}
+                      onClick={(e) => {
+                        const target = e.target as HTMLElement;
+                        if (target.closest("button") || target.closest("a")) return;
+                        if (isUnread) void handleRead(n.id);
+                      }}
+                      className={`p-4 rounded-xl border flex flex-col justify-between md:flex-row md:items-center gap-4 transition-all ${
+                        isUnread
+                          ? "cursor-pointer bg-emerald-500/5 border-emerald-500/20 shadow-md shadow-emerald-950/10 hover:border-emerald-500/40 hover:bg-emerald-500/10"
+                          : "bg-black/10 border-white/5 opacity-85 hover:opacity-100"
+                      }`}
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          {isUnread && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          )}
+                          <h4 className="font-bold text-slate-200 text-sm">{n.title}</h4>
+                          <span className="px-1.5 py-0.2 bg-slate-800 text-slate-400 rounded text-[9px] font-mono tracking-wide">
+                            {n.channel}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 leading-relaxed">{n.message}</p>
+                        <span className="text-[9px] text-slate-600 block pt-1">{n.createdAt ? new Date(n.createdAt).toLocaleTimeString() : "N/A"}</span>
                       </div>
-                      <p className="text-xs text-slate-400 leading-relaxed">{n.message}</p>
-                      <span className="text-[9px] text-slate-600 block pt-1">{n.createdAt ? new Date(n.createdAt).toLocaleTimeString() : "N/A"}</span>
-                    </div>
 
-                    <div className="flex items-center gap-2 self-end md:self-auto">
-                      {n.deepLink && (
-                        <button
-                          onClick={() => handleDeepLinkClick(n)}
-                          className="px-2.5 py-1 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/20 text-[10px] font-bold rounded-lg transition-all"
-                        >
-                          Open Link
-                        </button>
-                      )}
-                      {!isNotificationRead(n) && !isNotificationArchived(n) && (
-                        <button
-                          onClick={() => handleRead(n.id)}
-                          className="px-2.5 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold rounded-lg transition-all"
-                        >
-                          Mark Read
-                        </button>
-                      )}
-                      {!isNotificationArchived(n) ? (
-                        <button
-                          onClick={() => handleArchive(n.id)}
-                          className="px-2.5 py-1 bg-red-500/5 hover:bg-red-500/10 text-red-400 border border-red-500/10 text-[10px] font-bold rounded-lg transition-all"
-                        >
-                          Archive
-                        </button>
-                      ) : (
-                        <span
-                          className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold ${
-                            isNotificationRead(n)
-                              ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300"
-                              : "bg-amber-500/10 border-amber-500/20 text-amber-300"
-                          }`}
-                        >
-                          {isNotificationRead(n) ? "Read" : "Unread"}
-                        </span>
-                      )}
+                      <div className="flex items-center gap-2 self-end md:self-auto">
+                        {n.deepLink && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (isUnread) void handleRead(n.id);
+                              handleDeepLinkClick(n);
+                            }}
+                            className="px-2.5 py-1 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/20 text-[10px] font-bold rounded-lg transition-all"
+                          >
+                            Open Link
+                          </button>
+                        )}
+                        {!isNotificationArchived(n) ? (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              void handleArchive(n.id);
+                            }}
+                            className="px-2.5 py-1 bg-red-500/5 hover:bg-red-500/10 text-red-400 border border-red-500/10 text-[10px] font-bold rounded-lg transition-all"
+                          >
+                            Archive
+                          </button>
+                        ) : (
+                          <span
+                            className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold ${
+                              isNotificationRead(n)
+                                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300"
+                                : "bg-amber-500/10 border-amber-500/20 text-amber-300"
+                            }`}
+                          >
+                            {isNotificationRead(n) ? "Read" : "Unread"}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

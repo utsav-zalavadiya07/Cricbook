@@ -22,7 +22,7 @@ public interface NotificationRepository extends JpaRepository<NotificationQueue,
     int markAsRead(@Param("id") Long id, @Param("userId") Long userId);
 
     @Modifying
-    @Query("UPDATE NotificationQueue n SET n.status = 'READ', n.readAt = CURRENT_TIMESTAMP WHERE n.userId = :userId AND n.status != 'READ'")
+    @Query("UPDATE NotificationQueue n SET n.status = 'READ', n.readAt = CURRENT_TIMESTAMP WHERE n.userId = :userId AND n.status != 'READ' AND n.status != 'ARCHIVED' AND n.archivedAt IS NULL")
     int markAllAsRead(@Param("userId") Long userId);
 
     @Modifying
