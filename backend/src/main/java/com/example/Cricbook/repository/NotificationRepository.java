@@ -18,15 +18,15 @@ public interface NotificationRepository extends JpaRepository<NotificationQueue,
     List<NotificationQueue> findByUserIdAndIdIn(Long userId, List<Long> ids);
 
     @Modifying
-    @Query("UPDATE NotificationQueue n SET n.status = 'READ', n.readAt = CURRENT_TIMESTAMP WHERE n.id = :id AND n.userId = :userId")
+    @Query("UPDATE NotificationQueue n SET n.status = CASE WHEN n.status = 'ARCHIVED' THEN 'ARCHIVED' ELSE 'READ' END, n.readAt = CURRENT_TIMESTAMP WHERE n.id = :id AND n.userId = :userId")
     int markAsRead(@Param("id") Long id, @Param("userId") Long userId);
 
     @Modifying
-    @Query("UPDATE NotificationQueue n SET n.status = 'READ', n.readAt = CURRENT_TIMESTAMP WHERE n.userId = :userId AND n.status != 'READ' AND n.status != 'ARCHIVED' AND n.archivedAt IS NULL")
+    @Query("UPDATE NotificationQueue n SET n.status = CASE WHEN n.status = 'ARCHIVED' THEN 'ARCHIVED' ELSE 'READ' END, n.readAt = CURRENT_TIMESTAMP WHERE n.userId = :userId AND n.readAt IS NULL")
     int markAllAsRead(@Param("userId") Long userId);
 
     @Modifying
-    @Query("UPDATE NotificationQueue n SET n.status = 'READ', n.readAt = CURRENT_TIMESTAMP WHERE n.userId = :userId AND n.id IN :ids")
+    @Query("UPDATE NotificationQueue n SET n.status = CASE WHEN n.status = 'ARCHIVED' THEN 'ARCHIVED' ELSE 'READ' END, n.readAt = CURRENT_TIMESTAMP WHERE n.userId = :userId AND n.id IN :ids")
     int markManyAsRead(@Param("userId") Long userId, @Param("ids") List<Long> ids);
 
     @Modifying

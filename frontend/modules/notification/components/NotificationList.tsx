@@ -264,12 +264,17 @@ export default function NotificationList() {
     setBusy("mark-all");
     try {
       await markAllAsRead();
+      const nowIso = new Date().toISOString();
       setNotifications((prev) =>
-        prev.map((notification) =>
-          !isNotificationArchived(notification)
-            ? { ...notification, status: "READ", read: true, readAt: new Date().toISOString() }
-            : notification
-        )
+        prev.map((notification) => {
+          const archived = isNotificationArchived(notification);
+          return {
+            ...notification,
+            status: archived ? "ARCHIVED" : "READ",
+            read: true,
+            readAt: notification.readAt || nowIso,
+          };
+        })
       );
       setSummary((prev) => ({ ...prev, read: prev.read + prev.unread, unread: 0 }));
       window.dispatchEvent(new Event("notifications-updated"));
@@ -314,7 +319,7 @@ export default function NotificationList() {
         <button
           onClick={handleMarkAll}
           disabled={unreadCount === 0 || busy !== null}
-          className="inline-flex items-center justify-center rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-2 text-xs font-bold text-emerald-300 transition hover:bg-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+          className="notification-btn-markread inline-flex items-center justify-center rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-2 text-xs font-bold text-emerald-300 transition hover:bg-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {busy === "mark-all" ? "Marking..." : "Mark all read"}
         </button>
@@ -353,22 +358,20 @@ export default function NotificationList() {
               <button
                 key={item.key}
                 onClick={() => setFolder(item.key)}
-                className={`inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-bold transition-all ${
+                className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all ${
                   isSelected
-                    ? "border-emerald-400/40 bg-emerald-500/15 text-emerald-200 shadow-sm shadow-emerald-950/20"
-                    : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"
+                    ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20"
+                    : "notification-folder-inactive border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"
                 }`}
               >
                 <span>{item.label}</span>
                 <span
                   className={`rounded-full px-2 py-0.5 text-[10px] font-black transition-colors ${
                     isSelected
-                      ? isUnreadTab && count > 0
-                        ? "bg-emerald-500 text-white"
-                        : "bg-emerald-400/20 text-emerald-300"
+                      ? "bg-white/20 text-white"
                       : isUnreadTab && count > 0
-                      ? "bg-emerald-500/20 text-emerald-300"
-                      : "bg-white/10 text-slate-400"
+                      ? "bg-emerald-500 text-white"
+                      : "notification-count-pill border border-white/10 bg-white/10 text-slate-300"
                   }`}
                 >
                   {count}
@@ -397,7 +400,7 @@ export default function NotificationList() {
                 }
               }}
               placeholder="Search by title, content, category, or priority"
-              className="w-full rounded-xl border border-white/10 bg-white/5 pl-4 pr-9 py-2 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-emerald-400/50"
+              className="theme-input w-full rounded-xl pl-4 pr-9 py-2 text-sm outline-none transition placeholder:text-[var(--theme-soft)] focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/40"
             />
             {searchDraft && (
               <button
@@ -406,7 +409,7 @@ export default function NotificationList() {
                   setSearchDraft("");
                   setSearch("");
                 }}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1"
+                className="theme-soft hover:theme-text absolute right-2.5 top-1/2 -translate-y-1/2 p-1 transition"
                 aria-label="Clear search input"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -442,13 +445,13 @@ export default function NotificationList() {
                 setSearch(searchDraft.trim());
                 void fetchData();
               }}
-              className="rounded-xl bg-emerald-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-emerald-400"
+              className="rounded-xl bg-emerald-500 px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-600 active:scale-95"
             >
               Search
             </button>
             <button
               onClick={clearFilters}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-slate-300 transition hover:bg-white/10"
+              className="rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel-soft)] px-4 py-2 text-sm font-bold text-[var(--theme-muted)] transition hover:bg-[var(--theme-card)] hover:text-[var(--theme-text)]"
             >
               Clear
             </button>
@@ -468,7 +471,7 @@ export default function NotificationList() {
           {(searchDraft || channel || type || priority) && (
             <button
               onClick={clearFilters}
-              className="mt-3 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
+              className="mt-3 rounded-xl border border-[var(--theme-border)] bg-[var(--theme-panel-soft)] px-4 py-2 text-xs font-bold text-[var(--theme-text)] transition hover:bg-[var(--theme-card)]"
             >
               Clear filters
             </button>

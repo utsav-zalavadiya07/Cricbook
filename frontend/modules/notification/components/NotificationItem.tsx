@@ -35,13 +35,13 @@ const typeBg: Record<string, string> = {
   REVIEW: "bg-fuchsia-500/10 border-fuchsia-500/20 text-fuchsia-300",
   SOCIAL: "bg-sky-500/10 border-sky-500/20 text-sky-300",
   MARKETING: "bg-lime-500/10 border-lime-500/20 text-lime-300",
-  GENERAL: "bg-slate-500/10 border-slate-500/20 text-slate-300",
+  GENERAL: "bg-slate-500/10 border-slate-500/20 text-slate-300 notification-type-general",
 };
 
 const priorityBg: Record<string, string> = {
   CRITICAL: "border-red-400/50 bg-red-500/15 text-red-200",
   HIGH: "border-amber-400/50 bg-amber-500/15 text-amber-200",
-  NORMAL: "border-white/10 bg-white/5 text-slate-300",
+  NORMAL: "border-white/10 bg-white/5 text-slate-300 notification-badge-normal",
   LOW: "border-slate-500/25 bg-slate-500/10 text-slate-400",
 };
 
@@ -49,6 +49,10 @@ export default function NotificationItem({ notification, onDelete, onRead }: Not
   const [busy, setBusy] = useState<"read" | "delete" | null>(null);
   const isUnread = !isNotificationRead(notification);
   const isArchived = isNotificationArchived(notification);
+  const isRecent = notification.createdAt
+    ? Date.now() - new Date(notification.createdAt).getTime() < 24 * 60 * 60 * 1000
+    : false;
+  const isNew = isUnread && !isArchived && isRecent;
   const type = (notification.category ?? notification.type ?? "GENERAL").toUpperCase();
   const priority = (notification.priority ?? "NORMAL").toUpperCase();
 
@@ -119,18 +123,18 @@ export default function NotificationItem({ notification, onDelete, onRead }: Not
         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <p className={`break-words text-sm font-bold ${isUnread ? "theme-title" : "theme-muted"}`}>{notification.title}</p>
-              {isUnread && <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-white">New</span>}
+              <p className={`break-words text-sm font-bold ${isUnread && !isArchived ? "theme-title" : "theme-muted"}`}>{notification.title}</p>
+              {isNew && <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-white">New</span>}
               <span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${priorityBg[priority] ?? priorityBg.NORMAL}`}>
                 {priority}
               </span>
               {isArchived && (
-                <span className="rounded-full border border-slate-500/30 bg-slate-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-400">
+                <span className="notification-badge-archived rounded-full border border-slate-500/30 bg-slate-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-400">
                   Archived
                 </span>
               )}
             </div>
-            <p className={`mt-1 break-words text-sm leading-6 ${isUnread ? "theme-muted" : "theme-soft"}`}>{notification.message}</p>
+            <p className={`mt-1 break-words text-sm leading-6 ${isUnread && !isArchived ? "theme-muted" : "theme-soft"}`}>{notification.message}</p>
             <div className="theme-soft mt-2 flex flex-wrap gap-2 text-xs">
               <span>{notification.channel ?? "EMAIL"}</span>
               <span>•</span>
@@ -145,7 +149,7 @@ export default function NotificationItem({ notification, onDelete, onRead }: Not
                   minute: "2-digit",
                 })}
               </span>
-              {notification.deliveryStatus === "FAILED" && <span className="text-red-300">Delivery failed</span>}
+              {notification.deliveryStatus === "FAILED" && <span className="text-red-400">Delivery failed</span>}
             </div>
           </div>
 
@@ -154,7 +158,7 @@ export default function NotificationItem({ notification, onDelete, onRead }: Not
               <Link
                 href={notification.deepLink}
                 onClick={handleOpen}
-                className="rounded-xl border border-blue-500/25 bg-blue-500/10 px-3 py-2 text-xs font-bold text-blue-300 transition hover:bg-blue-500/20"
+                className="notification-link-open rounded-xl border border-blue-500/25 bg-blue-500/10 px-3 py-2 text-xs font-bold text-blue-300 transition hover:bg-blue-500/20"
               >
                 Open
               </Link>
@@ -167,7 +171,7 @@ export default function NotificationItem({ notification, onDelete, onRead }: Not
               disabled={busy !== null}
               title="Delete notification"
               aria-label="Delete notification"
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10 text-red-400 transition hover:border-red-500/40 hover:bg-red-500/20 hover:text-red-300 disabled:opacity-50"
+              className="notification-btn-delete flex h-9 w-9 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10 text-red-400 transition hover:border-red-500/40 hover:bg-red-500/20 hover:text-red-300 disabled:opacity-50"
             >
               {busy === "delete" ? (
                 <svg className="h-4 w-4 animate-spin text-red-400" viewBox="0 0 24 24" fill="none">

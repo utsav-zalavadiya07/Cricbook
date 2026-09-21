@@ -1546,3 +1546,63 @@ h2.text-4xl {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 220ms;
 }
+
+/* Light theme overrides for notification components */
+html[data-theme="light"] .notification-folder-inactive {
+  border-color: rgba(33, 55, 84, 0.14) !important;
+  background-color: #f1f6fa !important;
+  color: #475569 !important;
+}
+
+html[data-theme="light"] .notification-folder-inactive:hover {
+  background-color: #e4edf4 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] .notification-count-pill {
+  border-color: rgba(33, 55, 84, 0.12) !important;
+  background-color: #e2eaf1 !important;
+  color: #334155 !important;
+}
+
+html[data-theme="light"] .notification-badge-normal {
+  border-color: rgba(33, 55, 84, 0.14) !important;
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+}
+
+html[data-theme="light"] .notification-badge-archived {
+  border-color: rgba(33, 55, 84, 0.14) !important;
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+}
+
+html[data-theme="light"] .notification-type-general {
+  border-color: rgba(33, 55, 84, 0.14) !important;
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+}
+
+html[data-theme="light"] .notification-btn-markread {
+  border-color: rgba(0, 168, 68, 0.28) !important;
+  background-color: rgba(0, 168, 68, 0.08) !important;
+  color: #008736 !important;
+}
+
+html[data-theme="light"] .notification-btn-markread:hover {
+  background-color: rgba(0, 168, 68, 0.15) !important;
+  color: #006629 !important;
+}
+
+html[data-theme="light"] .notification-link-open {
+  border-color: rgba(25, 118, 210, 0.28) !important;
+  background-color: rgba(25, 118, 210, 0.08) !important;
+  color: #1565c0 !important;
+}
+
+html[data-theme="light"] .notification-btn-delete {
+  border-color: rgba(239, 68, 68, 0.25) !important;
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  color: #dc2626 !important;
+}
+
