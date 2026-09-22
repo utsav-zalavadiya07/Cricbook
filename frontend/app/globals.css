@@ -1639,3 +1639,16 @@ html[data-theme="light"] .notification-btn-delete {
   color: #dc2626 !important;
 }
 
+/* Razorpay Checkout In-Screen Modal Styling:
+ * Prevents the browser from painting an opaque white full-screen backdrop over the app
+ * when running in dark mode. Keeps Cricbook UI visible behind the semi-transparent modal.
+ */
+iframe.razorpay-checkout-frame,
+iframe[src*="razorpay"],
+.razorpay-checkout-frame {
+  color-scheme: light !important;
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+
