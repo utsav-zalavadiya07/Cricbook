@@ -1,6 +1,7 @@
 "use client";
 
 import type { SelectHTMLAttributes } from "react";
+import { usePortal } from "@/hooks/usePortal";
 
 export interface SelectOption {
   label: string;
@@ -14,11 +15,13 @@ interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, "chi
   accent?: "player" | "owner" | "neutral";
 }
 
-export function Select({ options, placeholder, accent = "player", className = "", suppressHydrationWarning = true, ...props }: SelectProps) {
+export function Select({ options, placeholder, accent, className = "", suppressHydrationWarning = true, ...props }: SelectProps) {
+  const portal = usePortal();
+  const activeAccent = accent ?? portal.accent;
   const focusClass =
-    accent === "owner"
+    activeAccent === "owner"
       ? "focus:border-sky-500 focus:ring-sky-500"
-      : accent === "neutral"
+      : activeAccent === "neutral"
         ? "focus:border-indigo-500 focus:ring-indigo-500"
         : "focus:border-emerald-500 focus:ring-emerald-500";
 

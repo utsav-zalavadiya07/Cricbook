@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
+import { usePortal } from "@/hooks/usePortal";
 
 type ConfirmTone = "player" | "owner" | "danger";
 
@@ -59,6 +60,7 @@ const toneConfig: Record<
 const ConfirmDialogContext = createContext<((options: ConfirmDialogOptions) => Promise<boolean>) | null>(null);
 
 export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
+  const { accent } = usePortal();
   const [dialog, setDialog] = useState<ConfirmDialogState | null>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const cancelButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -81,7 +83,7 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
     previousFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
     return new Promise<boolean>((resolve) => {
-      const tone = options.tone ?? "player";
+      const tone = options.tone ?? accent;
       setDialog({
         title: options.title,
         description: options.description,
@@ -92,7 +94,7 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
         resolve,
       });
     });
-  }, []);
+  }, [accent]);
 
   useEffect(() => {
     if (!dialog) return;

@@ -2,6 +2,7 @@
 
 import { forwardRef } from "react";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { usePortal } from "@/hooks/usePortal";
 
 type ButtonTone = "player" | "owner" | "secondary" | "danger";
 
@@ -22,14 +23,17 @@ const toneClasses: Record<ButtonTone, string> = {
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { tone = "player", className = "", children, type = "button", ...props },
+  { tone, className = "", children, type = "button", ...props },
   ref,
 ) {
+  const { accent } = usePortal();
+  const activeTone = tone ?? accent;
+
   return (
     <button
       ref={ref}
       type={type}
-      className={`inline-flex min-h-11 items-center justify-center rounded-xl px-4 py-2.5 text-sm font-bold shadow-lg transition-all duration-200 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 ${toneClasses[tone]} ${className}`}
+      className={`inline-flex min-h-11 items-center justify-center rounded-xl px-4 py-2.5 text-sm font-bold shadow-lg transition-all duration-200 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 ${toneClasses[activeTone]} ${className}`}
       {...props}
     >
       {children}

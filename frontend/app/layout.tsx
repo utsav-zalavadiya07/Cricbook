@@ -15,6 +15,7 @@ import { I18nProvider } from "@/modules/i18n/I18nProvider";
 import { ThemeProvider } from "@/modules/theme/ThemeProvider";
 import ThemeScript from "@/modules/theme/ThemeScript";
 import { ToastProvider } from "@/modules/ui/ToastProvider";
+import PortalThemeManager from "@/components/PortalThemeManager";
 
 export default function RootLayout({
   children,
@@ -29,6 +30,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col theme-body">
         <ThemeScript />
+        <PortalThemeManager />
         <ToastProvider>
           <ThemeProvider>
             <I18nProvider>

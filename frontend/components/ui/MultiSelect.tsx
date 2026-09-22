@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { SelectOption } from "./Select";
+import { usePortal } from "@/hooks/usePortal";
 
 interface MultiSelectProps {
   options: SelectOption[];
@@ -30,10 +31,12 @@ export function MultiSelect({
   value,
   onChange,
   placeholder = "Select options",
-  accent = "player",
+  accent,
   maxSelected,
   className = "",
 }: MultiSelectProps) {
+  const portal = usePortal();
+  const activeAccent = accent ?? portal.accent;
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const selectedSet = new Set(value.map(String));
@@ -80,7 +83,7 @@ export function MultiSelect({
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
-        className={`theme-input flex min-h-[48px] w-full items-center justify-between gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold outline-none transition focus:ring-1 ${focusClasses[accent]}`}
+        className={`theme-input flex min-h-[48px] w-full items-center justify-between gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold outline-none transition focus:ring-1 ${focusClasses[activeAccent]}`}
       >
         <span className={selectedOptions.length ? "theme-text truncate" : "theme-soft truncate"}>{selectedText}</span>
         <svg
@@ -108,7 +111,7 @@ export function MultiSelect({
                   disabled={option.disabled}
                   onClick={() => toggleValue(optionValue)}
                   className={`flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50 ${
-                    selected ? selectedClasses[accent] : "border-transparent theme-text hover:bg-[var(--theme-panel-soft)]"
+                    selected ? selectedClasses[activeAccent] : "border-transparent theme-text hover:bg-[var(--theme-panel-soft)]"
                   }`}
                 >
                   <span
@@ -131,7 +134,9 @@ export function MultiSelect({
             >
               Clear
             </button>
-            <p className="theme-soft text-xs">{value.length}{maxSelected ? `/${maxSelected}` : ""} selected</p>
+            <p className="theme-soft text-xs">
+              {value.length}/{maxSelected && maxSelected < options.length ? maxSelected : options.length} selected
+            </p>
             <button
               type="button"
               onClick={() => setOpen(false)}

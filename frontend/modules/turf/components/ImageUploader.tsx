@@ -9,6 +9,7 @@ interface ImageUploaderProps {
   maxFiles?: number;
   existingImages?: string[];
   onExistingChange?: (images: string[]) => void;
+  accent?: "player" | "owner";
 }
 
 export default function ImageUploader({
@@ -16,6 +17,7 @@ export default function ImageUploader({
   maxFiles = 5,
   existingImages = [],
   onExistingChange,
+  accent = "player",
 }: ImageUploaderProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
@@ -113,16 +115,29 @@ export default function ImageUploader({
         onDragLeave={() => setDragOver(false)}
         className={`flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed transition ${
           dragOver
-            ? "border-emerald-400 bg-emerald-500/10"
-            : "theme-card hover:border-emerald-500/50 hover:bg-[var(--theme-panel-soft)]"
+            ? accent === "owner"
+              ? "border-sky-400 bg-sky-500/10"
+              : "border-emerald-400 bg-emerald-500/10"
+            : accent === "owner"
+              ? "theme-card hover:border-sky-500/50 hover:bg-[var(--theme-panel-soft)]"
+              : "theme-card hover:border-emerald-500/50 hover:bg-[var(--theme-panel-soft)]"
         }`}
       >
         <div className="pointer-events-none text-center">
-          <div className="mx-auto mb-2 grid h-9 w-9 place-items-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-xs font-black text-emerald-500">
+          <div
+            className={`mx-auto mb-2 grid h-9 w-9 place-items-center rounded-xl border text-xs font-black ${
+              accent === "owner"
+                ? "border-sky-500/30 bg-sky-500/10 text-sky-500"
+                : "border-emerald-500/30 bg-emerald-500/10 text-emerald-500"
+            }`}
+          >
             IMG
           </div>
           <p className="theme-muted text-sm">
-            Drag and drop images, or <span className="font-semibold text-emerald-500">browse</span>
+            Drag and drop images, or{" "}
+            <span className={`font-semibold ${accent === "owner" ? "text-sky-500" : "text-emerald-500"}`}>
+              browse
+            </span>
           </p>
           <p className="theme-soft mt-1 text-xs">
             JPG, PNG, WEBP up to 5MB each - {selectedCount}/{maxFiles} selected

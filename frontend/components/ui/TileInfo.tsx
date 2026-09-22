@@ -1,5 +1,6 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { useId } from "react";
+import { usePortal } from "@/hooks/usePortal";
 import type { ReactNode } from "react";
 
 type TileInfoProps = {
@@ -19,9 +20,11 @@ export function TileInfo({
   className = "",
   variant = "cricket",
 }: TileInfoProps) {
-  const pathname = usePathname() || "";
-  const isOwner = pathname.startsWith("/owner");
-  const iconColor = isOwner ? "text-sky-500" : "text-emerald-500";
+  const { isOwner } = usePortal();
+  const rawId = useId();
+  const id = rawId.replace(/[:]/g, "_");
+  const borderGradientId = `tileinfo-border-${id}`;
+  const iconColor = isOwner ? "text-sky-400" : "text-emerald-400";
 
   const placement =
     align === "left"
@@ -59,37 +62,47 @@ export function TileInfo({
         ) : (
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="1.25em" height="1.25em" className="drop-shadow-md">
             <defs>
-              <linearGradient id="bgNavy" x1="0%" y1="0%" x2="0%" y2="100%">
+              <linearGradient id={`bgNavy-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
                 <stop offset="0%" stopColor="#0F172A" />
                 <stop offset="100%" stopColor="#020617" />
               </linearGradient>
-              <linearGradient id="borderGold" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#FDE047" />
-                <stop offset="50%" stopColor="#F59E0B" />
-                <stop offset="100%" stopColor="#B45309" />
+              <linearGradient id={borderGradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+                {isOwner ? (
+                  <>
+                    <stop offset="0%" stopColor="#7dd3fc" />
+                    <stop offset="50%" stopColor="#38bdf8" />
+                    <stop offset="100%" stopColor="#0284c7" />
+                  </>
+                ) : (
+                  <>
+                    <stop offset="0%" stopColor="#6ee7b7" />
+                    <stop offset="50%" stopColor="#10b981" />
+                    <stop offset="100%" stopColor="#047857" />
+                  </>
+                )}
               </linearGradient>
-              <linearGradient id="ballRed" x1="0%" y1="0%" x2="100%" y2="100%">
+              <linearGradient id={`ballRed-${id}`} x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#EF4444" />
                 <stop offset="100%" stopColor="#B91C1C" />
               </linearGradient>
-              <linearGradient id="stemWhite" x1="0%" y1="0%" x2="100%" y2="100%">
+              <linearGradient id={`stemWhite-${id}`} x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#FFFFFF" />
                 <stop offset="100%" stopColor="#E2E8F0" />
               </linearGradient>
             </defs>
   
             {/* Background Circle */}
-            <circle cx="50" cy="50" r="46" fill="url(#bgNavy)" stroke="url(#borderGold)" strokeWidth="4" />
+            <circle cx="50" cy="50" r="46" fill={`url(#bgNavy-${id})`} stroke={`url(#${borderGradientId})`} strokeWidth="4" />
   
-            {/* Golden Swooshes under the stem */}
-            <path d="M 28 86 Q 48 88, 66 82" fill="none" stroke="url(#borderGold)" strokeWidth="3" strokeLinecap="round" />
-            <path d="M 34 92 Q 48 93, 60 88" fill="none" stroke="url(#borderGold)" strokeWidth="2.5" strokeLinecap="round" />
+            {/* Portal Accent Swooshes under the stem */}
+            <path d="M 28 86 Q 48 88, 66 82" fill="none" stroke={`url(#${borderGradientId})`} strokeWidth="3" strokeLinecap="round" />
+            <path d="M 34 92 Q 48 93, 60 88" fill="none" stroke={`url(#${borderGradientId})`} strokeWidth="2.5" strokeLinecap="round" />
   
             {/* Stem of 'i' */}
-            <path d="M 35 40 C 40 40, 43 37, 45 34 L 56 34 L 52 66 C 52 71, 56 76, 64 78 L 32 82 C 40 78, 42 61, 40 46 Q 39 40, 35 40 Z" fill="url(#stemWhite)" />
+            <path d="M 35 40 C 40 40, 43 37, 45 34 L 56 34 L 52 66 C 52 71, 56 76, 64 78 L 32 82 C 40 78, 42 61, 40 46 Q 39 40, 35 40 Z" fill={`url(#stemWhite-${id})`} />
   
             {/* Ball (Dot of 'i') */}
-            <circle cx="50" cy="24" r="12" fill="url(#ballRed)" stroke="url(#borderGold)" strokeWidth="3" />
+            <circle cx="50" cy="24" r="12" fill={`url(#ballRed-${id})`} stroke={`url(#${borderGradientId})`} strokeWidth="3" />
             
             {/* Ball Seam */}
             <g transform="rotate(45, 50, 24)">
@@ -100,7 +113,11 @@ export function TileInfo({
         )}
       </span>
       <span
-        className={`pointer-events-none absolute ${placement} z-50 hidden w-max max-w-[min(18rem,calc(100vw-3rem))] rounded-xl border border-slate-200 bg-white px-3 py-2 text-left text-xs font-semibold leading-5 text-slate-600 shadow-xl group-hover/tileinfo:block group-focus-within/tileinfo:block dark:border-white/10 dark:bg-slate-950 dark:text-slate-300`}
+        className={`pointer-events-none absolute ${placement} z-50 hidden w-max max-w-[min(18rem,calc(100vw-3rem))] rounded-xl border ${
+          isOwner
+            ? "border-sky-500/30 shadow-sky-950/20"
+            : "border-emerald-500/30 shadow-emerald-950/20"
+        } bg-white px-3 py-2 text-left text-xs font-semibold leading-5 text-slate-700 shadow-xl group-hover/tileinfo:block group-focus-within/tileinfo:block dark:border-white/10 dark:bg-slate-950 dark:text-slate-300`}
         role="tooltip"
       >
         {children}

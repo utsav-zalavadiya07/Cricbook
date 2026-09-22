@@ -1530,6 +1530,7 @@ h2.text-4xl {
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -1539,6 +1540,38 @@ h2.text-4xl {
 ::-webkit-scrollbar-thumb {
   background: color-mix(in srgb, var(--theme-primary) 44%, var(--theme-border));
   border-radius: 999px;
+}
+
+/* Owner Portal Scrollbars - Blue */
+html[data-portal="owner"] ::-webkit-scrollbar-thumb,
+html[data-portal="owner"]::-webkit-scrollbar-thumb,
+body[data-portal="owner"] ::-webkit-scrollbar-thumb,
+body[data-portal="owner"]::-webkit-scrollbar-thumb,
+.owner-scrollbar::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--theme-secondary) 55%, var(--theme-border)) !important;
+}
+
+html[data-portal="owner"] ::-webkit-scrollbar-thumb:hover,
+html[data-portal="owner"]::-webkit-scrollbar-thumb:hover,
+body[data-portal="owner"] ::-webkit-scrollbar-thumb:hover,
+body[data-portal="owner"]::-webkit-scrollbar-thumb:hover,
+.owner-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-secondary) !important;
+}
+
+/* Player Portal Scrollbars - Green */
+html[data-portal="player"] ::-webkit-scrollbar-thumb,
+html[data-portal="player"]::-webkit-scrollbar-thumb,
+body[data-portal="player"] ::-webkit-scrollbar-thumb,
+body[data-portal="player"]::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--theme-primary) 44%, var(--theme-border)) !important;
+}
+
+html[data-portal="player"] ::-webkit-scrollbar-thumb:hover,
+html[data-portal="player"]::-webkit-scrollbar-thumb:hover,
+body[data-portal="player"] ::-webkit-scrollbar-thumb:hover,
+body[data-portal="player"]::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-primary) !important;
 }
 
 * {
