@@ -28,7 +28,28 @@ export const setAutoRenew = (enabled: boolean, type?: SubscriptionPlanType) =>
 // BILLING & INVOICES
 export const getMyInvoices = (type?: SubscriptionPlanType) =>
   api.get("/billing/invoices", { params: type ? { type } : undefined });
-export const downloadInvoice = (invoiceId: number) => api.get(`/billing/invoices/${invoiceId}/download`);
+export const downloadInvoicePdf = async (invoiceId: number, invoiceNumber: string) => {
+  const response = await api.get<Blob>(`/billing/invoices/${invoiceId}/download`, {
+    responseType: "blob",
+    headers: { Accept: "application/pdf" },
+  });
+  const objectUrl = URL.createObjectURL(response.data);
+  const downloadAnchor = document.createElement("a");
+  const safeInvoiceNumber = invoiceNumber.replace(/[^A-Za-z0-9._-]/g, "-");
+  downloadAnchor.href = objectUrl;
+  downloadAnchor.download = `Cricbook-Invoice-${safeInvoiceNumber}.pdf`;
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+};
+export const invoiceStatusLabel = (status?: string) => {
+  const normalizedStatus = status?.trim().toUpperCase();
+  if (normalizedStatus === "PAID") return "Paid";
+  if (normalizedStatus === "UNPAID") return "Payment due";
+  if (normalizedStatus === "FAILED") return "Payment failed";
+  return "Processing";
+};
 export const triggerRenewalTest = () => api.post("/billing/renew/test");
 
 // LOYALTY & REWARDS

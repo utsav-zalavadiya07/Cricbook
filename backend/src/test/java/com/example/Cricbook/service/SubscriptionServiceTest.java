@@ -80,6 +80,8 @@ class SubscriptionServiceTest {
         verify(walletService, times(1)).debitWallet(eq(user), eq(BigDecimal.valueOf(299)), eq("SUBSCRIPTION_CHARGE"), anyString());
         ArgumentCaptor<Invoice> invoiceCaptor = ArgumentCaptor.forClass(Invoice.class);
         verify(invoiceRepository, times(1)).save(invoiceCaptor.capture());
+        assertEquals(new BigDecimal("253.39"), invoiceCaptor.getValue().getAmount());
+        assertEquals(new BigDecimal("45.61"), invoiceCaptor.getValue().getTaxAmount());
         assertNotNull(invoiceCaptor.getValue().getInvoiceUrl());
         assertTrue(invoiceCaptor.getValue().getInvoiceUrl().startsWith("/api/v1/billing/invoices/number/INV-"));
         verify(taxRecordRepository, times(1)).save(any(TaxRecord.class));
@@ -218,6 +220,62 @@ class SubscriptionServiceTest {
     }
 
     @Test
+    void startFeaturedOwnerSubscriptionRequiresTurf() {
+        User owner = User.builder().id(2L).email("owner@test.com").roles(Collections.emptySet()).build();
+        MembershipPlan plan = MembershipPlan.builder()
+                .id(10L)
+                .name("BUSINESS")
+                .type(MembershipPlanType.OWNER_FEATURED)
+                .price(BigDecimal.valueOf(1499))
+                .durationDays(30)
+                .featuredListing(true)
+                .build();
+
+        when(userRepository.findByEmailOrPhone("owner@test.com")).thenReturn(Optional.of(owner));
+        when(planRepository.findById(10L)).thenReturn(Optional.of(plan));
+
+        com.example.Cricbook.exception.ApiException exception = assertThrows(
+                com.example.Cricbook.exception.ApiException.class,
+                () -> subscriptionService.startSubscription("owner@test.com", 10L, null)
+        );
+
+        assertEquals("Select a turf to receive the featured listing benefit", exception.getMessage());
+        verifyNoInteractions(turfRepository, walletService);
+    }
+
+    @Test
+    void startFeaturedOwnerSubscriptionLinksTurfUntilPlanExpiry() {
+        User owner = User.builder().id(2L).email("owner@test.com").roles(Collections.emptySet()).build();
+        Turf turf = Turf.builder().id(7L).name("Central Cricket Arena").owner(owner).build();
+        MembershipPlan plan = MembershipPlan.builder()
+                .id(10L)
+                .name("BUSINESS")
+                .type(MembershipPlanType.OWNER_FEATURED)
+                .price(BigDecimal.valueOf(1499))
+                .durationDays(30)
+                .featuredListing(true)
+                .build();
+        Wallet wallet = Wallet.builder().user(owner).balance(BigDecimal.valueOf(2000)).build();
+
+        when(userRepository.findByEmailOrPhone("owner@test.com")).thenReturn(Optional.of(owner));
+        when(planRepository.findById(10L)).thenReturn(Optional.of(plan));
+        when(turfRepository.findById(7L)).thenReturn(Optional.of(turf));
+        when(subscriptionRepository.findDetailedActiveSubscriptionsByType(
+                eq(2L), eq(MembershipStatus.ACTIVE), any(), eq(MembershipPlanType.OWNER_FEATURED)))
+                .thenReturn(Collections.emptyList());
+        when(revenueExperimentService.getAssignedVariant(2L)).thenReturn("A");
+        when(walletRepository.findByUserId(2L)).thenReturn(Optional.of(wallet));
+        when(subscriptionRepository.save(any(Subscription.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Subscription result = subscriptionService.startSubscription("owner@test.com", 10L, 7L);
+
+        assertEquals(turf, result.getTurf());
+        assertEquals(result.getEndDate(), turf.getFeaturedUntil());
+        verify(turfRepository).save(turf);
+        verify(walletService).debitWallet(owner, BigDecimal.valueOf(1499), "SUBSCRIPTION_CHARGE", "Purchased BUSINESS membership");
+    }
+
+    @Test
     void getCurrentSubscriptionByTypeReturnsMatchingOwnerPlan() {
         User user = User.builder().id(1L).email("owner@test.com").roles(Collections.emptySet()).build();
         MembershipPlan ownerPlan = MembershipPlan.builder()
@@ -332,5 +390,38 @@ class SubscriptionServiceTest {
         assertEquals(40L, result.getId());
         assertTrue(result.getAutoRenew());
         verify(subscriptionRepository).save(subscription);
+    }
+
+    @Test
+    void setAutoRenewUsesOwnerPlanTypeForOwnerBillingControls() {
+        User owner = User.builder().id(2L).email("owner@test.com").roles(Collections.emptySet()).build();
+        MembershipPlan ownerPlan = MembershipPlan.builder()
+                .id(10L)
+                .name("ENTERPRISE")
+                .type(MembershipPlanType.OWNER_FEATURED)
+                .price(BigDecimal.valueOf(4999))
+                .durationDays(30)
+                .build();
+        Subscription ownerSubscription = Subscription.builder()
+                .id(41L)
+                .user(owner)
+                .plan(ownerPlan)
+                .status(MembershipStatus.ACTIVE)
+                .autoRenew(true)
+                .build();
+
+        when(userRepository.findByEmailOrPhone("owner@test.com")).thenReturn(Optional.of(owner));
+        when(subscriptionRepository.findFirstDetailedActiveSubscriptionByType(
+                eq(2L), any(), eq(MembershipPlanType.OWNER_FEATURED)))
+                .thenReturn(Optional.of(ownerSubscription));
+        when(subscriptionRepository.save(ownerSubscription)).thenReturn(ownerSubscription);
+
+        Subscription result = subscriptionService.setAutoRenew("owner@test.com", "OWNER_FEATURED", false);
+
+        assertEquals(41L, result.getId());
+        assertEquals(false, result.getAutoRenew());
+        verify(subscriptionRepository).findFirstDetailedActiveSubscriptionByType(
+                eq(2L), any(), eq(MembershipPlanType.OWNER_FEATURED));
+        verify(subscriptionRepository).save(ownerSubscription);
     }
 }

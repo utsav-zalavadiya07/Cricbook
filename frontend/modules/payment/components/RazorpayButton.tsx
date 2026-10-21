@@ -230,7 +230,7 @@ export default function RazorpayButton({ bookingId, bookingIds = [bookingId], am
         ) : (
           <span className="flex items-center justify-center gap-2">
             <span>💳</span>
-            Pay ₹{amount} with Razorpay
+            Pay ₹{amount.toLocaleString("en-IN")} with Razorpay
           </span>
         )}
       </button>

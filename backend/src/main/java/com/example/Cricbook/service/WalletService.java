@@ -76,7 +76,7 @@ public class WalletService {
     }
 
     /**
-     * Initiates a top-up payment gateway order (Razorpay) for the authenticated player.
+     * Initiates a top-up payment gateway order (Razorpay) for the authenticated account.
      */
     @Transactional
     public WalletTopupOrderResponse createTopupOrder(String username, WalletTopupOrderRequest request) {

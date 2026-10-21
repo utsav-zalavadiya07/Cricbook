@@ -64,6 +64,15 @@ public class UserService {
                 .name(user.getName())
                 .email(user.getEmail())
                 .phone(user.getPhone())
+                .city(user.getCity() != null ? user.getCity() : (profile != null ? profile.getCity() : null))
+                .bio(user.getBio() != null ? user.getBio() : (profile != null ? profile.getBio() : null))
+                .designation(user.getDesignation())
+                .alternatePhone(user.getAlternatePhone())
+                .businessName(user.getBusinessName())
+                .businessType(user.getBusinessType())
+                .gstin(user.getGstin())
+                .address(user.getAddress())
+                .supportEmail(user.getSupportEmail())
                 .preferredLanguage(user.getPreferredLanguage())
                 .preferredTheme(user.getPreferredTheme())
                 .status(user.getStatus())
@@ -115,8 +124,53 @@ public class UserService {
         if (request.getPhone() != null) {
             user.setPhone(validPhone(request.getPhone()));
         }
+        if (request.getCity() != null) {
+            user.setCity(optionalText(request.getCity(), "City", SHORT_TEXT_MAX_LENGTH));
+        }
+        if (request.getBio() != null) {
+            user.setBio(optionalText(request.getBio(), "Bio", BIO_MAX_LENGTH));
+        }
+        if (request.getDesignation() != null) {
+            user.setDesignation(optionalText(request.getDesignation(), "Designation", SHORT_TEXT_MAX_LENGTH));
+        }
+        if (request.getAlternatePhone() != null) {
+            user.setAlternatePhone(optionalText(request.getAlternatePhone(), "Alternate phone", 25));
+        }
+        if (request.getBusinessName() != null) {
+            user.setBusinessName(optionalText(request.getBusinessName(), "Business name", 120));
+        }
+        if (request.getBusinessType() != null) {
+            user.setBusinessType(optionalText(request.getBusinessType(), "Business type", 60));
+        }
+        if (request.getGstin() != null) {
+            user.setGstin(optionalText(request.getGstin(), "GSTIN / Tax ID", 30));
+        }
+        if (request.getAddress() != null) {
+            user.setAddress(optionalText(request.getAddress(), "Address", 255));
+        }
+        if (request.getSupportEmail() != null) {
+            user.setSupportEmail(optionalText(request.getSupportEmail(), "Support email", 100));
+        }
 
         userRepository.save(user);
+
+        PlayerProfile profile = playerProfileRepository.findByUserId(user.getId()).orElse(null);
+        if (profile != null) {
+            if (user.getCity() != null) profile.setCity(user.getCity());
+            if (user.getBio() != null) profile.setBio(user.getBio());
+            playerProfileRepository.save(profile);
+        } else if (user.getCity() != null || user.getBio() != null) {
+            PlayerProfile newProfile = PlayerProfile.builder()
+                    .user(user)
+                    .city(user.getCity())
+                    .bio(user.getBio())
+                    .matchesPlayed(0)
+                    .wins(0)
+                    .mvpCount(0)
+                    .rating(0.0)
+                    .build();
+            playerProfileRepository.save(newProfile);
+        }
     }
 
     @Transactional
@@ -354,9 +408,13 @@ public class UserService {
 
     private int profileCompletion(User user, PlayerProfile profile) {
         int score = 0;
-        if (hasValue(profile == null ? null : profile.getPhotoUrl())) score += 20;
-        if (hasValue(profile == null ? null : profile.getBio())) score += 20;
-        if (hasValue(profile == null ? null : profile.getCity())) score += 20;
+        String photo = profile == null ? null : profile.getPhotoUrl();
+        String bio = hasValue(user.getBio()) ? user.getBio() : (profile == null ? null : profile.getBio());
+        String city = hasValue(user.getCity()) ? user.getCity() : (profile == null ? null : profile.getCity());
+
+        if (hasValue(photo)) score += 20;
+        if (hasValue(bio)) score += 20;
+        if (hasValue(city)) score += 20;
         if (hasValue(user.getEmail())) score += 20;
         if (hasValue(user.getPhone())) score += 20;
         return score;

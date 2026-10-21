@@ -11,6 +11,7 @@ import { Notification, NotificationAnnouncement, NotificationSummary } from "../
 import { isNotificationArchived, isNotificationRead } from "../utils/notificationState";
 import CompactSelect from "@/components/ui/CompactSelect";
 import { TileInfo } from "@/components/ui";
+import { usePortal } from "@/hooks/usePortal";
 import NotificationItem from "./NotificationItem";
 
 const folders = [
@@ -61,6 +62,7 @@ function buildFilterOptions(values: Array<string | null | undefined>, allLabel: 
 }
 
 export default function NotificationList() {
+  const { isOwner } = usePortal();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [summary, setSummary] = useState<NotificationSummary>(emptySummary);
   const [loading, setLoading] = useState(true);
@@ -296,7 +298,7 @@ export default function NotificationList() {
     return (
       <div className="theme-panel flex h-40 items-center justify-center rounded-3xl">
         <div className="theme-muted flex items-center gap-3">
-          <svg className="h-5 w-5 animate-spin text-emerald-400" viewBox="0 0 24 24" fill="none">
+          <svg className={`h-5 w-5 animate-spin ${isOwner ? "text-sky-400" : "text-emerald-400"}`} viewBox="0 0 24 24" fill="none">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
           </svg>
@@ -319,7 +321,11 @@ export default function NotificationList() {
         <button
           onClick={handleMarkAll}
           disabled={unreadCount === 0 || busy !== null}
-          className="notification-btn-markread inline-flex items-center justify-center rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-2 text-xs font-bold text-emerald-300 transition hover:bg-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+          className={`notification-btn-markread inline-flex items-center justify-center rounded-xl border px-4 py-2 text-xs font-bold transition disabled:cursor-not-allowed disabled:opacity-50 ${
+            isOwner
+              ? "border-sky-500/25 bg-sky-500/10 text-sky-400 hover:bg-sky-500/20"
+              : "border-emerald-500/25 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20"
+          }`}
         >
           {busy === "mark-all" ? "Marking..." : "Mark all read"}
         </button>
@@ -360,7 +366,9 @@ export default function NotificationList() {
                 onClick={() => setFolder(item.key)}
                 className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all ${
                   isSelected
-                    ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20"
+                    ? isOwner
+                      ? "bg-sky-500 text-white shadow-md shadow-sky-500/20"
+                      : "bg-emerald-500 text-white shadow-md shadow-emerald-500/20"
                     : "notification-folder-inactive border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"
                 }`}
               >
@@ -370,7 +378,9 @@ export default function NotificationList() {
                     isSelected
                       ? "bg-white/20 text-white"
                       : isUnreadTab && count > 0
-                      ? "bg-emerald-500 text-white"
+                      ? isOwner
+                        ? "bg-sky-500 text-white"
+                        : "bg-emerald-500 text-white"
                       : "notification-count-pill border border-white/10 bg-white/10 text-slate-300"
                   }`}
                 >
@@ -400,7 +410,11 @@ export default function NotificationList() {
                 }
               }}
               placeholder="Search by title, content, category, or priority"
-              className="theme-input w-full rounded-xl pl-4 pr-9 py-2 text-sm outline-none transition placeholder:text-[var(--theme-soft)] focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/40"
+              className={`theme-input w-full rounded-xl pl-4 pr-9 py-2 text-sm outline-none transition placeholder:text-[var(--theme-soft)] ${
+                isOwner
+                  ? "focus:border-sky-500/60 focus:ring-1 focus:ring-sky-500/40"
+                  : "focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/40"
+              }`}
             />
             {searchDraft && (
               <button
@@ -445,7 +459,11 @@ export default function NotificationList() {
                 setSearch(searchDraft.trim());
                 void fetchData();
               }}
-              className="rounded-xl bg-emerald-500 px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-600 active:scale-95"
+              className={`rounded-xl px-4 py-2 text-sm font-bold text-white shadow-sm transition active:scale-95 ${
+                isOwner
+                  ? "bg-sky-500 hover:bg-sky-400"
+                  : "bg-emerald-500 hover:bg-emerald-600"
+              }`}
             >
               Search
             </button>

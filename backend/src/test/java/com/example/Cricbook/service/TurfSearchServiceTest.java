@@ -7,6 +7,7 @@ import com.example.Cricbook.entity.TurfAmenity;
 import com.example.Cricbook.enums.TurfStatus;
 import com.example.Cricbook.exception.ApiException;
 import com.example.Cricbook.repository.TurfRepository;
+import com.example.Cricbook.repository.SlotRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,6 +38,8 @@ public class TurfSearchServiceTest {
     @Mock
     private TurfRepository turfRepository;
     @Mock
+    private SlotRepository slotRepository;
+    @Mock
     private CacheService cacheService;
     @Mock
     private MultiSportService multiSportService;
@@ -57,6 +60,8 @@ public class TurfSearchServiceTest {
 
         executeCachedSupplier(60L);
         when(multiSportService.activeSportCodesByTurfId(any())).thenReturn(Map.of(1L, List.of("CRICKET")));
+        when(slotRepository.findMinimumActivePriceByTurfId(1L)).thenReturn(java.util.Optional.of(BigDecimal.valueOf(500)));
+        when(slotRepository.findMaximumActivePriceByTurfId(1L)).thenReturn(java.util.Optional.of(BigDecimal.valueOf(1500)));
 
         when(turfRepository.searchActiveTurfs(
                 any(), eq("Test City"), any(), any(), any(), any(), any(), any(), eq(true), any(Pageable.class)
@@ -66,6 +71,8 @@ public class TurfSearchServiceTest {
 
         assertFalse(result.isEmpty());
         assertEquals("Royal Turf", result.get(0).getName());
+        assertEquals(BigDecimal.valueOf(500), result.get(0).getStartingSlotPrice());
+        assertEquals(BigDecimal.valueOf(1500), result.get(0).getMaximumSlotPrice());
     }
 
     @Test

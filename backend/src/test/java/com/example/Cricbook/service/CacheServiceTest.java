@@ -11,8 +11,21 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CacheServiceTest {
+
+    @Test
+    void evictByPrefixRemovesOnlyMatchingEntries() {
+        CacheService cacheService = new CacheService();
+        cacheService.getOrCompute("search:surat", 60, () -> "search result");
+        cacheService.getOrCompute("suggestions:surat", 60, () -> "suggestion result");
+
+        cacheService.evictByPrefix("search:");
+
+        assertTrue(cacheService.get("search:surat").isEmpty());
+        assertEquals("suggestion result", cacheService.<String>get("suggestions:surat").orElseThrow());
+    }
 
     @Test
     void getOrComputeRunsSupplierOnceForConcurrentSameKey() throws Exception {

@@ -2,6 +2,7 @@
 import { TileInfo } from "@/components/ui";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getPricingPage, getCurrentSubscription, startSubscription } from "@/modules/membership/services/subscriptionService";
+import { TaxInclusiveNote } from "@/modules/membership/components/TaxInclusiveNote";
 import { getWallet } from "@/modules/wallet/services/walletService";
 import type { MembershipPlan, Subscription } from "@/modules/membership/types";
 import { formatDateTime } from "@/utils/dateFormatter";
@@ -11,6 +12,7 @@ export default function PricingPage() {
   const [variant, setVariant] = useState<string>("A");
   const [currentSub, setCurrentSub] = useState<Subscription | null>(null);
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
+  const [loadedAt, setLoadedAt] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
@@ -37,6 +39,7 @@ export default function PricingPage() {
       if (walletResult.status === "fulfilled") {
         setWalletBalance(Number(walletResult.value.data.balance ?? 0));
       }
+      setLoadedAt(Date.now());
     } catch (err) {
       console.error("Failed to load subscription pricing data", err);
     } finally {
@@ -45,16 +48,17 @@ export default function PricingPage() {
   }, []);
 
   useEffect(() => {
-    void loadData();
+    const timer = window.setTimeout(() => void loadData(), 0);
+    return () => window.clearTimeout(timer);
   }, [loadData]);
 
   // Check if user has an active paid plan
   const hasActivePaidPlan = useMemo(() => {
-    if (!currentSub || currentSub.status !== "ACTIVE" || !currentSub.endDate) return false;
-    const isExpired = new Date(currentSub.endDate).getTime() <= Date.now();
+    if (!currentSub || currentSub.status !== "ACTIVE" || !currentSub.endDate || loadedAt === null) return false;
+    const isExpired = new Date(currentSub.endDate).getTime() <= loadedAt;
     const isPaid = Number(currentSub.price || 0) > 0;
     return !isExpired && isPaid;
-  }, [currentSub]);
+  }, [currentSub, loadedAt]);
 
   // Preview expiry calculation matching backend logic (exact day and time)
   const calculatePreviewExpiry = (durationDays: number): string => {
@@ -241,6 +245,7 @@ export default function PricingPage() {
                         </span>
                       )}
                     </div>
+                    {Number(plan.price || 0) > 0 && <TaxInclusiveNote className="mt-1" />}
                   </div>
 
                   <ul className="mt-8 space-y-3.5 text-sm text-slate-300 flex-1">
@@ -385,7 +390,7 @@ export default function PricingPage() {
                 <span className="font-bold text-emerald-400">{selectedPlanForPurchase.name}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Subscription Price:</span>
+                <span className="text-slate-400">Plan price (GST included):</span>
                 <span className="text-sm font-bold text-white">Rs {selectedPlanForPurchase.price}</span>
               </div>
               <div className="border-t border-white/5 pt-2 flex justify-between items-center">
@@ -403,7 +408,7 @@ export default function PricingPage() {
                 <span className="font-bold text-white">Rs {walletBalance ?? 0}</span>
               </div>
               <div className="flex justify-between items-center text-rose-300">
-                <span>Plan Cost to Deduct:</span>
+                <span>Total plan charge:</span>
                 <span className="font-bold">- Rs {selectedPlanForPurchase.price}</span>
               </div>
               <div className="border-t border-sky-500/20 pt-2 flex justify-between items-center font-bold">

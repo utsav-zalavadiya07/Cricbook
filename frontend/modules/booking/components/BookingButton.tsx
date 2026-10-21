@@ -6,6 +6,7 @@ import { createBatchBooking, createBooking } from "../services/bookingService";
 import { BatchBookingRequest, BookingRequest } from "../types/booking.types";
 
 type ApiError = {
+  message?: string;
   response?: {
     data?: {
       message?: string;
@@ -37,11 +38,17 @@ export default function BookingButton({ bookingData, price, paymentMeta = {} }: 
       const res = isBatch
         ? await createBatchBooking(bookingData)
         : await createBooking(bookingData);
-      const bookings = Array.isArray(res.data) ? res.data : [res.data];
+      const bookings = (Array.isArray(res.data) ? res.data : [res.data]) as Array<{ id: number; amount?: number; totalAmount?: number }>;
+      const payableAmount = bookings.reduce(
+        (total, booking) => total + Number(booking.amount ?? booking.totalAmount ?? 0),
+        0,
+      );
+      if (payableAmount <= 0) throw new Error("The final booking amount could not be calculated.");
       const params = new URLSearchParams({
-        bookingIds: bookings.map((booking: { id: number }) => booking.id).join(","),
+        bookingIds: bookings.map((booking) => booking.id).join(","),
         bookingId: String(bookings[0].id),
-        price: String(price),
+        price: String(payableAmount),
+        regularPrice: String(price),
       });
       Object.entries(paymentMeta).forEach(([key, value]) => {
         if (value) params.set(key, value);
@@ -52,6 +59,7 @@ export default function BookingButton({ bookingData, price, paymentMeta = {} }: 
       setError(
         apiError.response?.data?.message ||
           apiError.response?.data?.error ||
+          apiError.message ||
           "Booking failed. The slot may already be taken."
       );
     } finally {
@@ -111,7 +119,7 @@ export default function BookingButton({ bookingData, price, paymentMeta = {} }: 
             Confirming booking...
           </span>
         ) : (
-          `Confirm & Pay ₹${price} →`
+          "Confirm booking →"
         )}
       </button>
       <p className="text-center text-slate-500 text-xs">

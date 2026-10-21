@@ -2,6 +2,8 @@ package com.example.Cricbook.controller;
 
 import com.example.Cricbook.dto.UserProfileDto;
 import com.example.Cricbook.dto.PlayerProfileResponse;
+import com.example.Cricbook.enums.RoleName;
+import com.example.Cricbook.enums.UserStatus;
 import com.example.Cricbook.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Set;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -57,6 +61,29 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("test@test.com"));
+    }
+
+    @Test
+    @WithMockUser(username = "owner@test.com", roles = "OWNER")
+    void testGetCurrentOwnerIncludesRoleStatusAndProfileCompletion() throws Exception {
+        UserProfileDto response = UserProfileDto.builder()
+                .id(5L)
+                .email("owner@test.com")
+                .name("Turf Owner")
+                .phone("9876543210")
+                .status(UserStatus.ACTIVE)
+                .roles(Set.of(RoleName.ROLE_OWNER))
+                .profileCompletionPercentage(75)
+                .build();
+
+        when(userService.getCurrentUser("owner@test.com")).thenReturn(response);
+
+        mockMvc.perform(get("/api/v1/users/me").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Turf Owner"))
+                .andExpect(jsonPath("$.status").value("ACTIVE"))
+                .andExpect(jsonPath("$.roles[0]").value("ROLE_OWNER"))
+                .andExpect(jsonPath("$.profileCompletionPercentage").value(75));
     }
 
     @MockitoBean

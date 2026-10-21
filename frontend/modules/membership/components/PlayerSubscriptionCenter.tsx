@@ -5,12 +5,11 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/modules/i18n/I18nProvider";
 import {
-  cancelSubscription,
-  downloadInvoice,
+  downloadInvoicePdf,
   getCurrentSubscription,
   getMyInvoices,
+  invoiceStatusLabel,
   setAutoRenew,
-  triggerRenewalTest,
 } from "@/modules/membership/services/subscriptionService";
 import type { Invoice, Subscription } from "@/modules/membership/types";
 import { formatDateTime } from "@/utils/dateFormatter";
@@ -23,6 +22,7 @@ export default function PlayerSubscriptionCenter() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [downloadingInvoiceId, setDownloadingInvoiceId] = useState<number | null>(null);
 
   // Auto-renew confirmation modal state
   const [confirmAutoRenewModal, setConfirmAutoRenewModal] = useState<"ENABLE" | "DISABLE" | null>(null);
@@ -98,29 +98,17 @@ export default function PlayerSubscriptionCenter() {
     }
   };
 
-  const handleTriggerRenewTest = () => {
-    triggerRenewalTest()
-      .then(() => {
-        setMessage({ text: t("subscription.success.renewalCheck"), type: "success" });
-        loadData();
-      })
-      .catch((err) => {
-        setMessage({ text: err.response?.data?.error || t("subscription.error.renewalCheck"), type: "error" });
-      });
-  };
-
-  const handleDownloadInvoice = (inv: Invoice) => {
-    downloadInvoice(inv.id)
-      .then((res) => {
-        const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(res.data, null, 2))}`;
-        const downloadAnchor = document.createElement("a");
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `invoice-${inv.invoiceNumber}.json`);
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
-      })
-      .catch((err) => console.error(err));
+  const handleDownloadInvoice = async (invoice: Invoice) => {
+    setDownloadingInvoiceId(invoice.id);
+    setMessage(null);
+    try {
+      await downloadInvoicePdf(invoice.id, invoice.invoiceNumber);
+    } catch (err) {
+      console.error("Unable to download invoice:", err);
+      setMessage({ text: t("subscription.error.invoiceDownloadFailed"), type: "error" });
+    } finally {
+      setDownloadingInvoiceId(null);
+    }
   };
 
   return (
@@ -194,7 +182,7 @@ export default function PlayerSubscriptionCenter() {
                     href="/pricing"
                     className="block text-center w-full mt-3 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 py-2.5 text-xs font-bold text-emerald-300 transition-all hover:bg-emerald-500/30 active:scale-95"
                   >
-                    Manage / Upgrade Tier
+                    Change plan
                   </Link>
 
                   {/* Auto-Renewal Toggle Button (Always visible for paid plans) */}
@@ -206,7 +194,7 @@ export default function PlayerSubscriptionCenter() {
                           onClick={() => setConfirmAutoRenewModal("DISABLE")}
                           className="w-full rounded-xl border border-red-500/25 bg-red-500/10 py-2.5 text-xs font-bold text-red-300 transition-all hover:bg-red-500/20 active:scale-95 flex items-center justify-center gap-2"
                         >
-                          Turn Off Auto-Renew
+                          Turn off automatic renewal
                         </button>
                       ) : (
                         <button
@@ -214,21 +202,12 @@ export default function PlayerSubscriptionCenter() {
                           onClick={() => setConfirmAutoRenewModal("ENABLE")}
                           className="w-full rounded-xl border border-emerald-500/30 bg-emerald-500/15 py-2.5 text-xs font-bold text-emerald-300 transition-all hover:bg-emerald-500/25 active:scale-95 flex items-center justify-center gap-2 shadow-sm shadow-emerald-500/10"
                         >
-                          ↻ Enable Auto-Renew
+                          Enable automatic renewal
                         </button>
                       )}
                     </div>
                   )}
 
-                  <div className="theme-border border-t pt-4 space-y-2">
-                    <p className="theme-soft text-2xs font-semibold uppercase tracking-wider">{t("subscription.devSandbox")}</p>
-                    <button
-                      onClick={handleTriggerRenewTest}
-                      className="w-full rounded-xl border border-white/10 bg-white/5 py-2 text-2xs font-semibold text-slate-300 transition-all hover:bg-white/10 active:scale-95"
-                    >
-                      {t("subscription.triggerRenewal")}
-                    </button>
-                  </div>
                 </div>
               ) : (
                 <p className="theme-muted text-sm">{t("subscription.noActivePlan")}</p>
@@ -250,7 +229,8 @@ export default function PlayerSubscriptionCenter() {
                       invoice={inv}
                       issuedLabel={t("subscription.issued")}
                       gstLabel={t("subscription.includesGst", { amount: `Rs ${inv.taxAmount}` })}
-                      downloadLabel={t("subscription.downloadJson")}
+                      downloadLabel={t("subscription.downloadInvoice")}
+                      downloading={downloadingInvoiceId === inv.id}
                       onDownload={() => handleDownloadInvoice(inv)}
                     />
                   ))
@@ -379,12 +359,14 @@ function InvoiceRow({
   issuedLabel,
   gstLabel,
   downloadLabel,
+  downloading,
   onDownload,
 }: {
   invoice: Invoice;
   issuedLabel: string;
   gstLabel: string;
   downloadLabel: string;
+  downloading: boolean;
   onDownload: () => void;
 }) {
   return (
@@ -393,7 +375,7 @@ function InvoiceRow({
         <div className="flex items-center gap-2">
           <span className="theme-soft text-xs font-bold">{invoice.invoiceNumber}</span>
           <span className="inline-flex rounded-full bg-emerald-500/10 px-2 py-0.5 text-3xs font-extrabold uppercase tracking-wide text-emerald-400">
-            {invoice.status}
+            {invoiceStatusLabel(invoice.status)}
           </span>
         </div>
         <h4 className="theme-title text-sm font-bold">{invoice.planName} Plan</h4>
@@ -406,10 +388,13 @@ function InvoiceRow({
           <span className="theme-soft block max-w-[220px] text-[10px] leading-4 sm:max-w-none">{gstLabel}</span>
         </div>
         <button
+          type="button"
           onClick={onDownload}
-          className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold text-slate-200 transition-all hover:bg-white/10 active:scale-95"
+          disabled={downloading}
+          aria-label={`${downloadLabel} ${invoice.invoiceNumber}`}
+          className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold text-slate-200 transition-all hover:bg-white/10 active:scale-95 disabled:cursor-wait disabled:opacity-60"
         >
-          {downloadLabel}
+          {downloading ? "Preparing..." : downloadLabel}
         </button>
       </div>
     </div>

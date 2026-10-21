@@ -40,6 +40,8 @@ public class SlotServiceTest {
     private BookingRepository bookingRepository;
     @Mock
     private TurfMapper turfMapper;
+    @Mock
+    private CacheService cacheService;
 
     @InjectMocks
     private SlotService slotService;
@@ -57,6 +59,7 @@ public class SlotServiceTest {
         User owner = User.builder().id(1L).email(email).build();
         owner.getRoles().add(ownerRole);
         Turf turf = Turf.builder().id(turfId).owner(owner).build();
+        turf.setPricePerHour(java.math.BigDecimal.valueOf(1500));
 
         when(turfRepository.findById(turfId)).thenReturn(Optional.of(turf));
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(owner));
@@ -65,7 +68,131 @@ public class SlotServiceTest {
         List<SlotResponse> result = slotService.createSlots(turfId, email, request);
 
         assertFalse(result.isEmpty());
-        verify(slotRepository).saveAll(anyList());
+        org.mockito.ArgumentCaptor<List<Slot>> slotsCaptor = org.mockito.ArgumentCaptor.forClass(List.class);
+        verify(slotRepository).saveAll(slotsCaptor.capture());
+        assertTrue(slotsCaptor.getValue().stream().allMatch(slot -> java.math.BigDecimal.valueOf(1500).equals(slot.getPrice())));
+        verify(cacheService).evictByPrefix("search:");
+    }
+
+    @Test
+    void testGetSlotsReturnsActiveAndDisabledRegularSlotsForOwnerFilters() {
+        Long turfId = 1L;
+        String email = "owner@example.com";
+        Role ownerRole = new Role(1L, RoleName.ROLE_OWNER);
+        User owner = User.builder().id(1L).email(email).build();
+        owner.getRoles().add(ownerRole);
+        Turf turf = Turf.builder().id(turfId).owner(owner).pricePerHour(java.math.BigDecimal.valueOf(1500)).build();
+        Slot activeSlot = Slot.builder().id(10L).turf(turf).isActive(true).archived(false).build();
+        Slot disabledSlot = Slot.builder().id(11L).turf(turf).isActive(false).archived(false).build();
+        SlotResponse activeResponse = SlotResponse.builder().id(10L).isActive(true).build();
+        SlotResponse disabledResponse = SlotResponse.builder().id(11L).isActive(false).build();
+
+        when(turfRepository.findById(turfId)).thenReturn(Optional.of(turf));
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(owner));
+        when(slotRepository.findByTurfIdAndArchivedFalse(turfId)).thenReturn(List.of(activeSlot, disabledSlot));
+        when(turfMapper.toSlotResponse(activeSlot)).thenReturn(activeResponse);
+        when(turfMapper.toSlotResponse(disabledSlot)).thenReturn(disabledResponse);
+
+        List<SlotResponse> result = slotService.getSlots(turfId, email);
+
+        assertEquals(2, result.size());
+        assertTrue(result.get(0).getIsActive());
+        assertFalse(result.get(1).getIsActive());
+    }
+
+    @Test
+    void testCreateSlots_ReusesExactActiveScheduleWithoutDuplicates() {
+        Long turfId = 1L;
+        String email = "owner@example.com";
+        CreateSlotRequest request = new CreateSlotRequest();
+        request.setStartTime("06:00");
+        request.setEndTime("08:00");
+        request.setSlotDuration(60);
+        request.setPrice(java.math.BigDecimal.valueOf(700));
+
+        Role ownerRole = new Role(1L, RoleName.ROLE_OWNER);
+        User owner = User.builder().id(1L).email(email).build();
+        owner.getRoles().add(ownerRole);
+        Turf turf = Turf.builder()
+                .id(turfId)
+                .owner(owner)
+                .pricePerHour(java.math.BigDecimal.valueOf(1500))
+                .build();
+        Slot firstSlot = Slot.builder()
+                .id(10L)
+                .turf(turf)
+                .startTime(java.time.LocalTime.of(6, 0))
+                .endTime(java.time.LocalTime.of(7, 0))
+                .price(java.math.BigDecimal.valueOf(500))
+                .isActive(true)
+                .archived(false)
+                .build();
+        Slot secondSlot = Slot.builder()
+                .id(11L)
+                .turf(turf)
+                .startTime(java.time.LocalTime.of(7, 0))
+                .endTime(java.time.LocalTime.of(8, 0))
+                .price(java.math.BigDecimal.valueOf(500))
+                .isActive(true)
+                .archived(false)
+                .build();
+
+        when(turfRepository.findById(turfId)).thenReturn(Optional.of(turf));
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(owner));
+        when(slotRepository.findByTurfIdAndArchivedFalse(turfId)).thenReturn(List.of(firstSlot, secondSlot));
+        when(turfMapper.toSlotResponse(firstSlot)).thenReturn(SlotResponse.builder().id(10L).build());
+        when(turfMapper.toSlotResponse(secondSlot)).thenReturn(SlotResponse.builder().id(11L).build());
+
+        List<SlotResponse> result = slotService.createSlots(turfId, email, request);
+
+        assertEquals(List.of(10L, 11L), result.stream().map(SlotResponse::getId).toList());
+        assertEquals(java.math.BigDecimal.valueOf(500), firstSlot.getPrice());
+        verify(slotRepository, never()).saveAll(anyList());
+        verify(slotAvailabilityRepository).saveAll(argThat(rows -> {
+            List<SlotAvailability> generatedRows = new java.util.ArrayList<>();
+            rows.forEach(generatedRows::add);
+            return generatedRows.size() == 180;
+        }));
+    }
+
+    @Test
+    void testCreateSlots_ReactivatesMatchingDisabledSlotsWithoutDuplicates() {
+        Long turfId = 1L;
+        String email = "owner@example.com";
+        CreateSlotRequest request = new CreateSlotRequest();
+        request.setStartTime("06:00");
+        request.setEndTime("07:00");
+        request.setSlotDuration(60);
+
+        Role ownerRole = new Role(1L, RoleName.ROLE_OWNER);
+        User owner = User.builder().id(1L).email(email).build();
+        owner.getRoles().add(ownerRole);
+        Turf turf = Turf.builder().id(turfId).owner(owner).build();
+        Slot disabledSlot = Slot.builder()
+                .id(10L)
+                .turf(turf)
+                .startTime(java.time.LocalTime.of(6, 0))
+                .endTime(java.time.LocalTime.of(7, 0))
+                .price(java.math.BigDecimal.valueOf(500))
+                .isActive(false)
+                .archived(false)
+                .build();
+
+        when(turfRepository.findById(turfId)).thenReturn(Optional.of(turf));
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(owner));
+        when(slotRepository.findByTurfIdAndArchivedFalse(turfId)).thenReturn(List.of(disabledSlot));
+        when(slotRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(turfMapper.toSlotResponse(disabledSlot)).thenReturn(SlotResponse.builder().id(10L).isActive(true).build());
+
+        List<SlotResponse> result = slotService.createSlots(turfId, email, request);
+
+        assertEquals(1, result.size());
+        assertTrue(disabledSlot.getIsActive());
+        verify(slotRepository).saveAll(argThat(slots -> {
+            List<Slot> savedSlots = new java.util.ArrayList<>();
+            slots.forEach(savedSlots::add);
+            return savedSlots.size() == 1 && savedSlots.get(0).getId().equals(10L);
+        }));
     }
 
     @Test
@@ -348,6 +475,7 @@ public class SlotServiceTest {
 
         assertTrue(slot.getIsActive());
         verify(slotRepository).save(slot);
+        verify(cacheService).evictByPrefix("search:");
     }
 
     @Test
@@ -415,6 +543,117 @@ public class SlotServiceTest {
         java.util.List<com.example.Cricbook.dto.SlotAvailabilityResponse> result = slotService.getAvailability(turfId, date);
 
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testGetAvailabilityAutomaticallyGeneratesMissingFutureDate() {
+        Long turfId = 1L;
+        java.time.LocalDate date = java.time.LocalDate.now().plusDays(120);
+        Turf turf = Turf.builder().id(turfId).pricePerHour(java.math.BigDecimal.valueOf(1500)).build();
+        Slot slot = Slot.builder()
+                .id(10L)
+                .turf(turf)
+                .startTime(java.time.LocalTime.of(7, 0))
+                .endTime(java.time.LocalTime.of(8, 0))
+                .price(java.math.BigDecimal.valueOf(500))
+                .isActive(true)
+                .archived(false)
+                .build();
+        SlotAvailability generated = SlotAvailability.builder()
+                .id(20L)
+                .slot(slot)
+                .date(date)
+                .isAvailable(true)
+                .isBlocked(false)
+                .build();
+
+        when(turfRepository.findById(turfId)).thenReturn(Optional.of(turf));
+        when(slotRepository.findByTurfIdAndArchivedFalse(turfId)).thenReturn(List.of(slot));
+        when(slotAvailabilityRepository.findBySlotTurfIdAndDateBetween(turfId, date, date))
+                .thenReturn(Collections.emptyList());
+        when(slotAvailabilityRepository.findBySlotTurfIdAndDate(turfId, date)).thenReturn(List.of(generated));
+        when(bookingRepository.findByTurfIdAndBookingDateAndStatusIn(eq(turfId), eq(date), anyList()))
+                .thenReturn(Collections.emptyList());
+        when(slotPriceOverrideRepository.findBySlotTurfIdAndDate(turfId, date)).thenReturn(Collections.emptyList());
+        when(turfMapper.toSlotAvailabilityResponse(generated)).thenReturn(
+                com.example.Cricbook.dto.SlotAvailabilityResponse.builder()
+                        .id(20L)
+                        .slotId(10L)
+                        .startTime(slot.getStartTime())
+                        .endTime(slot.getEndTime())
+                        .date(date)
+                        .available(true)
+                        .isAvailable(true)
+                        .blocked(false)
+                        .isBlocked(false)
+                        .price(slot.getPrice())
+                        .build()
+        );
+
+        java.util.List<com.example.Cricbook.dto.SlotAvailabilityResponse> result = slotService.getAvailability(turfId, date);
+
+        assertEquals(1, result.size());
+        assertEquals("AVAILABLE", result.get(0).getStatus());
+        assertEquals(java.math.BigDecimal.valueOf(1500), result.get(0).getListingPrice());
+        verify(slotAvailabilityRepository).saveAll(argThat(rows -> {
+            List<SlotAvailability> savedRows = new java.util.ArrayList<>();
+            rows.forEach(savedRows::add);
+            return savedRows.size() == 1
+                    && savedRows.get(0).getSlot().getId().equals(slot.getId())
+                    && savedRows.get(0).getDate().equals(date)
+                    && savedRows.get(0).getIsAvailable()
+                    && !savedRows.get(0).getIsBlocked();
+        }));
+    }
+
+    @Test
+    void testGetAvailabilityKeepsExistingFutureAvailabilityUnchanged() {
+        Long turfId = 1L;
+        java.time.LocalDate date = java.time.LocalDate.now().plusDays(120);
+        Turf turf = Turf.builder().id(turfId).build();
+        Slot slot = Slot.builder()
+                .id(10L)
+                .turf(turf)
+                .startTime(java.time.LocalTime.of(7, 0))
+                .endTime(java.time.LocalTime.of(8, 0))
+                .isActive(true)
+                .archived(false)
+                .build();
+        SlotAvailability blocked = SlotAvailability.builder()
+                .id(20L)
+                .slot(slot)
+                .date(date)
+                .isAvailable(false)
+                .isBlocked(true)
+                .build();
+
+        when(turfRepository.findById(turfId)).thenReturn(Optional.of(turf));
+        when(slotRepository.findByTurfIdAndArchivedFalse(turfId)).thenReturn(List.of(slot));
+        when(slotAvailabilityRepository.findBySlotTurfIdAndDateBetween(turfId, date, date)).thenReturn(List.of(blocked));
+        when(slotAvailabilityRepository.findBySlotTurfIdAndDate(turfId, date)).thenReturn(List.of(blocked));
+        when(bookingRepository.findByTurfIdAndBookingDateAndStatusIn(eq(turfId), eq(date), anyList()))
+                .thenReturn(Collections.emptyList());
+        when(slotPriceOverrideRepository.findBySlotTurfIdAndDate(turfId, date)).thenReturn(Collections.emptyList());
+        when(turfMapper.toSlotAvailabilityResponse(blocked)).thenReturn(
+                com.example.Cricbook.dto.SlotAvailabilityResponse.builder()
+                        .id(20L)
+                        .slotId(10L)
+                        .startTime(slot.getStartTime())
+                        .endTime(slot.getEndTime())
+                        .date(date)
+                        .available(false)
+                        .isAvailable(false)
+                        .blocked(true)
+                        .isBlocked(true)
+                        .build()
+        );
+
+        java.util.List<com.example.Cricbook.dto.SlotAvailabilityResponse> result = slotService.getAvailability(turfId, date);
+
+        assertEquals("BLOCKED", result.get(0).getStatus());
+        verify(slotAvailabilityRepository, never()).saveAll(anyList());
+        assertTrue(blocked.getIsBlocked());
+        assertFalse(blocked.getIsAvailable());
     }
 
     @Test
@@ -693,5 +932,23 @@ public class SlotServiceTest {
 
         assertEquals("MAINTENANCE", result.get(0).getStatus());
         assertEquals(0, result.get(0).getAvailableSlots());
+    }
+
+    @Test
+    void testGetCalendarReturnsEveryDateInRequestedWeek() {
+        Long turfId = 1L;
+        java.time.LocalDate start = java.time.LocalDate.of(2026, 10, 5);
+        java.time.LocalDate end = start.plusDays(6);
+        Turf turf = Turf.builder().id(turfId).build();
+
+        when(turfRepository.findById(turfId)).thenReturn(java.util.Optional.of(turf));
+        when(slotAvailabilityRepository.findBySlotTurfIdAndDateBetween(turfId, start, end))
+                .thenReturn(java.util.Collections.emptyList());
+
+        java.util.List<com.example.Cricbook.dto.SlotCalendarDateResponse> result = slotService.getCalendar(turfId, start, end);
+
+        assertEquals(7, result.size());
+        assertEquals(start, result.get(0).getDate());
+        assertEquals(end, result.get(6).getDate());
     }
 }

@@ -111,6 +111,12 @@ public class SubscriptionService {
         MembershipPlan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new ApiException("Membership plan not found"));
 
+        if (plan.getType() == MembershipPlanType.OWNER_FEATURED
+                && Boolean.TRUE.equals(plan.getFeaturedListing())
+                && turfId == null) {
+            throw new ApiException("Select a turf to receive the featured listing benefit");
+        }
+
         Turf turf = null;
         if (plan.getType() == MembershipPlanType.OWNER_FEATURED && turfId != null) {
             turf = turfRepository.findById(turfId)
@@ -211,8 +217,7 @@ public class SubscriptionService {
             turfRepository.save(turf);
         }
 
-        // Calculate 18% GST Tax
-        BigDecimal taxAmount = price.multiply(BigDecimal.valueOf(0.18)).setScale(2, RoundingMode.HALF_UP);
+        InclusiveTaxCalculator.TaxBreakdown taxBreakdown = InclusiveTaxCalculator.fromInclusiveTotal(price);
 
         try {
             jdbcTemplate.execute("ALTER TABLE invoices MODIFY COLUMN booking_id bigint DEFAULT NULL");
@@ -226,8 +231,8 @@ public class SubscriptionService {
                 .invoiceNumber(invoiceNum)
                 .user(user)
                 .subscription(subscription)
-                .amount(price)
-                .taxAmount(taxAmount)
+                .amount(taxBreakdown.taxableAmount())
+                .taxAmount(taxBreakdown.taxAmount())
                 .status("PAID")
                 .invoiceUrl(invoiceUrl(invoiceNum))
                 .build());
@@ -235,8 +240,8 @@ public class SubscriptionService {
         // Create Tax Record
         taxRecordRepository.save(TaxRecord.builder()
                 .invoice(invoice)
-                .gstAmount(taxAmount)
-                .taxRate(BigDecimal.valueOf(0.18))
+                .gstAmount(taxBreakdown.taxAmount())
+                .taxRate(InclusiveTaxCalculator.GST_RATE_FRACTION)
                 .build());
 
         // Create Revenue record

@@ -34,13 +34,15 @@ function normalizeStatus(status?: string) {
 
 function LoadingGrid() {
   return (
-    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
       {Array.from({ length: 3 }).map((_, index) => (
         <div key={index} className="theme-panel overflow-hidden rounded-[1.75rem]">
-          <div className="h-44 animate-pulse bg-[var(--theme-panel-soft)]" />
+          <div className="aspect-[16/9] min-h-48 animate-pulse bg-[var(--theme-panel-soft)]" />
           <div className="space-y-4 p-5">
-            <div className="h-5 w-2/3 animate-pulse rounded-full bg-[var(--theme-panel-soft)]" />
-            <div className="h-4 w-1/2 animate-pulse rounded-full bg-[var(--theme-panel-soft)]" />
+            <div className="flex items-center justify-between gap-4">
+              <div className="h-6 w-1/3 animate-pulse rounded-full bg-[var(--theme-panel-soft)]" />
+              <div className="h-7 w-20 animate-pulse rounded-full bg-[var(--theme-panel-soft)]" />
+            </div>
             <div className="grid grid-cols-3 gap-3">
               <div className="h-14 animate-pulse rounded-2xl bg-[var(--theme-panel-soft)]" />
               <div className="h-14 animate-pulse rounded-2xl bg-[var(--theme-panel-soft)]" />
@@ -205,6 +207,13 @@ export default function MyTurfsPage() {
         </PageSection>
 
         <PageSection className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="theme-title text-lg font-black">Turf portfolio</h2>
+              <p className="theme-muted mt-1 text-xs">Find a venue and jump directly into its daily operations.</p>
+            </div>
+            <span className="theme-owner-badge rounded-full px-3 py-1.5 text-xs font-black">{turfs.length} venues</span>
+          </div>
           <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_220px_220px]">
             <Input
               value={query}
@@ -271,7 +280,7 @@ export default function MyTurfsPage() {
         )}
 
         {!loading && !error && filteredTurfs.length > 0 && (
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
             {filteredTurfs.map((turf) => (
               <TurfCard
                 key={turf.id}

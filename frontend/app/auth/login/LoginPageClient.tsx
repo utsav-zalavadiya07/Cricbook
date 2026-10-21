@@ -3,13 +3,10 @@
 import { useEffect, useState } from "react";
 import AuthCard from "@/modules/auth/components/AuthCard";
 import LoginForm, { LoginRole } from "@/modules/auth/components/LoginForm";
-import { useRouter, useSearchParams } from "next/navigation";
-import { canRoleAccessPath, getLandingPathForRole, safeNextPath } from "@/modules/auth/sessionPolicy";
+import { getLandingPathForRole } from "@/modules/auth/sessionPolicy";
 import { useAuthStore } from "@/store/authStore";
 
 export default function LoginPageClient() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const { hydrated, token, role } = useAuthStore();
   const [selectedRole, setSelectedRole] = useState<LoginRole>("USER");
   const [redirecting, setRedirecting] = useState(true);
@@ -35,11 +32,9 @@ export default function LoginPageClient() {
       return;
     }
 
-    const requestedPath = safeNextPath(searchParams.get("next"), "");
-    const fallbackPath = getLandingPathForRole(role);
-    const nextPath = requestedPath && canRoleAccessPath(role, requestedPath) ? requestedPath : fallbackPath;
-    window.location.replace(nextPath);
-  }, [hydrated, role, searchParams, token]);
+    const landingPath = getLandingPathForRole(role);
+    window.location.replace(landingPath);
+  }, [hydrated, role, token]);
 
   const handleRoleChange = (role: LoginRole) => {
     setSelectedRole(role);

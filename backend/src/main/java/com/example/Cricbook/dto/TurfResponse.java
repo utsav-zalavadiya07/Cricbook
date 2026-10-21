@@ -29,6 +29,8 @@ public class TurfResponse {
     private Double latitude;
     private Double longitude;
     private BigDecimal pricePerHour;
+    private BigDecimal startingSlotPrice;
+    private BigDecimal maximumSlotPrice;
     private PitchType pitchType;
     private BoxType boxType;
     private TurfStatus status;

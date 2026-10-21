@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -112,14 +111,14 @@ public class SubscriptionRenewalScheduler {
                         .build());
 
                 // Generate Invoice
-                BigDecimal taxAmount = price.multiply(BigDecimal.valueOf(0.18)).setScale(2, RoundingMode.HALF_UP);
+                InclusiveTaxCalculator.TaxBreakdown taxBreakdown = InclusiveTaxCalculator.fromInclusiveTotal(price);
                 String invoiceNum = "INV-REN-" + System.currentTimeMillis() + "-" + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
                 Invoice invoice = invoiceRepository.save(Invoice.builder()
                         .invoiceNumber(invoiceNum)
                         .user(user)
                         .subscription(sub)
-                        .amount(price)
-                        .taxAmount(taxAmount)
+                        .amount(taxBreakdown.taxableAmount())
+                        .taxAmount(taxBreakdown.taxAmount())
                         .status("PAID")
                         .invoiceUrl(invoiceUrl(invoiceNum))
                         .build());
@@ -127,8 +126,8 @@ public class SubscriptionRenewalScheduler {
                 // Create Tax Record
                 taxRecordRepository.save(TaxRecord.builder()
                         .invoice(invoice)
-                        .gstAmount(taxAmount)
-                        .taxRate(BigDecimal.valueOf(0.18))
+                        .gstAmount(taxBreakdown.taxAmount())
+                        .taxRate(InclusiveTaxCalculator.GST_RATE_FRACTION)
                         .build());
 
                 // Record Revenue

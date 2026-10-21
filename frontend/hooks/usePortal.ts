@@ -22,7 +22,8 @@ export function usePortal(): {
     (pathname.startsWith("/owner") ||
       pathname.startsWith("/turf/my-turfs") ||
       pathname.startsWith("/turf/create") ||
-      role === "OWNER");
+      role === "OWNER" ||
+      role?.toUpperCase() === "TURF_OWNER");
 
   const portal: PortalType = isAdmin ? "admin" : isOwner ? "owner" : "player";
   const accent: PortalAccent = isOwner ? "owner" : "player";

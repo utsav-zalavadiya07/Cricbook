@@ -16,9 +16,10 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     @Query("""
             SELECT i
             FROM Invoice i
+            JOIN FETCH i.user u
             LEFT JOIN FETCH i.subscription s
             LEFT JOIN FETCH s.plan
-            WHERE i.user.id = :userId
+            WHERE u.id = :userId
             ORDER BY i.createdAt DESC
             """)
     List<Invoice> findDetailedByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId);
@@ -26,9 +27,10 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     @Query("""
             SELECT i
             FROM Invoice i
+            JOIN FETCH i.user u
             LEFT JOIN FETCH i.subscription s
             LEFT JOIN FETCH s.plan p
-            WHERE i.user.id = :userId
+            WHERE u.id = :userId
               AND p.type = :type
             ORDER BY i.createdAt DESC
             """)
@@ -40,6 +42,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     @Query("""
             SELECT i
             FROM Invoice i
+            JOIN FETCH i.user
             LEFT JOIN FETCH i.subscription s
             LEFT JOIN FETCH s.plan
             WHERE i.id = :id
@@ -49,6 +52,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     @Query("""
             SELECT i
             FROM Invoice i
+            JOIN FETCH i.user
             LEFT JOIN FETCH i.subscription s
             LEFT JOIN FETCH s.plan
             WHERE i.invoiceNumber = :invoiceNumber

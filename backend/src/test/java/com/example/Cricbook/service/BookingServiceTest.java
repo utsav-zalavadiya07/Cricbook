@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
@@ -64,6 +65,8 @@ public class BookingServiceTest {
     private LoyaltyService loyaltyService;
     @Mock
     private TrustScoreService trustScoreService;
+    @Mock
+    private MultiSportService multiSportService;
     @Mock
     private SecurityContext securityContext;
     @Mock
@@ -118,6 +121,7 @@ public class BookingServiceTest {
         when(turfRepository.findById(1L)).thenReturn(Optional.of(mockTurf));
         when(slotAvailabilityRepository.lockSlot(1L, request.getBookingDate())).thenReturn(Optional.of(mockSa));
         when(slotRepository.findById(1L)).thenReturn(Optional.of(mockSlot));
+        when(multiSportService.turfSupportsSport(1L, "CRICKET")).thenReturn(true);
         when(slotPriceOverrideRepository.findBySlotIdAndDate(1L, request.getBookingDate())).thenReturn(Optional.empty());
         when(subscriptionRepository.findFirstActiveSubscription(eq(1L), any()))
                 .thenReturn(Optional.empty());
@@ -143,7 +147,46 @@ public class BookingServiceTest {
         assertEquals(1L, response.getId());
         assertEquals(BookingStatus.PENDING, response.getStatus());
         assertFalse(mockSa.getIsAvailable());
+        verify(slotAvailabilityRepository).saveAndFlush(argThat(generated ->
+                generated.getSlot().equals(mockSlot)
+                        && generated.getDate().equals(request.getBookingDate())
+                        && generated.getIsAvailable()
+                        && !generated.getIsBlocked()
+        ));
         verify(slotAvailabilityRepository).save(mockSa);
+    }
+
+    @Test
+    void testCreateBookingAppliesActivePlanDiscountToStoredAmount() {
+        CreateBookingRequest request = new CreateBookingRequest();
+        request.setTurfId(1L);
+        request.setSlotId(1L);
+        request.setBookingDate(LocalDate.now().plusDays(1));
+        mockSlot.setPrice(new BigDecimal("500.00"));
+
+        MembershipPlan plan = MembershipPlan.builder().discountPercent(20).build();
+        Subscription subscription = Subscription.builder().user(mockUser).plan(plan).build();
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        when(authentication.getName()).thenReturn("test@test.com");
+        when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(mockUser));
+        when(turfRepository.findById(1L)).thenReturn(Optional.of(mockTurf));
+        when(slotRepository.findById(1L)).thenReturn(Optional.of(mockSlot));
+        when(slotAvailabilityRepository.lockSlot(1L, request.getBookingDate())).thenReturn(Optional.of(mockSa));
+        when(multiSportService.turfSupportsSport(1L, "CRICKET")).thenReturn(true);
+        when(slotPriceOverrideRepository.findBySlotIdAndDate(1L, request.getBookingDate())).thenReturn(Optional.empty());
+        when(subscriptionRepository.findFirstActiveSubscription(eq(1L), any())).thenReturn(Optional.of(subscription));
+        when(bookingRepository.save(any(Booking.class))).thenAnswer(invocation -> {
+            Booking booking = invocation.getArgument(0);
+            booking.setId(2L);
+            return booking;
+        });
+
+        BookingResponse response = bookingService.createBooking(request);
+
+        assertEquals(0, new BigDecimal("400.00").compareTo(response.getAmount()));
+        verify(bookingRepository).save(argThat(booking -> new BigDecimal("400.00").compareTo(booking.getAmount()) == 0));
     }
 
     @Test
@@ -161,6 +204,7 @@ public class BookingServiceTest {
         when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(mockUser));
         when(turfRepository.findById(1L)).thenReturn(Optional.of(mockTurf));
         when(slotRepository.findById(1L)).thenReturn(Optional.of(mockSlot));
+        when(multiSportService.turfSupportsSport(1L, "CRICKET")).thenReturn(true);
         
         mockSa.setIsAvailable(false);
         when(slotAvailabilityRepository.lockSlot(1L, request.getBookingDate())).thenReturn(Optional.of(mockSa));
@@ -373,6 +417,70 @@ public class BookingServiceTest {
     }
 
     @Test
+    void testOwnerMustCheckInBeforeCompletingBooking() {
+        User owner = owner();
+        Booking booking = ownerBooking(owner, BookingStatus.CONFIRMED, LocalDate.now().minusDays(1), LocalTime.of(7, 0), LocalTime.of(8, 0));
+
+        authenticate("owner@test.com");
+        when(userRepository.findByEmail("owner@test.com")).thenReturn(Optional.of(owner));
+        when(bookingRepository.findById(10L)).thenReturn(Optional.of(booking));
+
+        Exception exception = assertThrows(RuntimeException.class, () -> bookingService.completeOwnerBooking(10L, null));
+
+        assertEquals("Check in the player before completing this booking.", exception.getMessage());
+        assertEquals(BookingStatus.CONFIRMED, booking.getStatus());
+        verify(bookingRepository, never()).save(any(Booking.class));
+    }
+
+    @Test
+    void testOwnerCompletesCheckedInOvernightBookingAfterSlotEnds() {
+        User owner = owner();
+        Booking booking = ownerBooking(owner, BookingStatus.CHECKED_IN, LocalDate.now().minusDays(1), LocalTime.of(23, 0), LocalTime.MIDNIGHT);
+
+        authenticate("owner@test.com");
+        when(userRepository.findByEmail("owner@test.com")).thenReturn(Optional.of(owner));
+        when(bookingRepository.findById(10L)).thenReturn(Optional.of(booking));
+        when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
+        when(bookingTimelineRepository.save(any(BookingTimeline.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(paymentRepository.findByBookingId(10L)).thenReturn(Optional.empty());
+        when(trustAttendanceRepository.findByBookingId(10L)).thenReturn(Optional.empty());
+
+        BookingResponse response = bookingService.completeOwnerBooking(10L, null);
+
+        assertEquals(BookingStatus.COMPLETED, booking.getStatus());
+        assertEquals(BookingStatus.COMPLETED, response.getStatus());
+        verify(bookingTimelineRepository).save(any(BookingTimeline.class));
+    }
+
+    @Test
+    void testAutomaticNoShowWaitsUntilSlotAndGracePeriodEnd() {
+        User owner = owner();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime recentStart = now.minusMinutes(40);
+        LocalDateTime recentEnd = now.plusMinutes(20);
+        Booking activeBooking = ownerBooking(owner, BookingStatus.CONFIRMED, recentStart.toLocalDate(), recentStart.toLocalTime(), recentEnd.toLocalTime());
+        Booking missedBooking = ownerBooking(owner, BookingStatus.CONFIRMED, LocalDate.now().minusDays(1), LocalTime.of(7, 0), LocalTime.of(8, 0));
+        missedBooking.setId(11L);
+
+        when(bookingRepository.findByStatus(BookingStatus.CONFIRMED)).thenReturn(java.util.List.of(activeBooking, missedBooking));
+        when(trustAttendanceRepository.findByBookingId(11L)).thenReturn(Optional.empty());
+        when(trustAttendanceRepository.save(any(TrustAttendance.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(noShowCaseRepository.findByBookingId(11L)).thenReturn(Optional.empty());
+        when(noShowCaseRepository.save(any(NoShowCase.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(bookingRepository.save(any(Booking.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(bookingTimelineRepository.save(any(BookingTimeline.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        bookingService.markNoShows();
+
+        assertEquals(BookingStatus.CONFIRMED, activeBooking.getStatus());
+        assertEquals(BookingStatus.NO_SHOW, missedBooking.getStatus());
+        verify(bookingRepository).save(missedBooking);
+        verify(bookingRepository, never()).save(activeBooking);
+        verify(trustAttendanceRepository).save(any(TrustAttendance.class));
+        verify(noShowCaseRepository).save(any(NoShowCase.class));
+    }
+
+    @Test
     void testOwnerCannotManageAnotherOwnerBooking() {
         User owner = owner();
         User otherOwner = new User();
@@ -422,6 +530,22 @@ public class BookingServiceTest {
         assertEquals(1L, summary.getCheckedInToday());
         assertEquals(1L, summary.getNoShowBookings());
         assertEquals(BigDecimal.valueOf(2200), summary.getTodayRevenue());
+        assertEquals(66.7, summary.getAttendanceRate(), 0.01);
+        assertEquals(33.3, summary.getNoShowRate(), 0.01);
+    }
+
+    @Test
+    void testOwnerOperationsSummaryReturnsZeroRatesWithoutAttendanceOutcomes() {
+        User owner = owner();
+
+        authenticate("owner@test.com");
+        when(userRepository.findByEmail("owner@test.com")).thenReturn(Optional.of(owner));
+        when(bookingRepository.findByTurfOwnerId(owner.getId())).thenReturn(java.util.List.of());
+
+        OwnerBookingOperationsSummary summary = bookingService.getOwnerOperationsSummary();
+
+        assertEquals(0, summary.getAttendanceRate());
+        assertEquals(0, summary.getNoShowRate());
     }
 
     private void authenticate(String username) {

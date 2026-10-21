@@ -5,6 +5,7 @@ import { useState } from "react";
 import { deleteNotification, markAsRead, trackMetric } from "../services/notificationService";
 import { Notification } from "../types/notification.types";
 import { isNotificationArchived, isNotificationRead } from "../utils/notificationState";
+import { usePortal } from "@/hooks/usePortal";
 
 interface NotificationItemProps {
   notification: Notification;
@@ -46,6 +47,7 @@ const priorityBg: Record<string, string> = {
 };
 
 export default function NotificationItem({ notification, onDelete, onRead }: NotificationItemProps) {
+  const { isOwner } = usePortal();
   const [busy, setBusy] = useState<"read" | "delete" | null>(null);
   const isUnread = !isNotificationRead(notification);
   const isArchived = isNotificationArchived(notification);
@@ -106,13 +108,21 @@ export default function NotificationItem({ notification, onDelete, onRead }: Not
       onClick={handleCardClick}
       className={`flex items-start gap-4 rounded-2xl border p-4 transition-all duration-200 ${
         isUnread && !isArchived
-          ? "cursor-pointer border-emerald-400/30 bg-emerald-500/10 shadow-lg shadow-emerald-950/20 hover:border-emerald-400/50 hover:bg-emerald-500/[0.14]"
+          ? isOwner
+            ? "cursor-pointer border-sky-400/30 bg-sky-500/10 shadow-lg shadow-sky-950/20 hover:border-sky-400/50 hover:bg-sky-500/[0.14]"
+            : "cursor-pointer border-emerald-400/30 bg-emerald-500/10 shadow-lg shadow-emerald-950/20 hover:border-emerald-400/50 hover:bg-emerald-500/[0.14]"
           : "border-[var(--theme-border)] bg-[var(--theme-card)] opacity-80 hover:opacity-100"
       }`}
     >
       <div className="shrink-0">
         <div
-          className={`flex h-11 w-11 items-center justify-center rounded-xl border text-xs font-black transition ${typeBg[type] ?? typeBg.GENERAL}`}
+          className={`flex h-11 w-11 items-center justify-center rounded-xl border text-xs font-black transition ${
+            type === "BOOKING"
+              ? isOwner
+                ? "bg-sky-500/10 border-sky-500/20 text-sky-300"
+                : "bg-emerald-500/10 border-emerald-500/20 text-emerald-300"
+              : typeBg[type] ?? typeBg.GENERAL
+          }`}
           aria-label={isUnread ? "Notification unread" : "Notification read"}
         >
           {typeLabel[type] ?? typeLabel.GENERAL}
@@ -124,7 +134,15 @@ export default function NotificationItem({ notification, onDelete, onRead }: Not
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <p className={`break-words text-sm font-bold ${isUnread && !isArchived ? "theme-title" : "theme-muted"}`}>{notification.title}</p>
-              {isNew && <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-white">New</span>}
+              {isNew && (
+                <span
+                  className={`rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-white ${
+                    isOwner ? "bg-sky-500" : "bg-emerald-500"
+                  }`}
+                >
+                  New
+                </span>
+              )}
               <span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${priorityBg[priority] ?? priorityBg.NORMAL}`}>
                 {priority}
               </span>

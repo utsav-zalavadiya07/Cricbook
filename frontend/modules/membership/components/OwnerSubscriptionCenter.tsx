@@ -1,21 +1,26 @@
 "use client";
-import { TileInfo } from "@/components/ui";
+import { Button, Select } from "@/components/ui";
+import { DataGrid, type DataGridColumn } from "@/components/ui/DataGrid";
+import { PageMetricCard, PageSection, PageSectionHeader } from "@/components/ui/PageSurface";
+import { TaxInclusiveNote } from "@/modules/membership/components/TaxInclusiveNote";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
 import { getOwnerTurfs } from "@/modules/owner/services/ownerService";
 import {
-  cancelSubscription,
-  downloadInvoice,
+  downloadInvoicePdf,
   getCurrentSubscription,
   getMyInvoices,
   getPricingPage,
+  invoiceStatusLabel,
   setAutoRenew,
   startSubscription,
 } from "@/modules/membership/services/subscriptionService";
 import { getWallet } from "@/modules/wallet/services/walletService";
+import { useToast } from "@/modules/ui/ToastProvider";
 import type { Invoice, MembershipPlan, Subscription } from "@/modules/membership/types";
-import { formatDateTime } from "@/utils/dateFormatter";
+import { formatDate, formatDateTime } from "@/utils/dateFormatter";
 
 const OWNER_SUBSCRIPTION_TYPE = "OWNER_FEATURED" as const;
 
@@ -36,15 +41,17 @@ const currency = new Intl.NumberFormat("en-IN", {
 });
 
 export default function OwnerSubscriptionCenter() {
+  const { showSuccess } = useToast();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [plans, setPlans] = useState<MembershipPlan[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [turfs, setTurfs] = useState<TurfOption[]>([]);
   const [selectedTurfId, setSelectedTurfId] = useState("");
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
+  const [loadedAt, setLoadedAt] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
-  const [busyPlanId, setBusyPlanId] = useState<number | null>(null);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [downloadingInvoiceId, setDownloadingInvoiceId] = useState<number | null>(null);
 
   // Confirmation Modal state
   const [selectedPlanForPurchase, setSelectedPlanForPurchase] = useState<MembershipPlan | null>(null);
@@ -54,19 +61,10 @@ export default function OwnerSubscriptionCenter() {
   const [confirmAutoRenewModal, setConfirmAutoRenewModal] = useState<"ENABLE" | "DISABLE" | null>(null);
   const [isTogglingAutoRenew, setIsTogglingAutoRenew] = useState(false);
 
-  const selectedTurfName = useMemo(
-    () => turfs.find((turf) => String(turf.id) === selectedTurfId)?.name || subscription?.turfName || "No turf selected",
-    [selectedTurfId, subscription?.turfName, turfs]
-  );
-
-  const paidInvoiceTotal = useMemo(
-    () => invoices.reduce((total, invoice) => total + Number(invoice.totalAmount || 0), 0),
-    [invoices]
-  );
+  const [purchaseTurfError, setPurchaseTurfError] = useState("");
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    setMessage(null);
     try {
       const [subscriptionResult, invoiceResult, pricingResult, turfResult, walletResult] = await Promise.allSettled([
         getCurrentSubscription(OWNER_SUBSCRIPTION_TYPE),
@@ -111,6 +109,7 @@ export default function OwnerSubscriptionCenter() {
       if (subscriptionResult.status === "rejected" || pricingResult.status === "rejected") {
         setMessage({ text: "Owner subscription data could not be fully loaded.", type: "error" });
       }
+      setLoadedAt(Date.now());
     } catch (err) {
       console.error("Error loading owner subscription data:", err);
       setMessage({ text: "Unable to load owner subscription controls.", type: "error" });
@@ -127,11 +126,11 @@ export default function OwnerSubscriptionCenter() {
   }, [loadData]);
 
   const hasActivePaidPlan = useMemo(() => {
-    if (!subscription || subscription.status !== "ACTIVE" || !subscription.endDate) return false;
-    const isExpired = new Date(subscription.endDate).getTime() <= Date.now();
+    if (!subscription || subscription.status !== "ACTIVE" || !subscription.endDate || loadedAt === null) return false;
+    const isExpired = new Date(subscription.endDate).getTime() <= loadedAt;
     const isPaid = Number(subscription.price || 0) > 0;
     return !isExpired && isPaid;
-  }, [subscription]);
+  }, [loadedAt, subscription]);
 
   // Preview expiry calculation matching backend logic (exact day and time)
   const calculatePreviewExpiry = (durationDays: number): string => {
@@ -149,12 +148,17 @@ export default function OwnerSubscriptionCenter() {
 
   const handleOpenConfirmModal = (plan: MembershipPlan) => {
     setMessage(null);
+    setPurchaseTurfError("");
     setSelectedPlanForPurchase(plan);
   };
 
   const handleConfirmActivatePlan = async () => {
     if (!selectedPlanForPurchase) return;
     const plan = selectedPlanForPurchase;
+    if (plan.featuredListing && !selectedTurfId) {
+      setPurchaseTurfError("Select a turf to receive the featured listing benefit.");
+      return;
+    }
     setIsSubmitting(true);
     setMessage(null);
 
@@ -162,10 +166,7 @@ export default function OwnerSubscriptionCenter() {
       const turfId = selectedTurfId ? Number(selectedTurfId) : undefined;
       await startSubscription(plan.id, turfId);
       const newExpiry = calculatePreviewExpiry(plan.durationDays);
-      setMessage({
-        text: `🎉 ${plan.name} owner subscription activated! Valid until ${newExpiry}.`,
-        type: "success",
-      });
+      showSuccess("Subscription activated", `${plan.name} is active until ${newExpiry}.`);
       setSelectedPlanForPurchase(null);
       await loadData();
     } catch (err: unknown) {
@@ -182,12 +183,12 @@ export default function OwnerSubscriptionCenter() {
     setMessage(null);
     try {
       await setAutoRenew(targetEnable, OWNER_SUBSCRIPTION_TYPE);
-      setMessage({
-        text: targetEnable
-          ? "Owner plan auto-renewal successfully enabled!"
-          : "Owner plan auto-renewal turned off. Your turf benefits remain active until the expiration date.",
-        type: "success",
-      });
+      showSuccess(
+        targetEnable ? "Auto-renew enabled" : "Auto-renew turned off",
+        targetEnable
+          ? `Your ${subscription?.planName || "owner"} plan will renew automatically at expiry.`
+          : "Your current plan benefits remain active until the expiry date.",
+      );
       setConfirmAutoRenewModal(null);
       await loadData();
     } catch (err: unknown) {
@@ -197,125 +198,176 @@ export default function OwnerSubscriptionCenter() {
     }
   };
 
-  const handleDownloadInvoice = (invoice: Invoice) => {
-    downloadInvoice(invoice.id)
-      .then((res) => {
-        const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(res.data, null, 2))}`;
-        const downloadAnchor = document.createElement("a");
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `owner-invoice-${invoice.invoiceNumber}.json`);
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
-      })
-      .catch((err) => console.error(err));
+  const handleDownloadInvoice = async (invoice: Invoice) => {
+    setDownloadingInvoiceId(invoice.id);
+    setMessage(null);
+    try {
+      await downloadInvoicePdf(invoice.id, invoice.invoiceNumber);
+      showSuccess("Invoice downloaded", `${invoice.invoiceNumber} is ready in your downloads.`);
+    } catch (err) {
+      console.error("Unable to download invoice:", err);
+      setMessage({ text: "Your invoice could not be downloaded. Please try again.", type: "error" });
+    } finally {
+      setDownloadingInvoiceId(null);
+    }
   };
+
+  const invoiceColumns: DataGridColumn<Invoice>[] = [
+    {
+      key: "invoice",
+      header: "Invoice",
+      render: (invoice) => <span className="theme-title text-sm font-bold">{invoice.invoiceNumber}</span>,
+    },
+    {
+      key: "plan",
+      header: "Plan",
+      render: (invoice) => <span className="theme-title text-sm font-semibold">{invoice.planName}</span>,
+    },
+    {
+      key: "issued",
+      header: "Invoice date",
+      render: (invoice) => <span className="theme-muted text-xs">{formatDateTime(invoice.createdAt)}</span>,
+    },
+    {
+      key: "tax",
+      header: "GST (18%)",
+      render: (invoice) => <span className="theme-muted text-sm">{currency.format(Number(invoice.taxAmount || 0))}</span>,
+    },
+    {
+      key: "total",
+      header: "Total",
+      render: (invoice) => <span className="theme-title text-sm font-black">{currency.format(Number(invoice.totalAmount || 0))}</span>,
+    },
+    {
+      key: "status",
+      header: "Payment status",
+      render: (invoice) => (
+        <span className="inline-flex rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
+          {invoiceStatusLabel(invoice.status)}
+        </span>
+      ),
+    },
+    {
+      key: "action",
+      header: "Invoice",
+      render: (invoice) => (
+        <button
+          type="button"
+          onClick={() => handleDownloadInvoice(invoice)}
+          disabled={downloadingInvoiceId === invoice.id}
+          aria-label={`Download invoice ${invoice.invoiceNumber}`}
+          className="theme-input rounded-xl px-3 py-2 text-xs font-bold transition hover:border-sky-500/40 hover:text-sky-500 disabled:cursor-wait disabled:opacity-60"
+        >
+          {downloadingInvoiceId === invoice.id ? "Preparing..." : "Download invoice"}
+        </button>
+      ),
+    },
+  ];
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <section className="theme-panel rounded-3xl p-6">
-          <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
-            <div className="max-w-3xl">
-              <div className="flex items-center gap-3">
-                <p className="theme-accent-owner text-xs font-black uppercase tracking-[0.34em]">Owner Subscription Center</p>
-                {walletBalance !== null && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-sky-500/10 px-3 py-0.5 text-xs font-bold text-sky-400 border border-sky-500/20">
-                    Wallet: Rs {walletBalance}
-                  </span>
-                )}
-              </div>
-              <h1 className="theme-title mt-3 text-3xl font-black">Owner plans, featured listings and billing.
-              <span className="inline-flex align-middle ml-3 mb-1">
-                <TileInfo label="Owner plans, featured listings and billing. information" focusable={false}>
-                  Manage owner-only plans separately from player premium so portal billing, turf promotion, and invoice history do not overlap.
-                </TileInfo>
-              </span></h1>
-            </div>
-            <div className="theme-panel-soft rounded-2xl p-4">
-              <label className="theme-soft text-xs font-bold uppercase tracking-wider" htmlFor="owner-subscription-turf">
-                Promotion turf
-              </label>
-              <select
-                id="owner-subscription-turf"
-                value={selectedTurfId}
-                onChange={(event) => setSelectedTurfId(event.target.value)}
-                className="theme-input mt-2 min-w-[260px] rounded-2xl px-4 py-3 text-sm font-semibold"
-              >
-                {turfs.length === 0 ? (
-                  <option value="">Add a turf first</option>
-                ) : (
-                  turfs.map((turf) => (
-                    <option key={turf.id} value={turf.id}>
-                      {turf.name}
-                    </option>
-                  ))
-                )}
-              </select>
-            </div>
-          </div>
-        </section>
+        <PageSection>
+          <PageSectionHeader
+            title="Subscription & billing"
+            description="Manage your owner plan, featured listing benefit, automatic renewal, wallet balance, and invoice history."
+          />
 
-        {message && (
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <PageMetricCard
+              label="Current plan"
+              value={subscription?.planName || "STARTER"}
+              helper={hasActivePaidPlan ? "Your active owner subscription tier" : "Default owner plan"}
+            />
+            <PageMetricCard
+              label="Plan expiry"
+              value={hasActivePaidPlan && subscription?.endDate ? formatDate(subscription.endDate) : "Not applicable"}
+              helper={hasActivePaidPlan && subscription?.endDate ? `Active until ${formatDateTime(subscription.endDate)}` : "Paid plans show their expiry date here"}
+            />
+            <PageMetricCard
+              label="Auto renewal"
+              value={hasActivePaidPlan ? (subscription?.autoRenew ? "Enabled" : "Disabled") : "Not applicable"}
+              helper="Controls renewal at the end of the current plan"
+              supportingText={hasActivePaidPlan && subscription?.endDate
+                ? subscription?.autoRenew
+                  ? `Renews on ${formatDate(subscription.endDate)}`
+                  : `Active until ${formatDate(subscription.endDate)}`
+                : undefined}
+              valueClassName={hasActivePaidPlan
+                ? subscription?.autoRenew
+                  ? "text-emerald-600 dark:text-emerald-300"
+                  : "text-amber-600 dark:text-amber-300"
+                : ""}
+              action={hasActivePaidPlan ? (
+                <button
+                  type="button"
+                  onClick={() => setConfirmAutoRenewModal(subscription?.autoRenew ? "DISABLE" : "ENABLE")}
+                  disabled={isTogglingAutoRenew}
+                  aria-label={subscription?.autoRenew ? "Turn off automatic renewal" : "Enable automatic renewal"}
+                  className={`shrink-0 rounded-xl border px-3 py-2 text-xs font-black transition focus:outline-none focus:ring-2 focus:ring-sky-500/40 disabled:cursor-wait disabled:opacity-60 ${
+                    subscription?.autoRenew
+                      ? "border-red-500/25 bg-red-500/10 text-red-600 hover:bg-red-500/15 dark:text-red-300"
+                      : "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300"
+                  }`}
+                >
+                  {isTogglingAutoRenew ? "Updating..." : subscription?.autoRenew ? "Turn off" : "Enable"}
+                </button>
+              ) : undefined}
+            />
+            <Link
+              href="/owner/wallet"
+              aria-label={`Open owner wallet with balance ${currency.format(walletBalance ?? 0)}`}
+              className="group block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70"
+            >
+              <PageMetricCard
+                label="Wallet balance"
+                value={currency.format(walletBalance ?? 0)}
+                helper={(
+                  <>
+                    Open wallet to add funds
+                    <br />
+                    and view transactions
+                  </>
+                )}
+                helperFocusable={false}
+                helperAlign="right"
+                helperTooltipClassName="!w-48 whitespace-normal"
+                navigationHint="Open wallet"
+                className="h-full transition duration-200 group-hover:-translate-y-0.5 group-hover:border-sky-500/40"
+                valueClassName="text-sky-500 dark:text-sky-400"
+              />
+            </Link>
+          </div>
+        </PageSection>
+
+        {message?.type === "error" && (
           <div
-            className={`rounded-2xl border p-4 text-sm font-semibold ${
-              message.type === "success"
-                ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
-                : "border-red-500/20 bg-red-500/10 text-red-300"
-            }`}
+            role="alert"
+            className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-300"
           >
             {message.text}
           </div>
         )}
 
         {loading ? (
-          <div className="theme-panel rounded-3xl py-20 text-center">
+          <div className="theme-panel rounded-2xl py-20 text-center">
             <p className="theme-muted font-semibold animate-pulse">Loading owner subscription controls...</p>
           </div>
         ) : (
           <>
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <Metric
-                title="Active plan"
-                value={subscription?.planName || "STARTER"}
-                sub={hasActivePaidPlan && subscription?.endDate ? `Valid until ${formatDateTime(subscription.endDate)}` : "Default owner plan"}
-              />
-              <Metric title="Linked turf" value={selectedTurfName} />
-              <Metric title="Auto renewal" value={subscription?.autoRenew ? "Enabled" : "Disabled"} tone={subscription?.autoRenew ? "good" : "warn"} />
-              <Metric title="Owner billing" value={currency.format(paidInvoiceTotal)} />
-            </div>
-
-            <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-              <section className="theme-panel rounded-3xl p-6">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <h2 className="theme-title text-xl font-black">Owner plan controls</h2>
-                    <p className="theme-muted mt-1 text-sm">Single active plan policy. Upgrades take effect immediately.</p>
-                  </div>
-                  {Number(subscription?.price || 0) > 0 && (
-                    subscription?.autoRenew ? (
-                      <button
-                        type="button"
-                        onClick={() => setConfirmAutoRenewModal("DISABLE")}
-                        disabled={busyPlanId !== null || isTogglingAutoRenew}
-                        className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-2 text-xs font-bold text-red-300 transition hover:bg-red-500/20 disabled:opacity-60"
-                      >
-                        Turn off auto-renew
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => setConfirmAutoRenewModal("ENABLE")}
-                        disabled={busyPlanId !== null || isTogglingAutoRenew}
-                        className="rounded-2xl border border-emerald-500/30 bg-emerald-500/15 px-4 py-2 text-xs font-bold text-emerald-300 transition hover:bg-emerald-500/25 disabled:opacity-60 shadow-sm"
-                      >
-                        ↻ Enable auto-renew
-                      </button>
-                    )
-                  )}
+            <div className="space-y-6">
+              <PageSection>
+                <div>
+                  <h2 className="theme-title text-lg font-black">Choose your owner plan</h2>
+                  <p className="theme-muted mt-1 text-xs">Compare all tiers together. Upgrades start immediately; lower tiers become available after expiry.</p>
                 </div>
 
-                <div className="mt-6 grid gap-4 lg:grid-cols-3">
+                <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                  {plans.length === 0 && (
+                    <div className="theme-card theme-muted col-span-full rounded-2xl border-dashed py-12 text-center text-sm">
+                      Owner plans are currently unavailable. Please try again shortly.
+                    </div>
+                  )}
                   {plans.map((plan) => {
                     const currentPrice = Number(subscription?.price || 0);
                     const planPrice = Number(plan.price || 0);
@@ -328,13 +380,10 @@ export default function OwnerSubscriptionCenter() {
                     const isUpgrade = hasActivePaidPlan && planPrice > currentPrice;
                     const isNewPaid = !hasActivePaidPlan && planPrice > 0;
 
-                    const needsTurf = Boolean(plan.featuredListing);
-                    const turfMissing = needsTurf && !selectedTurfId;
-
                     return (
                       <article
                         key={plan.id}
-                        className={`theme-panel-soft flex min-h-[360px] flex-col rounded-3xl p-5 transition ${
+                        className={`theme-card flex h-full flex-col rounded-2xl border p-4 transition ${
                           isActive
                             ? "border-emerald-500/40 bg-emerald-500/10 ring-1 ring-emerald-500/25"
                             : isUpgrade
@@ -344,84 +393,101 @@ export default function OwnerSubscriptionCenter() {
                             : "hover:-translate-y-0.5"
                         }`}
                       >
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <p className="theme-accent-owner text-xs font-black uppercase tracking-[0.28em]">{plan.name}</p>
-                            <h3 className="theme-title mt-2 text-2xl font-black">{currency.format(Number(plan.price || 0))}</h3>
-                            <p className="theme-soft mt-1 text-xs">per 1 month</p>
+                        <div className="flex items-start justify-between gap-3 border-b border-[var(--theme-border)] pb-3">
+                          <div className="min-w-0">
+                            <p className="theme-accent-owner truncate text-[11px] font-black uppercase tracking-[0.24em]">{plan.name}</p>
+                            <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-1">
+                              <h3 className="theme-title text-2xl font-black leading-none">{currency.format(Number(plan.price || 0))}</h3>
+                              <span className="theme-soft text-xs">/ month</span>
+                              {Number(plan.price || 0) > 0 && (
+                                <TaxInclusiveNote className="ml-1 border-l border-[var(--theme-border)] pl-2" />
+                              )}
+                            </div>
                           </div>
                           {isActive && (
-                            <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-2xs font-black uppercase tracking-wide text-emerald-300">
-                              Active
+                            <span className="shrink-0 rounded-full border border-emerald-500/25 bg-emerald-500/15 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
+                              Current
                             </span>
                           )}
                           {isUpgrade && (
-                            <span className="rounded-full bg-sky-500/15 px-2.5 py-1 text-2xs font-black uppercase tracking-wide text-sky-300">
+                            <span className="shrink-0 rounded-full border border-sky-500/20 bg-sky-500/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-sky-700 dark:text-sky-300">
                               Upgrade
                             </span>
                           )}
                         </div>
 
-                        <p className="theme-muted mt-4 min-h-[54px] text-sm">{ownerPlanDescription(plan)}</p>
-                        <ul className="mt-5 flex-1 space-y-3 text-sm">
-                          {ownerBenefits(plan).map((benefit) => (
-                            <li key={benefit} className="theme-title flex items-start gap-2">
-                              <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-xs font-black text-emerald-300">✓</span>
-                              <span>{benefit}</span>
-                            </li>
-                          ))}
-                        </ul>
+                        <p className="theme-muted mt-3 text-xs leading-5">{ownerPlanDescription(plan)}</p>
 
-                        <div className="mt-6 space-y-1.5">
+                        <div className="mt-3 flex-1 rounded-xl bg-[var(--theme-panel-soft)] p-3">
+                          <p className="theme-soft text-[10px] font-black uppercase tracking-[0.18em]">Plan highlights</p>
+                          <ul className="mt-2.5 grid grid-cols-1 gap-y-2.5">
+                            {ownerBenefits(plan).map((benefit) => (
+                              <li key={benefit} className="theme-title flex min-w-0 items-start gap-2 text-xs leading-4">
+                                <span className="mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300">
+                                  <svg aria-hidden="true" className="h-2.5 w-2.5" viewBox="0 0 12 12" fill="none">
+                                    <path d="m2.5 6.2 2.1 2.1 4.9-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                                  </svg>
+                                </span>
+                                <span>{benefit}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        {isActive && plan.featuredListing && (
+                          <div className={`mt-3 flex items-center justify-between gap-3 rounded-xl border px-3 py-2.5 ${subscription?.turfName ? "border-sky-500/25 bg-sky-500/10" : "border-amber-500/25 bg-amber-500/10"}`}>
+                            <div className="min-w-0">
+                              <p className="theme-soft text-[9px] font-black uppercase tracking-[0.16em]">Featured turf</p>
+                              <p className="theme-title mt-0.5 truncate text-xs font-bold">{subscription?.turfName || "Venue setup required"}</p>
+                            </div>
+                            <span className={`shrink-0 rounded-full px-2 py-1 text-[9px] font-black uppercase tracking-wide ${subscription?.turfName ? "bg-sky-500/15 text-sky-700 dark:text-sky-300" : "bg-amber-500/15 text-amber-700 dark:text-amber-300"}`}>
+                              {subscription?.turfName ? "Active" : "Set up"}
+                            </span>
+                          </div>
+                        )}
+
+                        {isActive && !plan.featuredListing && (
+                          <div className="theme-input theme-muted mt-3 rounded-xl border px-3 py-2 text-[11px] font-semibold">
+                            Featured listing is not included in this plan.
+                          </div>
+                        )}
+
+                        <div className="mt-3">
                           {isActive ? (
                             <button
                               disabled
-                              className="w-full rounded-2xl bg-emerald-500/20 border border-emerald-500/30 px-4 py-3 text-sm font-black text-emerald-300 cursor-not-allowed"
+                              className="w-full cursor-not-allowed rounded-xl border border-emerald-500/30 bg-emerald-500/20 px-4 py-2.5 text-xs font-black text-emerald-700 dark:text-emerald-300"
                             >
                               Current Plan
                             </button>
                           ) : isDowngrade ? (
-                            <div>
-                              <button
-                                disabled
-                                className="w-full rounded-2xl bg-white/5 border border-white/10 px-4 py-3 text-sm font-black text-slate-500 cursor-not-allowed"
-                              >
-                                Available After Expiry
-                              </button>
-                              <p className="text-[11px] text-center text-slate-500 mt-1">
-                                Switch available after active plan expires
-                              </p>
-                            </div>
+                            <button
+                              disabled
+                              title="Lower tiers become available when the current plan expires"
+                              className="theme-input theme-muted w-full cursor-not-allowed rounded-xl border px-4 py-2.5 text-xs font-black opacity-70"
+                            >
+                              Available after expiry
+                            </button>
                           ) : isUpgrade ? (
-                            <div>
-                              <button
-                                onClick={() => handleOpenConfirmModal(plan)}
-                                disabled={turfMissing}
-                                className="w-full rounded-2xl bg-gradient-to-r from-sky-500 to-emerald-500 px-4 py-3 text-sm font-black text-white shadow-lg shadow-sky-500/15 transition hover:opacity-90 active:scale-95 disabled:opacity-50"
-                              >
-                                {turfMissing ? "Select Turf to Upgrade" : `Upgrade to ${plan.name}`}
-                              </button>
-                              <p className="text-[11px] text-center text-sky-400 mt-1">
-                                Instant upgrade • 1 month validity
-                              </p>
-                            </div>
+                            <Button
+                              tone="owner"
+                              onClick={() => handleOpenConfirmModal(plan)}
+                              className="w-full"
+                            >
+                              {`Upgrade to ${plan.name}`}
+                            </Button>
                           ) : isNewPaid ? (
-                            <div>
-                              <button
-                                onClick={() => handleOpenConfirmModal(plan)}
-                                disabled={turfMissing}
-                                className="w-full rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 px-4 py-3 text-sm font-black text-white shadow-lg shadow-sky-500/10 transition hover:opacity-90 active:scale-95 disabled:opacity-50"
-                              >
-                                {turfMissing ? "Select Turf to Activate" : `Activate ${plan.name}`}
-                              </button>
-                              <p className="text-[11px] text-center text-emerald-400 mt-1">
-                                1 month validity from purchase
-                              </p>
-                            </div>
+                            <Button
+                              tone="owner"
+                              onClick={() => handleOpenConfirmModal(plan)}
+                              className="w-full"
+                            >
+                              {`Activate ${plan.name}`}
+                            </Button>
                           ) : (
                             <button
                               disabled
-                              className="w-full rounded-2xl bg-white/5 border border-white/10 px-4 py-3 text-sm font-black text-slate-500 cursor-not-allowed"
+                              className="theme-input theme-muted w-full cursor-not-allowed rounded-xl border px-4 py-2.5 text-xs font-black opacity-70"
                             >
                               Default Plan
                             </button>
@@ -431,43 +497,31 @@ export default function OwnerSubscriptionCenter() {
                     );
                   })}
                 </div>
-              </section>
+              </PageSection>
 
-              <section className="theme-panel rounded-3xl p-6">
-                <h2 className="theme-title text-xl font-black">Owner billing history</h2>
-                <p className="theme-muted mt-1 text-sm">Only owner plan invoices are listed here.</p>
-                <div className="mt-5 max-h-[520px] space-y-3 overflow-y-auto pr-1">
-                  {invoices.length === 0 ? (
-                    <p className="theme-panel-soft rounded-2xl border-dashed py-10 text-center text-sm theme-soft">
-                      No owner invoices yet.
-                    </p>
-                  ) : (
-                    invoices.map((invoice) => (
-                      <div key={invoice.id} className="theme-panel-soft rounded-2xl p-4">
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <p className="theme-soft text-xs font-bold">{invoice.invoiceNumber}</p>
-                            <h3 className="theme-title mt-1 font-bold">{invoice.planName} Owner Plan</h3>
-                            <p className="theme-soft mt-1 text-xs">{formatDateTime(invoice.createdAt)} • GST {currency.format(Number(invoice.taxAmount || 0))}</p>
-                          </div>
-                          <span className="rounded-full bg-emerald-500/10 px-2 py-1 text-2xs font-black uppercase text-emerald-300">
-                            {invoice.status}
-                          </span>
-                        </div>
-                        <div className="mt-4 flex items-center justify-between gap-3">
-                          <span className="theme-title text-lg font-black">{currency.format(Number(invoice.totalAmount || 0))}</span>
-                          <button
-                            onClick={() => handleDownloadInvoice(invoice)}
-                            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold theme-title transition hover:bg-white/10"
-                          >
-                            Download JSON
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  )}
+              <PageSection>
+                <div className="flex flex-wrap items-end justify-between gap-3">
+                  <div>
+                    <h2 className="theme-title text-lg font-black">Billing history</h2>
+                    <p className="theme-muted mt-1 text-xs">Review plan payments and download a printable invoice for your records.</p>
+                  </div>
+                  <span className="theme-owner-badge rounded-full px-3 py-1.5 text-xs font-black">
+                    {invoices.length} invoice{invoices.length === 1 ? "" : "s"}
+                  </span>
                 </div>
-              </section>
+                <DataGrid
+                  className="mt-5"
+                  columns={invoiceColumns}
+                  rows={invoices}
+                  getRowKey={(invoice) => invoice.id}
+                  gridTemplateColumns="minmax(180px,1.2fr) minmax(170px,1.1fr) minmax(190px,1.2fr) 100px 120px 100px 140px"
+                  emptyState={(
+                    <div className="theme-card theme-muted mt-5 rounded-2xl border-dashed py-12 text-center text-sm">
+                      No owner invoices yet.
+                    </div>
+                  )}
+                />
+              </PageSection>
             </div>
           </>
         )}
@@ -507,10 +561,41 @@ export default function OwnerSubscriptionCenter() {
               </h3>
               <p className="text-xs text-slate-300 max-w-sm mx-auto leading-relaxed">
                 {hasActivePaidPlan
-                  ? `Upgrading will immediately activate your ${selectedPlanForPurchase.name} tier for ${selectedTurfName}.`
-                  : `Review your subscription details and wallet deduction for ${selectedTurfName}.`}
+                  ? `Upgrading will immediately activate your ${selectedPlanForPurchase.name} tier.`
+                  : "Review your subscription details and wallet deduction before confirming."}
               </p>
             </div>
+
+            {selectedPlanForPurchase.featuredListing && (
+              <div className="rounded-xl border border-sky-500/20 bg-sky-950/20 p-3.5">
+                <label htmlFor="purchase-featured-turf" className="text-xs font-bold text-slate-200">
+                  Turf receiving the featured listing
+                </label>
+                <Select
+                  id="purchase-featured-turf"
+                  value={selectedTurfId}
+                  onChange={(event) => {
+                    setSelectedTurfId(event.target.value);
+                    setPurchaseTurfError("");
+                  }}
+                  accent="owner"
+                  aria-describedby="purchase-featured-turf-help"
+                  className="mt-2"
+                  options={turfs.length > 0
+                    ? turfs.map((turf) => ({ value: turf.id, label: turf.name }))
+                    : [{ value: "", label: "No turf available", disabled: true }]}
+                />
+                <p id="purchase-featured-turf-help" className="mt-2 text-[11px] leading-relaxed text-slate-400">
+                  This venue receives a visibility boost in search and recommendations until the plan expires. Bookings are not guaranteed.
+                </p>
+                {turfs.length === 0 && (
+                  <p className="mt-2 text-xs font-semibold text-amber-300">
+                    Add a venue from <Link href="/turf/my-turfs" className="underline underline-offset-2">My Turfs</Link> before purchasing this plan.
+                  </p>
+                )}
+                {purchaseTurfError && <p role="alert" className="mt-2 text-xs font-semibold text-rose-300">{purchaseTurfError}</p>}
+              </div>
+            )}
 
             {/* Plan Details & Exact Validity Box */}
             <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3.5 space-y-2.5 text-xs">
@@ -519,11 +604,7 @@ export default function OwnerSubscriptionCenter() {
                 <span className="font-bold text-sky-400">{selectedPlanForPurchase.name}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Target Venue:</span>
-                <span className="font-medium text-white truncate max-w-[180px]">{selectedTurfName}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-slate-400">Subscription Fee:</span>
+                <span className="text-slate-400">Plan price (GST included):</span>
                 <span className="text-sm font-bold text-white">{currency.format(Number(selectedPlanForPurchase.price || 0))}</span>
               </div>
               <div className="border-t border-white/5 pt-2 flex justify-between items-center">
@@ -541,7 +622,7 @@ export default function OwnerSubscriptionCenter() {
                 <span className="font-bold text-white">Rs {walletBalance ?? 0}</span>
               </div>
               <div className="flex justify-between items-center text-rose-300">
-                <span>Fee Deduction:</span>
+                <span>Total plan charge:</span>
                 <span className="font-bold">- Rs {selectedPlanForPurchase.price}</span>
               </div>
               <div className="border-t border-sky-500/20 pt-2 flex justify-between items-center font-bold">
@@ -684,18 +765,6 @@ export default function OwnerSubscriptionCenter() {
         </div>
       )}
     </DashboardLayout>
-  );
-}
-
-function Metric({ title, value, tone, sub }: { title: string; value: string; tone?: "good" | "warn"; sub?: string }) {
-  return (
-    <div className="theme-panel rounded-3xl p-5">
-      <p className="theme-soft text-xs font-black uppercase tracking-[0.22em]">{title}</p>
-      <p className={`mt-3 truncate text-2xl font-black ${tone === "good" ? "text-emerald-300" : tone === "warn" ? "text-amber-300" : "theme-title"}`}>
-        {value}
-      </p>
-      {sub && <p className="mt-1 text-xs text-slate-400 truncate">{sub}</p>}
-    </div>
   );
 }
 

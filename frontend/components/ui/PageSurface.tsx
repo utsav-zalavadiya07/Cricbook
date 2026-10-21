@@ -50,18 +50,68 @@ export function PageMetricCard({
   label,
   value,
   helper,
+  helperFocusable = true,
+  helperAlign = "right",
+  helperTooltipClassName = "",
+  supportingText,
+  action,
+  navigationHint,
+  className = "",
+  valueClassName = "",
 }: {
   label: string;
   value: string | number;
-  helper?: string;
+  helper?: ReactNode;
+  helperFocusable?: boolean;
+  helperAlign?: "left" | "right";
+  helperTooltipClassName?: string;
+  supportingText?: string;
+  action?: ReactNode;
+  navigationHint?: string;
+  className?: string;
+  valueClassName?: string;
 }) {
   return (
-    <div className="theme-card rounded-xl p-3.5 sm:p-4">
+    <div className={`theme-card rounded-xl p-3.5 sm:p-4 ${className}`}>
       <div className="flex min-w-0 items-center gap-2">
         <p className="theme-soft min-w-0 break-words text-[10px] font-black uppercase leading-5 tracking-[0.22em]">{label}</p>
-        {helper ? <TileInfo variant="standard" label={`${label} information`}>{helper}</TileInfo> : null}
+        {helper ? (
+          <TileInfo
+            variant="standard"
+            label={`${label} information`}
+            focusable={helperFocusable}
+            align={helperAlign}
+            tooltipClassName={helperTooltipClassName}
+          >
+            {helper}
+          </TileInfo>
+        ) : null}
       </div>
-      <p className="theme-title mt-2 text-xl font-black leading-tight">{value}</p>
+      <div className="mt-2 flex items-end justify-between gap-3">
+        <div className="min-w-0">
+          <p className={`theme-title min-w-0 text-xl font-black leading-tight ${valueClassName}`}>{value}</p>
+          {supportingText ? <p className="theme-muted mt-1 text-[11px] leading-4">{supportingText}</p> : null}
+        </div>
+        {action ? action : navigationHint ? (
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky-500 text-white shadow-sm transition-all duration-300 group-hover:bg-sky-600 dark:bg-sky-500/10 dark:text-sky-400 dark:group-hover:bg-sky-500/20 dark:group-hover:text-sky-300 dark:shadow-none">
+            <span className="sr-only">{navigationHint}</span>
+            <svg
+              aria-hidden="true"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="transition-transform duration-300 group-hover:translate-x-0.5"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </span>
+        ) : null}
+      </div>
     </div>
   );
 }

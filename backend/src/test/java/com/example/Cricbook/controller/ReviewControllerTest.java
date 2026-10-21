@@ -19,7 +19,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -29,6 +31,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
@@ -86,5 +89,37 @@ public class ReviewControllerTest {
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    @WithMockUser(username = "owner@test.com", roles = "OWNER")
+    void testGetOwnerReviewsIncludesCardAndReplyFields() throws Exception {
+        LocalDateTime createdAt = LocalDateTime.of(2026, 10, 10, 12, 30);
+        LocalDateTime repliedAt = LocalDateTime.of(2026, 10, 10, 13, 0);
+        when(reviewService.getOwnerReviews("owner@test.com")).thenReturn(List.of(ReviewResponse.builder()
+                .id(20L)
+                .userId(2L)
+                .userName("Test Player")
+                .turfId(3L)
+                .turfName("Central Cricket Turf")
+                .rating(4)
+                .comment("Good pitch and helpful staff.")
+                .status("PUBLISHED")
+                .verifiedBooking(true)
+                .ownerReply("Thank you for your feedback.")
+                .ownerReplyAt(repliedAt)
+                .createdAt(createdAt)
+                .build()));
+
+        mockMvc.perform(get("/api/v1/reviews/owner"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].userName").value("Test Player"))
+                .andExpect(jsonPath("$[0].turfName").value("Central Cricket Turf"))
+                .andExpect(jsonPath("$[0].rating").value(4))
+                .andExpect(jsonPath("$[0].verifiedBooking").value(true))
+                .andExpect(jsonPath("$[0].ownerReply").value("Thank you for your feedback."))
+                .andExpect(jsonPath("$[0].ownerReplyAt").exists())
+                .andExpect(jsonPath("$[0].createdAt").exists());
     }
 }

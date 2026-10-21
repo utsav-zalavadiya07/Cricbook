@@ -2,10 +2,12 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import PaymentSummary from "@/modules/payment/components/PaymentSummary";
 import RazorpayButton from "@/modules/payment/components/RazorpayButton";
 import { payWithWallet } from "@/modules/payment/services/paymentService";
+import { getBookingById } from "@/modules/booking/services/bookingService";
+import type { Booking } from "@/modules/booking/types/booking.types";
 
 type PaymentMethod = "RAZORPAY" | "WALLET";
 
@@ -15,17 +17,35 @@ export default function PaymentPageContent() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("RAZORPAY");
   const [walletLoading, setWalletLoading] = useState(false);
   const [walletError, setWalletError] = useState("");
+  const [payableAmount, setPayableAmount] = useState<number | null>(null);
+  const [amountError, setAmountError] = useState("");
 
   const bookingId = Number(params.get("bookingId"));
-  const bookingIds = (params.get("bookingIds") ?? (bookingId ? String(bookingId) : ""))
-    .split(",")
-    .map((value) => Number(value))
-    .filter(Boolean);
-  const price = Number(params.get("price") ?? 0);
+  const bookingIdsValue = params.get("bookingIds") ?? (bookingId ? String(bookingId) : "");
+  const bookingIds = useMemo(() => bookingIdsValue.split(",").map(Number).filter(Boolean), [bookingIdsValue]);
+  const regularPrice = Number(params.get("regularPrice") ?? params.get("price") ?? 0);
   const turfName = params.get("turfName") ?? undefined;
   const date = params.get("date") ?? undefined;
   const startTime = params.get("startTime") ?? undefined;
   const endTime = params.get("endTime") ?? undefined;
+
+  useEffect(() => {
+    if (bookingIds.length === 0) return;
+    Promise.all(bookingIds.map((id) => getBookingById(id)))
+      .then((responses) => {
+        const total = responses.reduce((sum, response) => {
+          const booking = response.data as Booking;
+          return sum + Number(booking.amount ?? booking.totalAmount ?? 0);
+        }, 0);
+        if (total <= 0) throw new Error("The final booking amount is unavailable.");
+        setAmountError("");
+        setPayableAmount(total);
+      })
+      .catch(() => {
+        setPayableAmount(null);
+        setAmountError("Could not verify the final booking amount. Please return to your bookings and try again.");
+      });
+  }, [bookingIds]);
 
   if (!bookingId || bookingIds.length === 0) {
     return (
@@ -98,8 +118,20 @@ export default function PaymentPageContent() {
           </div>
         </div>
 
-        <PaymentSummary
-          amount={price}
+        {amountError && (
+          <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+            {amountError}
+          </div>
+        )}
+
+        {payableAmount == null && !amountError ? (
+          <div className="theme-panel animate-pulse rounded-2xl p-6 text-center text-sm theme-muted">
+            Verifying your final price...
+          </div>
+        ) : payableAmount != null ? (
+          <PaymentSummary
+          amount={payableAmount}
+          regularAmount={regularPrice > 0 ? regularPrice : undefined}
           bookingId={bookingId}
           bookingIds={bookingIds}
           turfName={turfName}
@@ -107,11 +139,12 @@ export default function PaymentPageContent() {
           startTime={startTime}
           endTime={endTime}
           paymentMethod={methodLabel}
-        />
+          />
+        ) : null}
 
-        {paymentMethod === "RAZORPAY" ? (
-          <RazorpayButton bookingId={bookingId} bookingIds={bookingIds} amount={price} turfName={turfName} />
-        ) : (
+        {payableAmount != null && paymentMethod === "RAZORPAY" ? (
+          <RazorpayButton bookingId={bookingId} bookingIds={bookingIds} amount={payableAmount} turfName={turfName} />
+        ) : payableAmount != null ? (
           <div className="space-y-3">
             {walletError && (
               <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
@@ -123,10 +156,10 @@ export default function PaymentPageContent() {
               disabled={walletLoading}
               className="w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/25 transition hover:from-emerald-400 hover:to-teal-400 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {walletLoading ? "Processing wallet payment..." : `Pay Rs ${price} from Wallet`}
+              {walletLoading ? "Processing wallet payment..." : `Pay ₹${payableAmount.toLocaleString("en-IN")} from Wallet`}
             </button>
           </div>
-        )}
+        ) : null}
 
         <p className="theme-soft text-center text-xs">
           Having trouble?{" "}

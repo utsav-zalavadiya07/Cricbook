@@ -68,12 +68,15 @@ export async function POST(request: NextRequest) {
   const accessMaxAge = Math.max(1, accessSecondsUntilExpiry);
   const refreshMaxAge = maxAgeFromJwt(payload.refreshToken, 24 * 60 * 60);
   const roleMaxAge = Math.max(accessMaxAge, refreshMaxAge);
+  const persistent = payload.remember === true;
 
-  response.cookies.set(SESSION_COOKIE_NAMES.accessToken, payload.accessToken, baseCookieOptions(accessMaxAge));
+  response.cookies.set(SESSION_COOKIE_NAMES.accessToken, payload.accessToken, baseCookieOptions(persistent ? accessMaxAge : undefined));
   if (payload.refreshToken) {
-    response.cookies.set(SESSION_COOKIE_NAMES.refreshToken, payload.refreshToken, baseCookieOptions(refreshMaxAge));
+    response.cookies.set(SESSION_COOKIE_NAMES.refreshToken, payload.refreshToken, baseCookieOptions(persistent ? refreshMaxAge : undefined));
+  } else {
+    response.cookies.set(SESSION_COOKIE_NAMES.refreshToken, "", { ...baseCookieOptions(), maxAge: 0 });
   }
-  response.cookies.set(SESSION_COOKIE_NAMES.role, payload.role, baseCookieOptions(roleMaxAge));
+  response.cookies.set(SESSION_COOKIE_NAMES.role, payload.role, baseCookieOptions(persistent ? roleMaxAge : undefined));
 
   return response;
 }

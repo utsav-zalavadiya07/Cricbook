@@ -5,9 +5,11 @@ import com.example.Cricbook.dto.WalletResponse;
 import com.example.Cricbook.dto.WalletTopupOrderRequest;
 import com.example.Cricbook.dto.WalletTopupOrderResponse;
 import com.example.Cricbook.dto.WalletTopupVerifyRequest;
+import com.example.Cricbook.entity.Role;
 import com.example.Cricbook.entity.User;
 import com.example.Cricbook.entity.Wallet;
 import com.example.Cricbook.entity.WalletTransaction;
+import com.example.Cricbook.enums.RoleName;
 import com.example.Cricbook.repository.UserRepository;
 import com.example.Cricbook.repository.WalletRepository;
 import com.example.Cricbook.repository.WalletTransactionRepository;
@@ -25,6 +27,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -131,6 +134,38 @@ public class WalletServiceTest {
         assertEquals("PENDING", txCaptor.getValue().getStatus());
         assertEquals("ADD_MONEY", txCaptor.getValue().getType());
         assertEquals("order_rzp_wallet_123", txCaptor.getValue().getReference());
+    }
+
+    @Test
+    void createTopupOrderSupportsOwnerWallet() throws Exception {
+        User owner = User.builder()
+                .id(2L)
+                .email("owner@test.com")
+                .roles(Set.of(Role.builder().name(RoleName.ROLE_OWNER).build()))
+                .build();
+        Wallet ownerWallet = Wallet.builder()
+                .id(20L)
+                .user(owner)
+                .balance(new BigDecimal("1200.00"))
+                .build();
+
+        ReflectionTestUtils.setField(walletService, "razorpayKeyId", "rzp_test_owner");
+        when(userRepository.findByEmailOrPhone("owner@test.com")).thenReturn(Optional.of(owner));
+        when(walletRepository.findByUserId(2L)).thenReturn(Optional.of(ownerWallet));
+        when(paymentGatewayService.createOrder(eq(new BigDecimal("1499.00")), eq("INR"), anyString()))
+                .thenReturn(new PaymentGatewayService.GatewayOrder("order_owner_wallet_123"));
+
+        WalletTopupOrderResponse response = walletService.createTopupOrder(
+                "owner@test.com",
+                new WalletTopupOrderRequest(new BigDecimal("1499.00"))
+        );
+
+        assertEquals("order_owner_wallet_123", response.getOrderId());
+        assertEquals(new BigDecimal("1499.00"), response.getAmount());
+        verify(walletTransactionRepository).save(argThat(transaction ->
+                transaction.getWallet().equals(ownerWallet)
+                        && transaction.getStatus().equals("PENDING")
+                        && transaction.getType().equals("ADD_MONEY")));
     }
 
     @Test

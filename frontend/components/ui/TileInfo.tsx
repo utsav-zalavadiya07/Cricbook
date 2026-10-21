@@ -9,6 +9,7 @@ type TileInfoProps = {
   align?: "left" | "right";
   focusable?: boolean;
   className?: string;
+  tooltipClassName?: string;
   variant?: "standard" | "cricket";
 };
 
@@ -18,6 +19,7 @@ export function TileInfo({
   align = "right",
   focusable = true,
   className = "",
+  tooltipClassName = "",
   variant = "cricket",
 }: TileInfoProps) {
   const { isOwner } = usePortal();
@@ -117,7 +119,7 @@ export function TileInfo({
           isOwner
             ? "border-sky-500/30 shadow-sky-950/20"
             : "border-emerald-500/30 shadow-emerald-950/20"
-        } bg-white px-3 py-2 text-left text-xs font-semibold leading-5 text-slate-700 shadow-xl group-hover/tileinfo:block group-focus-within/tileinfo:block dark:border-white/10 dark:bg-slate-950 dark:text-slate-300`}
+        } bg-white px-3 py-2 text-left text-xs font-semibold leading-5 text-slate-700 shadow-xl group-hover/tileinfo:block group-focus-within/tileinfo:block dark:border-white/10 dark:bg-slate-950 dark:text-slate-300 ${tooltipClassName}`}
         role="tooltip"
       >
         {children}

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { canRoleAccessPath, getRouteAccess, SESSION_COOKIE_NAMES } from "./modules/auth/sessionPolicy";
+import { canRoleAccessPath, getLandingPathForRole, getRouteAccess, SESSION_COOKIE_NAMES } from "./modules/auth/sessionPolicy";
 
 type JwtPayload = {
   exp?: number;
@@ -52,8 +52,15 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Authenticated user on wrong portal → redirect to their correct portal landing page.
+  if (hasSession && role && !canRoleAccessPath(role, pathname)) {
+    const landingPath = getLandingPathForRole(role);
+    const redirectUrl = new URL(landingPath, request.url);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // Not authenticated → redirect to login.
   const loginUrl = new URL(access.loginPath, request.url);
-  loginUrl.searchParams.set("next", `${pathname}${search}`);
   const response = NextResponse.redirect(loginUrl);
 
   if (!hasSession || malformedAccessToken) {

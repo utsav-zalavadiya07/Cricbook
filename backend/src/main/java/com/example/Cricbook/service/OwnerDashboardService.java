@@ -39,6 +39,11 @@ public class OwnerDashboardService {
 
     @Transactional(readOnly = true)
     public OwnerDashboardResponse getDashboard(String username) {
+        return getDashboard(username, 14);
+    }
+
+    @Transactional(readOnly = true)
+    public OwnerDashboardResponse getDashboard(String username, int days) {
         User owner = userRepository.findByEmailOrPhone(username)
                 .orElseThrow(() -> new ApiException("Owner not found"));
 
@@ -62,22 +67,23 @@ public class OwnerDashboardService {
                 .filter(booking -> !booking.getBookingDate().isBefore(monthStart) && !booking.getBookingDate().isAfter(today.withDayOfMonth(today.lengthOfMonth())))
                 .toList());
 
-        LocalDate current14Start = today.minusDays(13);
-        LocalDate previous14Start = today.minusDays(27);
-        LocalDate previous14End = today.minusDays(14);
+        int periodDays = (days <= 0 || days > 365) ? 14 : days;
+        LocalDate currentPeriodStart = today.minusDays(periodDays - 1);
+        LocalDate previousPeriodStart = today.minusDays((periodDays * 2) - 1);
+        LocalDate previousPeriodEnd = today.minusDays(periodDays);
 
-        BigDecimal last14DaysRevenue = sumRevenue(revenueBookings.stream()
-                .filter(booking -> !booking.getBookingDate().isBefore(current14Start))
+        BigDecimal periodRevenue = sumRevenue(revenueBookings.stream()
+                .filter(booking -> !booking.getBookingDate().isBefore(currentPeriodStart) && !booking.getBookingDate().isAfter(today))
                 .toList());
 
-        BigDecimal previous14DaysRevenue = sumRevenue(revenueBookings.stream()
-                .filter(booking -> !booking.getBookingDate().isBefore(previous14Start) && !booking.getBookingDate().isAfter(previous14End))
+        BigDecimal previousPeriodRevenue = sumRevenue(revenueBookings.stream()
+                .filter(booking -> !booking.getBookingDate().isBefore(previousPeriodStart) && !booking.getBookingDate().isAfter(previousPeriodEnd))
                 .toList());
 
         double revenueGrowthPercent = 0.0;
-        if (previous14DaysRevenue.compareTo(BigDecimal.ZERO) > 0) {
-            revenueGrowthPercent = round((last14DaysRevenue.subtract(previous14DaysRevenue).doubleValue() / previous14DaysRevenue.doubleValue()) * 100.0);
-        } else if (last14DaysRevenue.compareTo(BigDecimal.ZERO) > 0) {
+        if (previousPeriodRevenue.compareTo(BigDecimal.ZERO) > 0) {
+            revenueGrowthPercent = round((periodRevenue.subtract(previousPeriodRevenue).doubleValue() / previousPeriodRevenue.doubleValue()) * 100.0);
+        } else if (periodRevenue.compareTo(BigDecimal.ZERO) > 0) {
             revenueGrowthPercent = 100.0;
         }
 
@@ -107,7 +113,9 @@ public class OwnerDashboardService {
                 .todayRevenue(todayRevenue)
                 .monthlyRevenue(monthlyRevenue)
                 .totalRevenue(totalRevenue)
-                .last14DaysRevenue(last14DaysRevenue)
+                .last14DaysRevenue(periodRevenue)
+                .periodRevenue(periodRevenue)
+                .periodDays(periodDays)
                 .revenueGrowthPercent(revenueGrowthPercent)
                 .occupancyPercent(occupancyPercent)
                 .cancellationPercent(cancellationPercent)
@@ -115,7 +123,7 @@ public class OwnerDashboardService {
                 .inactiveTurfs(turfs.stream().filter(turf -> turf.getStatus() == TurfStatus.INACTIVE).count())
                 .maintenanceTurfs(turfs.stream().filter(turf -> turf.getStatus() == TurfStatus.MAINTENANCE).count())
                 .popularTurf(popularTurf)
-                .revenueSeries(buildRevenueSeries(revenueBookings, today.minusDays(13), today))
+                .revenueSeries(buildRevenueSeries(revenueBookings, currentPeriodStart, today))
                 .upcomingBookings(bookingService.getUpcomingOwnerBookings(username).stream().limit(8).toList())
                 .recentReviews(reviewService.getOwnerReviews(username).stream().limit(6).toList())
                 .build();

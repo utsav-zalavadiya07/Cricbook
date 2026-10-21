@@ -1,0 +1,92 @@
+
+> frontend@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://100.73.216.108:3000
+- Environments: .env.local
+✓ Ready in 2.1s
+Creating turbopack project {
+  dir: 'C:\\Users\\utsav\\Java\\Application\\Cricbook\\frontend',
+  testMode: true
+}
+
+○ Compiling /search ...
+ GET /search 200 in 5.3s (next.js: 3.6s, proxy.ts: 1114ms, application-code: 573ms)
+ GET /search 200 in 4.2s (next.js: 3.9s, proxy.ts: 22ms, application-code: 213ms)
+ POST /api/session 200 in 569ms (next.js: 545ms, application-code: 25ms)
+ POST /api/session 200 in 513ms (next.js: 507ms, application-code: 6ms)
+ GET /owner/dashboard 200 in 113ms (next.js: 54ms, proxy.ts: 8ms, application-code: 51ms)
+ GET /owner/reviews 200 in 74ms (next.js: 45ms, proxy.ts: 8ms, application-code: 20ms)
+ GET /owner/slots 200 in 69ms (next.js: 52ms, proxy.ts: 3ms, application-code: 15ms)
+ GET / 307 in 84ms (next.js: 31ms, proxy.ts: 3ms, application-code: 50ms)
+✓ Compiled in 164ms
+ GET /owner/slots 200 in 141ms (next.js: 52ms, proxy.ts: 26ms, application-code: 63ms)
+ GET /owner/dashboard 200 in 40ms (next.js: 8ms, proxy.ts: 13ms, application-code: 19ms)
+ GET /owner/dashboard 200 in 10ms (next.js: 3ms, proxy.ts: 2ms, application-code: 5ms)
+ POST /api/session 200 in 49ms (next.js: 32ms, application-code: 17ms)
+✓ Compiled in 122ms
+ GET /search 200 in 112ms (next.js: 42ms, proxy.ts: 5ms, application-code: 66ms)
+ GET /search 200 in 41ms (next.js: 5ms, proxy.ts: 5ms, application-code: 31ms)
+ GET /search 200 in 14ms (next.js: 4ms, proxy.ts: 4ms, application-code: 6ms)
+ POST /api/session 200 in 28ms (next.js: 21ms, application-code: 7ms)
+✓ Compiled in 2.1s
+ GET /owner/dashboard 200 in 2.5s (next.js: 2.1s, proxy.ts: 6ms, application-code: 391ms)
+ GET /owner/dashboard 200 in 92ms (next.js: 29ms, proxy.ts: 7ms, application-code: 55ms)
+ GET /owner/dashboard 200 in 157ms (next.js: 5ms, proxy.ts: 5ms, application-code: 147ms)
+ GET /owner/dashboard 200 in 180ms (next.js: 7ms, proxy.ts: 5ms, application-code: 168ms)
+ GET /owner/dashboard 200 in 101ms (next.js: 11ms, proxy.ts: 12ms, application-code: 78ms)
+ GET /owner/dashboard 200 in 88ms (next.js: 6ms, proxy.ts: 8ms, application-code: 74ms)
+ POST /api/session 200 in 34ms (next.js: 27ms, application-code: 7ms)
+ POST /api/session 200 in 8ms (next.js: 2ms, application-code: 6ms)
+ GET /search 200 in 61ms (next.js: 41ms, proxy.ts: 4ms, application-code: 16ms)
+✓ Compiled in 1389ms
+ GET /search 200 in 623ms (next.js: 347ms, proxy.ts: 82ms, application-code: 194ms)
+ GET /search 200 in 540ms (next.js: 371ms, proxy.ts: 5ms, application-code: 165ms)
+ GET /search 200 in 180ms (next.js: 10ms, proxy.ts: 5ms, application-code: 165ms)
+ GET /search 200 in 52ms (next.js: 3ms, proxy.ts: 7ms, application-code: 42ms)
+ POST /api/session 200 in 39ms (next.js: 30ms, application-code: 9ms)
+ GET /owner/dashboard 200 in 58ms (next.js: 36ms, proxy.ts: 4ms, application-code: 18ms)
+ POST /api/session 200 in 8ms (next.js: 3ms, application-code: 5ms)
+ GET /search 200 in 603ms (next.js: 571ms, proxy.ts: 4ms, application-code: 28ms)
+ GET /search 200 in 671ms (next.js: 541ms, proxy.ts: 20ms, application-code: 109ms)
+✓ Compiled in 1624ms
+✓ Finished filesystem cache database compaction in 18.2s
+✓ Finished writing to filesystem cache in 13.3s
+✓ Compiled in 414ms
+ POST /api/session 200 in 135ms (next.js: 116ms, application-code: 19ms)
+ POST /api/session 200 in 236ms (next.js: 231ms, application-code: 5ms)
+ GET /search 200 in 333ms (next.js: 57ms, proxy.ts: 26ms, application-code: 251ms)
+ GET /search 200 in 51ms (next.js: 3ms, proxy.ts: 6ms, application-code: 42ms)
+ DELETE /api/session 200 in 11ms (next.js: 8ms, application-code: 4ms)
+ DELETE /api/session 200 in 8ms (next.js: 4ms, application-code: 4ms)
+ GET /auth/login 200 in 72ms (next.js: 31ms, proxy.ts: 4ms, application-code: 36ms)
+ POST /api/session 200 in 5ms (next.js: 1938µs, application-code: 4ms)
+ GET /auth/login 200 in 52ms (next.js: 2ms, proxy.ts: 5ms, application-code: 45ms)
+ DELETE /api/session 200 in 7ms (next.js: 2ms, application-code: 5ms)
+ DELETE /api/session 200 in 6ms (next.js: 2ms, application-code: 3ms)
+ GET /auth/login 200 in 296ms (next.js: 250ms, proxy.ts: 23ms, application-code: 23ms)
+ GET /auth/login 200 in 268ms (next.js: 211ms, proxy.ts: 4ms, application-code: 53ms)
+ DELETE /api/session 200 in 45ms (next.js: 38ms, application-code: 7ms)
+ POST /api/session 200 in 11ms (next.js: 3ms, application-code: 9ms)
+ GET /auth/login 200 in 154ms (next.js: 4ms, proxy.ts: 7ms, application-code: 143ms)
+✓ Compiled in 1097ms
+ POST /api/session 200 in 9ms (next.js: 3ms, application-code: 6ms)
+ GET /search 200 in 173ms (next.js: 60ms, proxy.ts: 13ms, application-code: 99ms)
+ POST /api/session 200 in 5ms (next.js: 1921µs, application-code: 3ms)
+ POST /api/session 200 in 9ms (next.js: 4ms, application-code: 5ms)
+ GET /owner/dashboard 200 in 274ms (next.js: 246ms, proxy.ts: 7ms, application-code: 22ms)
+ GET /owner/dashboard 200 in 287ms (next.js: 88ms, proxy.ts: 8ms, application-code: 190ms)
+ POST /api/session 200 in 12ms (next.js: 5ms, application-code: 7ms)
+✓ Compiled in 737ms
+ GET /owner/dashboard 200 in 169ms (next.js: 126ms, proxy.ts: 19ms, application-code: 24ms)
+ GET /owner/dashboard 200 in 226ms (next.js: 150ms, proxy.ts: 28ms, application-code: 47ms)
+ POST /api/session 200 in 41ms (next.js: 30ms, application-code: 11ms)
+ GET /owner/dashboard 200 in 249ms (next.js: 9ms, proxy.ts: 9ms, application-code: 231ms)
+ GET /owner/dashboard 200 in 79ms (next.js: 11ms, proxy.ts: 11ms, application-code: 57ms)
+ POST /api/session 200 in 9ms (next.js: 3ms, application-code: 6ms)
+ POST /api/session 200 in 11ms (next.js: 2ms, application-code: 9ms)
+ POST /api/session 200 in 10ms (next.js: 3ms, application-code: 7ms)
+ GET /search 200 in 177ms (next.js: 106ms, proxy.ts: 6ms, application-code: 65ms)
+ GET /search 200 in 25ms (next.js: 5ms, proxy.ts: 7ms, application-code: 13ms)

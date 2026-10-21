@@ -48,7 +48,7 @@ export const maintenanceTurf = (id: number) =>
   api.put(`/turfs/${id}/maintenance`, undefined, turfNotification("Maintenance Mode", "This turf is now marked for maintenance."));
 
 export const createSlots = (turfId: number, data: SlotRequest) =>
-  api.post(`/turfs/${turfId}/slots`, data, slotNotification("Slots Generated", "Slot configuration saved successfully."));
+  api.post(`/turfs/${turfId}/slots`, data, slotNotification("Schedule Saved", "This regular schedule stays active until you change it."));
 
 export const getTurfSlots = (turfId: number) =>
   api.get(`/turfs/${turfId}/slots`);

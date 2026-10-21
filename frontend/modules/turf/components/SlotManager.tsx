@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Button, Card, Field, Input, Select } from "@/components/ui";
-import { applySlotPricing, createSlots, disableSlot, getTurfSlots, updateSlot } from "../services/turfService";
+import { applySlotPricing, createSlots, disableSlot, getTurfById, getTurfSlots, updateSlot } from "../services/turfService";
 import { Slot } from "../types/turf.types";
 import { useToast } from "@/modules/ui/ToastProvider";
 
@@ -17,7 +17,7 @@ export default function SlotManager({ turfId, onSuccess }: SlotManagerProps) {
     startTime: "06:00",
     endTime: "22:00",
     slotDuration: 60,
-    price: 500,
+    price: 0,
   });
   const [loading, setLoading] = useState(false);
   const [slots, setSlots] = useState<Slot[]>([]);
@@ -25,8 +25,9 @@ export default function SlotManager({ turfId, onSuccess }: SlotManagerProps) {
 
   const loadSlots = useCallback(async () => {
     try {
-      const res = await getTurfSlots(turfId);
-      setSlots(res.data);
+      const [slotRes, turfRes] = await Promise.all([getTurfSlots(turfId), getTurfById(turfId)]);
+      setSlots(slotRes.data);
+      setForm((current) => ({ ...current, price: Number(turfRes.data.pricePerHour) }));
     } catch {
       setSlots([]);
     }
@@ -59,8 +60,8 @@ export default function SlotManager({ turfId, onSuccess }: SlotManagerProps) {
   };
 
   const handleGenerate = async () => {
-    if (calcSlotCount() === 0) {
-      showWarning("Invalid slot configuration", "Choose a valid opening time, closing time and duration.");
+    if (calcSlotCount() === 0 || !Number.isFinite(form.price) || form.price <= 0) {
+      showWarning("Invalid slot configuration", "Choose valid opening hours, duration and a positive slot price.");
       return;
     }
     setLoading(true);
@@ -150,8 +151,8 @@ export default function SlotManager({ turfId, onSuccess }: SlotManagerProps) {
             ]}
           />
         </Field>
-        <Field label="Price per Slot (Rs)">
-          <Input type="number" placeholder="500" value={form.price} onChange={set("price")} />
+        <Field label="Default slot price (₹)">
+          <Input type="number" placeholder="Turf listing price" value={form.price || ""} onChange={set("price")} />
         </Field>
       </div>
 
@@ -162,7 +163,7 @@ export default function SlotManager({ turfId, onSuccess }: SlotManagerProps) {
         </div>
       )}
 
-      <Button onClick={handleGenerate} disabled={loading || slotCount === 0} className="w-full py-3">
+      <Button onClick={handleGenerate} disabled={loading || slotCount === 0 || form.price <= 0} className="w-full py-3">
         {loading ? "Generating..." : `Generate ${slotCount} Slots`}
       </Button>
 

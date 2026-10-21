@@ -15,29 +15,44 @@ export const ADMIN_ROLES = [
 ] as const;
 
 const ownerRoles = ["OWNER", ...ADMIN_ROLES] as const;
+const playerOnlyRoles = ["USER"] as const;
 
-const authenticatedPrefixes = [
+/** Routes accessible by any authenticated user (shared across portals). */
+const sharedAuthenticatedPrefixes = [
+  "/notifications",
+  "/profile",
+] as const;
+
+/** Routes that belong exclusively to the player portal. */
+const playerOnlyPrefixes = [
   "/assistant",
   "/booking",
+  "/career",
+  "/fan-economy",
   "/favorites",
   "/feed",
+  "/governance",
   "/inbox",
   "/live-scoring",
+  "/marketplace",
   "/matches",
   "/membership",
-  "/notifications",
   "/payment",
   "/personalized",
-  "/profile",
+  "/pricing",
   "/progress",
   "/rebook",
   "/referrals",
   "/rewards",
+  "/saas",
+  "/search",
   "/settings",
   "/smart",
   "/social",
   "/split-payments",
+  "/sports-os",
   "/subscription",
+  "/super-app",
   "/teams",
   "/tournaments",
   "/trust",
@@ -88,7 +103,11 @@ export function getRouteAccess(pathname: string): RouteAccess {
     return { public: false, loginPath: "/auth/login", roles: ownerRoles };
   }
 
-  if (authenticatedPrefixes.some((prefix) => matchesPrefix(path, prefix))) {
+  if (playerOnlyPrefixes.some((prefix) => matchesPrefix(path, prefix))) {
+    return { public: false, loginPath: "/auth/login", roles: playerOnlyRoles };
+  }
+
+  if (sharedAuthenticatedPrefixes.some((prefix) => matchesPrefix(path, prefix))) {
     return { public: false, loginPath: "/auth/login" };
   }
 
@@ -126,4 +145,29 @@ export function isSafeNextPath(value: string | null | undefined) {
 
 export function safeNextPath(value: string | null | undefined, fallback: string) {
   return isSafeNextPath(value) ? value as string : fallback;
+}
+
+/**
+ * When a user is authenticated but on a path outside their portal,
+ * return the correct landing path to redirect them to.
+ * Returns `null` if the user is already allowed on the current path.
+ */
+export function getPortalRedirectPath(role: string | null | undefined, pathname: string): string | null {
+  if (!role) {
+    return null;
+  }
+
+  const access = getRouteAccess(pathname);
+
+  if (access.public) {
+    return null;
+  }
+
+  const allowed = access.roles ? access.roles.includes(role) : true;
+
+  if (allowed) {
+    return null;
+  }
+
+  return getLandingPathForRole(role);
 }

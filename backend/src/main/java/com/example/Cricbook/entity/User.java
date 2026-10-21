@@ -38,6 +38,33 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "city")
+    private String city;
+
+    @Column(columnDefinition = "TEXT")
+    private String bio;
+
+    @Column(name = "designation")
+    private String designation;
+
+    @Column(name = "alternate_phone")
+    private String alternatePhone;
+
+    @Column(name = "business_name")
+    private String businessName;
+
+    @Column(name = "business_type")
+    private String businessType;
+
+    @Column(name = "gstin")
+    private String gstin;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "support_email")
+    private String supportEmail;
+
     @Column(name = "preferred_language", nullable = false)
     @Builder.Default
     private String preferredLanguage = "en";

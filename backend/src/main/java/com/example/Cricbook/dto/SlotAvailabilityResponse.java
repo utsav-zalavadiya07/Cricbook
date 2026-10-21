@@ -20,6 +20,7 @@ public class SlotAvailabilityResponse {
     private LocalTime startTime;
     private LocalTime endTime;
     private BigDecimal price;
+    private BigDecimal listingPrice;
     private LocalDate date;
     private Boolean isAvailable;
     private Boolean isBlocked;

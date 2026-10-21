@@ -19,6 +19,8 @@ public class OwnerDashboardResponse {
     private BigDecimal monthlyRevenue;
     private BigDecimal totalRevenue;
     private BigDecimal last14DaysRevenue;
+    private Integer periodDays;
+    private BigDecimal periodRevenue;
     private Double revenueGrowthPercent;
     private Double occupancyPercent;
     private Double cancellationPercent;

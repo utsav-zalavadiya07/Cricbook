@@ -1,5 +1,6 @@
 interface PaymentSummaryProps {
   amount: number;
+  regularAmount?: number;
   bookingId: number;
   bookingIds?: number[];
   turfName?: string;
@@ -17,7 +18,7 @@ const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
 );
 
 export default function PaymentSummary({
-  amount, bookingId, bookingIds = [bookingId], turfName, date, startTime, endTime, paymentMethod = "Razorpay",
+  amount, regularAmount, bookingId, bookingIds = [bookingId], turfName, date, startTime, endTime, paymentMethod = "Razorpay",
 }: PaymentSummaryProps) {
   const formattedDate = date
     ? new Date(date).toLocaleDateString("en-IN", {
@@ -44,10 +45,16 @@ export default function PaymentSummary({
       {date && <Row label="Date" value={formattedDate} />}
       {bookingIds.length > 1 && <Row label="Booking IDs" value={bookingIds.map((id) => `#${id}`).join(", ")} />}
       <Row label="Payment Method" value={paymentMethod} />
+      {regularAmount != null && regularAmount > amount && (
+        <>
+          <Row label="Regular slot total" value={`₹${regularAmount.toLocaleString("en-IN")}`} />
+          <Row label="Membership discount" value={<span className="font-bold text-emerald-400">−₹{(regularAmount - amount).toLocaleString("en-IN")}</span>} />
+        </>
+      )}
 
       <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-4">
         <span className="theme-text font-medium">Total Payable</span>
-        <span className="text-2xl font-bold text-emerald-500 dark:text-emerald-400">Rs {amount}</span>
+        <span className="text-2xl font-bold text-emerald-500 dark:text-emerald-400">₹{amount.toLocaleString("en-IN")}</span>
       </div>
 
       <div className="flex items-center gap-2 pt-2">

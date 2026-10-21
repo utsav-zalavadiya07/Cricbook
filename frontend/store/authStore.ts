@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { clearAuthStorageValues, getActiveAuthStorage, readAuthStorageValue } from "@/modules/auth/authStorage";
 import { clearSessionCookies, persistSessionCookies } from "@/modules/auth/sessionCookies";
 
 interface User {
@@ -18,7 +19,6 @@ interface AuthState {
   hydrateFromStorage: () => Promise<void>;
 }
 
-const AUTH_KEYS = ["token", "refreshToken", "role"] as const;
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/api/v1";
 
 type AuthResponse = {
@@ -28,35 +28,23 @@ type AuthResponse = {
   sessionId?: string;
 };
 
+type JwtPayload = {
+  exp?: number;
+  role?: string;
+};
+
+let hydrationRequest: Promise<void> | null = null;
+
 function clearStoredAuth() {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  for (const key of AUTH_KEYS) {
-    window.localStorage.removeItem(key);
-    window.sessionStorage.removeItem(key);
-  }
+  clearAuthStorageValues();
 }
 
-function readStoredAuth(key: (typeof AUTH_KEYS)[number]) {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  return window.localStorage.getItem(key) ?? window.sessionStorage.getItem(key);
-}
-
-function preferredStorage() {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  return window.sessionStorage.getItem("token") ? window.sessionStorage : window.localStorage;
+function readStoredAuth(key: "token" | "refreshToken" | "role") {
+  return readAuthStorageValue(key);
 }
 
 function writeStoredAuth(token: string, refreshToken: string | null | undefined, role: string) {
-  const storage = preferredStorage();
+  const storage = getActiveAuthStorage();
   if (!storage) {
     return;
   }
@@ -69,7 +57,7 @@ function writeStoredAuth(token: string, refreshToken: string | null | undefined,
   }
 }
 
-function jwtExpiresAt(token: string | null) {
+function decodeJwtPayload(token: string | null): JwtPayload | null {
   if (!token) {
     return null;
   }
@@ -78,15 +66,15 @@ function jwtExpiresAt(token: string | null) {
     const encodedPayload = token.split(".")[1] || "";
     const normalizedPayload = encodedPayload.replace(/-/g, "+").replace(/_/g, "/");
     const paddedPayload = normalizedPayload.padEnd(Math.ceil(normalizedPayload.length / 4) * 4, "=");
-    const payload = JSON.parse(atob(paddedPayload)) as { exp?: number };
-    return payload.exp ? payload.exp * 1000 : null;
+    return JSON.parse(atob(paddedPayload)) as JwtPayload;
   } catch {
     return null;
   }
 }
 
 function isExpired(token: string | null) {
-  const expiresAt = jwtExpiresAt(token);
+  const exp = decodeJwtPayload(token)?.exp;
+  const expiresAt = exp ? exp * 1000 : null;
   return !expiresAt || expiresAt <= Date.now() + 5000;
 }
 
@@ -102,6 +90,14 @@ async function refreshStoredSession(refreshToken: string) {
   }
 
   return await response.json() as AuthResponse;
+}
+
+export async function withSessionRefreshLock<T>(refresh: () => Promise<T>) {
+  if (typeof navigator !== "undefined" && navigator.locks) {
+    return navigator.locks.request("cricbook-session-refresh", refresh);
+  }
+
+  return refresh();
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -144,58 +140,105 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ user: null, token: null, refreshToken: null, role: null, hydrated: true });
     }
   },
-  hydrateFromStorage: async () => {
-    if (typeof window === "undefined") {
-      return;
+  hydrateFromStorage: () => {
+    if (hydrationRequest) {
+      return hydrationRequest;
     }
 
-    const token = readStoredAuth("token");
-    const refreshToken = readStoredAuth("refreshToken");
-    const role = readStoredAuth("role");
+    hydrationRequest = (async () => {
+      if (typeof window === "undefined") {
+        return;
+      }
 
-    if (!token || !role) {
-      clearStoredAuth();
-      void clearSessionCookies();
-      set({ user: null, token: null, refreshToken: null, role: null, hydrated: true });
-      return;
-    }
+      const token = readStoredAuth("token");
+      const refreshToken = readStoredAuth("refreshToken");
+      const storedRole = readStoredAuth("role");
+      const tokenRole = decodeJwtPayload(token)?.role;
+      const role = tokenRole || storedRole;
 
-    if (isExpired(token)) {
-      if (!refreshToken) {
+      if (!token || !role) {
         clearStoredAuth();
-        void clearSessionCookies();
+        await clearSessionCookies();
         set({ user: null, token: null, refreshToken: null, role: null, hydrated: true });
         return;
+      }
+
+      if (isExpired(token)) {
+        try {
+          const refreshed = await withSessionRefreshLock(async () => {
+            const currentToken = readStoredAuth("token");
+            const currentRefreshToken = readStoredAuth("refreshToken");
+            const currentRole = decodeJwtPayload(currentToken)?.role || readStoredAuth("role");
+
+            if (currentToken && currentRole && !isExpired(currentToken)) {
+              return {
+                accessToken: currentToken,
+                refreshToken: currentRefreshToken ?? undefined,
+                role: currentRole,
+              } satisfies AuthResponse;
+            }
+
+            if (!currentRefreshToken) {
+              return null;
+            }
+
+            const nextSession = await refreshStoredSession(currentRefreshToken);
+            if (!nextSession?.accessToken || !nextSession.role) {
+              return null;
+            }
+
+            const remember = getActiveAuthStorage() === window.localStorage;
+            const nextRefreshToken = nextSession.refreshToken ?? currentRefreshToken;
+            writeStoredAuth(nextSession.accessToken, nextRefreshToken, nextSession.role);
+            await persistSessionCookies({
+              accessToken: nextSession.accessToken,
+              refreshToken: nextRefreshToken,
+              role: nextSession.role,
+              remember,
+            });
+
+            return {
+              ...nextSession,
+              refreshToken: nextRefreshToken,
+            };
+          });
+
+          if (!refreshed?.accessToken || !refreshed.role) {
+            throw new Error("Refresh failed");
+          }
+
+          set({
+            token: refreshed.accessToken,
+            refreshToken: refreshed.refreshToken ?? refreshToken,
+            role: refreshed.role,
+            hydrated: true,
+          });
+          return;
+        } catch {
+          clearStoredAuth();
+          await clearSessionCookies();
+          set({ user: null, token: null, refreshToken: null, role: null, hydrated: true });
+          return;
+        }
       }
 
       try {
-        const refreshed = await refreshStoredSession(refreshToken);
-        if (!refreshed?.accessToken || !refreshed.role) {
-          throw new Error("Refresh failed");
-        }
-
-        const nextRefreshToken = refreshed.refreshToken ?? refreshToken;
-        writeStoredAuth(refreshed.accessToken, nextRefreshToken, refreshed.role);
         await persistSessionCookies({
-          accessToken: refreshed.accessToken,
-          refreshToken: nextRefreshToken,
-          role: refreshed.role,
+          accessToken: token,
+          refreshToken,
+          role,
+          remember: getActiveAuthStorage() === window.localStorage,
         });
-        set({ token: refreshed.accessToken, refreshToken: nextRefreshToken, role: refreshed.role, hydrated: true });
-        return;
+        set({ token, refreshToken, role, hydrated: true });
       } catch {
         clearStoredAuth();
-        void clearSessionCookies();
+        await clearSessionCookies();
         set({ user: null, token: null, refreshToken: null, role: null, hydrated: true });
-        return;
       }
-    }
-
-    set({
-      token,
-      refreshToken,
-      role,
-      hydrated: true,
+    })().finally(() => {
+      hydrationRequest = null;
     });
+
+    return hydrationRequest;
   },
 }));

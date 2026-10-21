@@ -116,7 +116,8 @@ export const getOwnerReviews = () => api.get<Review[]>("/reviews/owner");
 
 export const getOwnerTurfs = () => api.get("/turfs/my");
 
-export const getOwnerDashboard = () => api.get("/owner/dashboard");
+export const getOwnerDashboard = (days?: number) =>
+  api.get("/owner/dashboard", { params: days ? { days } : undefined });
 
 export const getOwnerFinanceDashboard = (filters?: OwnerFinanceFilters) =>
   api.get<OwnerFinanceDashboard>("/owner/finance/dashboard", { params: cleanFinanceParams(filters) });

@@ -26,6 +26,8 @@ export interface SearchTurf {
   rating: number;
   totalReviews: number;
   pricePerHour: number;
+  startingSlotPrice?: number;
+  maximumSlotPrice?: number;
   boxType: string;
   pitchType: string;
   sport?: string;
@@ -50,6 +52,7 @@ export interface SlotAvailability {
   startTime: string;
   endTime: string;
   price: number;
+  listingPrice?: number;
   available: boolean;
   blocked: boolean;
   locked?: boolean;
