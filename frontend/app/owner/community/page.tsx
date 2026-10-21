@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
@@ -20,8 +21,10 @@ export default function OwnerCommunityPage() {
       <main className="space-y-6">
         <section className="theme-panel-strong rounded-[2rem] p-6">
           <p className="theme-accent-owner text-xs font-black uppercase tracking-[0.34em]">Community Activity</p>
-          <h1 className="theme-title mt-3 text-3xl font-black sm:text-5xl">Open matches filling near your turfs.</h1>
-          <p className="theme-muted mt-3 max-w-3xl text-sm leading-6">Track active community demand, fill rates, and match creation momentum.</p>
+          <h1 className="theme-title mt-3 text-3xl font-black sm:text-5xl">Open matches filling near your turfs.
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Open matches filling near your turfs. information" focusable={false}>Track active community demand, fill rates, and match creation momentum.</TileInfo>
+              </span></h1>
         </section>
         <section className="grid gap-4 sm:grid-cols-4">
           <Metric label="Open Matches" value={analytics?.openMatches ?? 0} />

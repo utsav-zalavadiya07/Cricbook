@@ -5,6 +5,7 @@ const phraseAliasEntries: Array<[string, string]> = [
   ["monthly revenue", "owner.metric.monthlyRevenue"],
   ["occupancy", "owner.metric.occupancy"],
   ["cancellation", "owner.metric.cancellation"],
+  ["total bookings", "owner.metric.totalBookings"],
   ["revenue trend", "owner.section.revenueTrend"],
   ["last 14 days", "owner.section.last14Days"],
   ["turf operations", "owner.section.turfOperations"],

@@ -5,12 +5,34 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalTime;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SlotRepository extends JpaRepository<Slot, Long> {
     List<Slot> findByTurfId(Long turfId);
     List<Slot> findByTurfIdAndArchivedFalse(Long turfId);
+
+    @org.springframework.data.jpa.repository.Query("""
+            SELECT MIN(s.price)
+            FROM Slot s
+            WHERE s.turf.id = :turfId
+            AND s.archived = false
+            AND s.isActive = true
+            """)
+    Optional<BigDecimal> findMinimumActivePriceByTurfId(
+            @org.springframework.data.repository.query.Param("turfId") Long turfId);
+
+    @org.springframework.data.jpa.repository.Query("""
+            SELECT MAX(s.price)
+            FROM Slot s
+            WHERE s.turf.id = :turfId
+            AND s.archived = false
+            AND s.isActive = true
+            """)
+    Optional<BigDecimal> findMaximumActivePriceByTurfId(
+            @org.springframework.data.repository.query.Param("turfId") Long turfId);
 
     @org.springframework.data.jpa.repository.Query("""
             SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END

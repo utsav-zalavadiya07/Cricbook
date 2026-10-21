@@ -44,6 +44,10 @@ public class CacheService {
         cache.clear();
     }
 
+    public void evictByPrefix(String prefix) {
+        cache.keySet().removeIf(key -> key.startsWith(prefix));
+    }
+
     public int size() {
         evictExpiredEntries();
         return cache.size();

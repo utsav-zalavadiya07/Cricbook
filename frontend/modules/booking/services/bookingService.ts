@@ -15,4 +15,6 @@ export const getBookingById = (id: number) =>
 
 // Backend uses POST /{id}/cancel (not PATCH)
 export const cancelBooking = (id: number) =>
-  api.post(`/bookings/${id}/cancel`);
+  api.post(`/bookings/${id}/cancel`, null, {
+    notification: { error: false },
+  });

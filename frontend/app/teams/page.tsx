@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useConfirmDialog } from "@/components/ui/ConfirmDialog";
@@ -219,8 +220,10 @@ export default function TeamsPage() {
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-300/70">{t("team.epic")}</p>
-              <h1 className="theme-title mt-2 text-3xl font-black tracking-tight sm:text-4xl">{t("team.heroTitle")}</h1>
-              <p className="theme-muted mt-2 max-w-3xl text-sm">{t("team.heroBody")}</p>
+              <h1 className="theme-title mt-2 text-3xl font-black tracking-tight sm:text-4xl">{t("team.heroTitle")}
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Page information" focusable={false}>{t("team.heroBody")}</TileInfo>
+              </span></h1>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <HeroStat label={t("team.myTeams")} value={teams.length} />

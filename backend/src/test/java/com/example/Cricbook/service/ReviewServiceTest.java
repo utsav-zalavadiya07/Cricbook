@@ -226,7 +226,7 @@ class ReviewServiceTest {
 
         when(reviewRepository.findByTurfIdOrderByCreatedAtDesc(TURF_ID)).thenReturn(List.of(
                 replied,
-                review(61L, OTHER_USER_ID, 4, "PUBLISHED"),
+                review(61L, OTHER_USER_ID, 4, "APPROVED"),
                 hidden,
                 flagged
         ));

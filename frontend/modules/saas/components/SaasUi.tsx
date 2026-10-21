@@ -1,13 +1,16 @@
 "use client";
 
 import { SaasMap } from "@/modules/saas/services/saasPlatformService";
+import { TileInfo } from "@/components/ui";
 
 export function MetricCard({ label, value, detail }: { label: string; value: string; detail?: string }) {
   return (
     <div className="theme-card rounded-3xl border p-5 shadow-xl">
-      <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">{label}</p>
+      <div className="flex min-w-0 items-start justify-between gap-2">
+        <p className="min-w-0 break-words text-xs font-black uppercase leading-5 tracking-[0.22em] text-emerald-300">{label}</p>
+        {detail ? <TileInfo label={`${label} information`}>{detail}</TileInfo> : null}
+      </div>
       <p className="mt-3 text-3xl font-black theme-title">{value}</p>
-      {detail ? <p className="mt-2 text-xs font-bold theme-soft">{detail}</p> : null}
     </div>
   );
 }

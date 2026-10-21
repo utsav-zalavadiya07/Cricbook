@@ -7,3 +7,7 @@ export { Input, Textarea } from "./Input";
 export { MultiSelect } from "./MultiSelect";
 export { Select } from "./Select";
 export type { SelectOption } from "./Select";
+export { SegmentedFilter } from "./SegmentedFilter";
+export type { SegmentedFilterOption } from "./SegmentedFilter";
+export { TileInfo } from "./TileInfo";
+export { default as SlotPriceDisplay } from "./SlotPriceDisplay";

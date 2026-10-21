@@ -51,6 +51,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NotificationController {
 
+    private static final long AUTO_ARCHIVE_AFTER_DAYS = 30;
     private static final Set<String> VALID_FREQUENCIES = Set.of("INSTANT", "DAILY", "WEEKLY");
 
     private final NotificationRepository notificationRepository;
@@ -99,7 +100,7 @@ public class NotificationController {
                 .collect(Collectors.groupingBy(n -> normalize(n.getCategory(), "GENERAL"), Collectors.counting()));
 
         long archived = notifications.stream().filter(this::isArchived).count();
-        long read = notifications.stream().filter(this::isRead).count();
+        long read = notifications.stream().filter(n -> !isArchived(n) && isRead(n)).count();
         long unread = notifications.stream().filter(n -> !isArchived(n) && !isRead(n)).count();
         long pending = notifications.stream().filter(n -> "PENDING".equalsIgnoreCase(status(n))).count();
         long failed = notifications.stream().filter(n -> "FAILED".equalsIgnoreCase(status(n))).count();
@@ -356,7 +357,7 @@ public class NotificationController {
                     case "ARCHIVE", "ARCHIVED" -> isArchived(n);
                     case "UNREAD" -> !isArchived(n) && !isRead(n);
                     case "READ" -> !isArchived(n) && isRead(n);
-                    case "ALL_WITH_ARCHIVE" -> true;
+                    case "ALL", "ALL_WITH_ARCHIVE" -> true;
                     default -> !isArchived(n);
                 })
                 .filter(n -> resolvedChannel.isBlank() || (n.getChannel() == null ? "EMAIL" : n.getChannel().name()).equals(resolvedChannel))
@@ -375,7 +376,9 @@ public class NotificationController {
                 .filter(n -> contains(n.getTitle(), query)
                         || contains(n.getMessage(), query)
                         || contains(n.getCategory(), query)
-                        || contains(n.getPriority(), query))
+                        || contains(n.getPriority(), query)
+                        || (n.getChannel() != null && contains(n.getChannel().name(), query))
+                        || contains(status(n), query))
                 .toList();
     }
 
@@ -494,7 +497,9 @@ public class NotificationController {
     }
 
     private boolean isArchived(NotificationQueue notification) {
-        return notification.getArchivedAt() != null || "ARCHIVED".equalsIgnoreCase(status(notification));
+        return notification.getArchivedAt() != null
+                || "ARCHIVED".equalsIgnoreCase(status(notification))
+                || (notification.getCreatedAt() != null && !notification.getCreatedAt().isAfter(LocalDateTime.now().minusDays(AUTO_ARCHIVE_AFTER_DAYS)));
     }
 
     private String normalize(String value, String fallback) {

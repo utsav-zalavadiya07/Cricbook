@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
@@ -74,10 +75,12 @@ export default function OwnerInsightsDashboard() {
           <div className="grid gap-6 xl:grid-cols-[1.4fr_0.8fr]">
             <div>
               <p className="theme-soft text-xs font-bold uppercase tracking-[0.28em]">{t("insights.epic")}</p>
-              <h1 className="theme-title mt-3 max-w-3xl text-3xl font-black leading-tight sm:text-5xl">
-                {t("insights.title")}
-              </h1>
-              <p className="theme-muted mt-4 max-w-2xl text-sm leading-6 sm:text-base">{t("insights.subtitle")}</p>
+              <div className="mt-3">
+            <h1 className="theme-title max-w-3xl text-3xl font-black leading-tight sm:text-5xl">{t("insights.title")}
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Insights information" focusable={false}>{t("insights.subtitle")}</TileInfo>
+              </span></h1>
+          </div>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link href="/owner/pricing" className="rounded-2xl bg-sky-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-sky-500/20 hover:bg-sky-400">
                   {t("insights.action.pricing")}

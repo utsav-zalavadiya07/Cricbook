@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import { useI18n } from "@/modules/i18n/I18nProvider";
@@ -66,8 +67,10 @@ export default function ProgressPage() {
           <p className="theme-accent text-xs font-black uppercase tracking-[0.34em]">{t("gamification.epic")}</p>
           <div className="mt-4 grid gap-8 xl:grid-cols-[1.05fr_0.95fr] xl:items-end">
             <div>
-              <h1 className="theme-title text-4xl font-black sm:text-6xl">{t("gamification.title")}</h1>
-              <p className="theme-muted mt-4 max-w-3xl text-base leading-7">{t("gamification.subtitle")}</p>
+              <h1 className="theme-title text-4xl font-black sm:text-6xl">{t("gamification.title")}
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Page information" focusable={false}>{t("gamification.subtitle")}</TileInfo>
+              </span></h1>
             </div>
             {profile && (
               <div className="theme-panel-soft rounded-3xl p-5">

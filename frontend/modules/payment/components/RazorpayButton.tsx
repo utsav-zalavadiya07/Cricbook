@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/authStore";
 import { createBatchOrder, createOrder, verifyPayment } from "../services/paymentService";
 
 declare global {
@@ -34,15 +35,25 @@ type RazorpayOptions = {
     razorpay_payment_id: string;
     razorpay_signature: string;
   }) => Promise<void>;
-  modal: {
-    ondismiss: () => void;
+  modal?: {
+    ondismiss?: () => void;
+    backdropclose?: boolean;
+    escape?: boolean;
+    confirm_close?: boolean;
+    animation?: boolean;
   };
-  prefill: {
-    name: string;
-    email: string;
-    contact: string;
+  prefill?: {
+    name?: string;
+    email?: string;
+    contact?: string;
+    method?: string;
+    vpa?: string;
   };
-  theme: { color: string };
+  theme?: {
+    color?: string;
+    backdrop_color?: string;
+  };
+  config?: Record<string, unknown>;
 };
 
 type ApiError = {
@@ -81,6 +92,7 @@ export default function RazorpayButton({ bookingId, bookingIds = [bookingId], am
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const inFlight = useRef(false);
+  const authUser = useAuthStore((s) => s.user);
 
   const handlePayment = async () => {
     if (inFlight.current) return;
@@ -135,6 +147,10 @@ export default function RazorpayButton({ bookingId, bookingIds = [bookingId], am
         },
 
         modal: {
+          backdropclose: true,
+          confirm_close: true,
+          escape: true,
+          animation: true,
           ondismiss: () => {
             inFlight.current = false;
             setLoading(false);
@@ -143,12 +159,36 @@ export default function RazorpayButton({ bookingId, bookingIds = [bookingId], am
         },
 
         prefill: {
-          name: "",
-          email: "",
-          contact: "",
+          name: authUser?.name || "Cricbook Player",
+          email: authUser?.email || "player@cricbook.com",
+          contact: "6356444321",
+          method: "upi",
         },
 
-        theme: { color: "#10b981" }, // emerald-500
+        theme: {
+          color: "#00c853",
+          backdrop_color: "rgba(7, 17, 30, 0.75)",
+        },
+
+        config: {
+          display: {
+            blocks: {
+              upi: {
+                name: "Pay using UPI / QR",
+                instruments: [
+                  {
+                    method: "upi",
+                    flows: ["qr", "intent", "collect"],
+                  },
+                ],
+              },
+            },
+            sequence: ["block.upi"],
+            preferences: {
+              show_default_blocks: true,
+            },
+          },
+        },
       };
 
       const rzp = new window.Razorpay(options);
@@ -190,7 +230,7 @@ export default function RazorpayButton({ bookingId, bookingIds = [bookingId], am
         ) : (
           <span className="flex items-center justify-center gap-2">
             <span>💳</span>
-            Pay ₹{amount} with Razorpay
+            Pay ₹{amount.toLocaleString("en-IN")} with Razorpay
           </span>
         )}
       </button>

@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -172,12 +173,14 @@ function SearchPageContent() {
               <div>
                 <p className="theme-title text-lg font-black">
                   {t("search.heroTitlePrefix")} <span className="text-emerald-400">{t("search.heroTitleAccent")}</span>
-                </p>
-                <p className="theme-muted text-sm">
-                  {t("search.heroDescription")} - {t("search.resultsFound", {
-                    count: filteredTurfs.length,
-                    suffix: filteredTurfs.length !== 1 ? "s" : "",
-                  })}
+                  <span className="inline-flex align-middle ml-3 mb-1">
+                    <TileInfo label="Search results information" focusable={false}>
+                      {t("search.heroDescription")} - {t("search.resultsFound", {
+                        count: filteredTurfs.length,
+                        suffix: filteredTurfs.length !== 1 ? "s" : "",
+                      })}
+                    </TileInfo>
+                  </span>
                 </p>
               </div>
               <p className="theme-soft text-xs font-semibold uppercase tracking-[0.16em]">

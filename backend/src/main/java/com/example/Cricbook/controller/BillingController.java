@@ -7,8 +7,13 @@ import com.example.Cricbook.enums.MembershipPlanType;
 import com.example.Cricbook.exception.ApiException;
 import com.example.Cricbook.repository.InvoiceRepository;
 import com.example.Cricbook.repository.UserRepository;
+import com.example.Cricbook.service.InvoicePdfService;
 import com.example.Cricbook.service.SubscriptionRenewalScheduler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.CacheControl;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +31,7 @@ public class BillingController {
     private final InvoiceRepository invoiceRepository;
     private final UserRepository userRepository;
     private final SubscriptionRenewalScheduler renewalScheduler;
+    private final InvoicePdfService invoicePdfService;
 
     @GetMapping("/invoices")
     public ResponseEntity<List<InvoiceResponse>> getMyInvoices(
@@ -46,8 +52,8 @@ public class BillingController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("/invoices/{id}/download")
-    public ResponseEntity<InvoiceResponse> downloadInvoice(
+    @GetMapping(value = "/invoices/{id}/download", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> downloadInvoice(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id) {
         User user = userRepository.findByEmailOrPhone(userDetails.getUsername())
@@ -60,11 +66,11 @@ public class BillingController {
             throw ApiException.forbidden("You do not have permission to access this invoice.");
         }
 
-        return ResponseEntity.ok(mapInvoice(inv));
+        return pdfResponse(inv);
     }
 
-    @GetMapping("/invoices/number/{invoiceNumber}/download")
-    public ResponseEntity<InvoiceResponse> downloadInvoiceByNumber(
+    @GetMapping(value = "/invoices/number/{invoiceNumber}/download", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> downloadInvoiceByNumber(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable String invoiceNumber) {
         User user = userRepository.findByEmailOrPhone(userDetails.getUsername())
@@ -77,7 +83,7 @@ public class BillingController {
             throw ApiException.forbidden("You do not have permission to access this invoice.");
         }
 
-        return ResponseEntity.ok(mapInvoice(inv));
+        return pdfResponse(inv);
     }
 
     @PostMapping("/renew/test")
@@ -113,6 +119,21 @@ public class BillingController {
                 .status(inv.getStatus() != null ? inv.getStatus() : "UNKNOWN")
                 .createdAt(inv.getCreatedAt())
                 .build();
+    }
+
+    private ResponseEntity<byte[]> pdfResponse(Invoice invoice) {
+        byte[] pdf = invoicePdfService.generateInvoice(invoice);
+        String safeInvoiceNumber = invoice.getInvoiceNumber() == null
+                ? "invoice"
+                : invoice.getInvoiceNumber().replaceAll("[^A-Za-z0-9._-]", "-");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.attachment()
+                .filename("Cricbook-Invoice-" + safeInvoiceNumber + ".pdf")
+                .build());
+        headers.setCacheControl(CacheControl.noStore());
+        headers.setContentLength(pdf.length);
+        return ResponseEntity.ok().headers(headers).body(pdf);
     }
 
     private MembershipPlanType parsePlanType(String type) {

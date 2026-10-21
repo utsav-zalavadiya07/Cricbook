@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { AUTH_STORAGE_KEYS } from "@/modules/auth/authStorage";
 import { useAuthStore } from "@/store/authStore";
 
 function jwtExpiresAt(token: string | null) {
@@ -25,6 +26,30 @@ export default function AuthBootstrap() {
 
   useEffect(() => {
     void hydrateFromStorage();
+  }, [hydrateFromStorage]);
+
+  useEffect(() => {
+    let synchronizationTimer: number | null = null;
+
+    const synchronizeChangedSession = (event: StorageEvent) => {
+      if (!event.key || AUTH_STORAGE_KEYS.includes(event.key as (typeof AUTH_STORAGE_KEYS)[number])) {
+        if (synchronizationTimer !== null) {
+          window.clearTimeout(synchronizationTimer);
+        }
+        synchronizationTimer = window.setTimeout(() => {
+          synchronizationTimer = null;
+          void hydrateFromStorage();
+        }, 25);
+      }
+    };
+
+    window.addEventListener("storage", synchronizeChangedSession);
+    return () => {
+      window.removeEventListener("storage", synchronizeChangedSession);
+      if (synchronizationTimer !== null) {
+        window.clearTimeout(synchronizationTimer);
+      }
+    };
   }, [hydrateFromStorage]);
 
   useEffect(() => {

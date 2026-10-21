@@ -92,6 +92,15 @@ public class SubscriptionController {
         return ResponseEntity.ok(mapSubscription(sub));
     }
 
+    @PostMapping("/auto-renew")
+    public ResponseEntity<SubscriptionResponse> setAutoRenew(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam boolean enabled,
+            @RequestParam(required = false) String type) {
+        Subscription sub = subscriptionService.setAutoRenew(userDetails.getUsername(), type, enabled);
+        return ResponseEntity.ok(mapSubscription(sub));
+    }
+
     private SubscriptionResponse mapSubscription(Subscription sub) {
         var plan = sub.getPlan();
         var turf = sub.getTurf();

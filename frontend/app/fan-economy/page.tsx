@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -139,10 +140,10 @@ export default function FanEconomyPage() {
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.26em] text-emerald-300">EPIC 35 Fan Economy</p>
-              <h1 className="mt-3 text-3xl font-black theme-title sm:text-4xl">Fan clubs, collectibles, predictions and watch parties</h1>
-              <p className="mt-3 max-w-3xl text-sm leading-6 theme-soft">
-                Build a fan profile, join sports communities, claim limited digital collectibles, submit predictions, and coordinate live watch parties from one engagement layer.
-              </p>
+              <h1 className="mt-3 text-3xl font-black theme-title sm:text-4xl">Fan clubs, collectibles, predictions and watch parties
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Fan clubs, collectibles, predictions and watch parties information" focusable={false}>Build a fan profile, join sports communities, claim limited digital collectibles, submit predictions, and coordinate live watch parties from one engagement layer.</TileInfo>
+              </span></h1>
             </div>
             <button onClick={() => void loadFanEconomy()} className="rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-black text-white hover:bg-emerald-400">
               Refresh Fan Economy

@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -147,8 +148,10 @@ export default function RebookPage() {
           <p className="theme-accent text-xs font-black uppercase tracking-[0.34em]">{t("rebook.epic")}</p>
           <div className="mt-4 grid gap-8 xl:grid-cols-[1.25fr_0.75fr] xl:items-end">
             <div>
-              <h1 className="theme-title max-w-4xl text-4xl font-black tracking-tight sm:text-6xl">{t("rebook.title")}</h1>
-              <p className="theme-muted mt-4 max-w-3xl text-base leading-7">{t("rebook.subtitle")}</p>
+              <h1 className="theme-title max-w-4xl text-4xl font-black tracking-tight sm:text-6xl">{t("rebook.title")}
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Page information" focusable={false}>{t("rebook.subtitle")}</TileInfo>
+              </span></h1>
               <div className="mt-6 flex flex-wrap gap-3">
                 {selectedBooking && (
                   <button onClick={() => quickRebook(selectedBooking.id)} className="rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-emerald-500/20">

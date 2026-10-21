@@ -185,21 +185,21 @@ export default function TurfForm({ initialData, turfId, onSuccess, onCancel }: T
       {/* Row 1 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field label="Turf Name *">
-          <Input placeholder="e.g. Green Pitch Arena" value={form.name} onChange={set("name")} />
+          <Input accent="owner" placeholder="e.g. Green Pitch Arena" value={form.name} onChange={set("name")} />
         </Field>
         <Field label="City *">
-          <Input placeholder="e.g. Mumbai" value={form.city} onChange={set("city")} />
+          <Input accent="owner" placeholder="e.g. Mumbai" value={form.city} onChange={set("city")} />
         </Field>
       </div>
 
       {/* Location */}
       <Field label="Address / Location *">
-        <Input placeholder="Full address" value={form.location} onChange={set("location")} />
+        <Input accent="owner" placeholder="Full address" value={form.location} onChange={set("location")} />
       </Field>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(8rem,0.65fr)_minmax(12rem,1fr)_minmax(22rem,1.8fr)]">
         <Field label="Capacity *" hint="players">
-          <Input type="number" min={1} max={200} placeholder="12" value={form.capacity} onChange={set("capacity")} />
+          <Input accent="owner" type="number" min={1} max={200} placeholder="12" value={form.capacity} onChange={set("capacity")} />
         </Field>
         <Field label="Sport *" hint="Used by player search sport filters.">
           <Select
@@ -225,13 +225,13 @@ export default function TurfForm({ initialData, turfId, onSuccess, onCancel }: T
 
       {/* Description */}
       <Field label="Description">
-        <Textarea rows={3} placeholder="Describe your turf..." value={form.description} onChange={set("description")} />
+        <Textarea accent="owner" rows={3} placeholder="Describe your turf..." value={form.description} onChange={set("description")} />
       </Field>
 
       {/* Row 2 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Field label="Price / Hour (Rs) *">
-          <Input type="number" placeholder="500" value={form.pricePerHour} onChange={set("pricePerHour")} />
+          <Input accent="owner" type="number" placeholder="500" value={form.pricePerHour} onChange={set("pricePerHour")} />
         </Field>
         <Field label="Pitch Type">
           <Select
@@ -254,10 +254,10 @@ export default function TurfForm({ initialData, turfId, onSuccess, onCancel }: T
       {/* Coordinates (optional) */}
       <div className="grid grid-cols-2 gap-4">
         <Field label="Latitude" hint="optional">
-          <Input placeholder="19.0760" type="number" value={form.latitude} onChange={set("latitude")} />
+          <Input accent="owner" placeholder="19.0760" type="number" value={form.latitude} onChange={set("latitude")} />
         </Field>
         <Field label="Longitude" hint="optional">
-          <Input placeholder="72.8777" type="number" value={form.longitude} onChange={set("longitude")} />
+          <Input accent="owner" placeholder="72.8777" type="number" value={form.longitude} onChange={set("longitude")} />
         </Field>
       </div>
 
@@ -267,6 +267,7 @@ export default function TurfForm({ initialData, turfId, onSuccess, onCancel }: T
         maxFiles={20}
         existingImages={retainedImages}
         onExistingChange={setRetainedImages}
+        accent="owner"
       />
 
       {/* Submit */}

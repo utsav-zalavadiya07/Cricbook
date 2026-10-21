@@ -38,6 +38,7 @@ public class BookingService {
     private static final int CANCELLATION_CUTOFF_HOURS = 24;
     private static final int CHECK_IN_OPEN_HOURS = 2;
     private static final int CHECK_IN_GRACE_MINUTES = 15;
+    private static final int NO_SHOW_GRACE_MINUTES = 30;
     private static final List<BookingStatus> ACTIVE_BOOKING_STATUSES = List.of(BookingStatus.PENDING, BookingStatus.CONFIRMED, BookingStatus.CHECKED_IN);
     private static final List<BookingStatus> REVENUE_BOOKING_STATUSES = List.of(BookingStatus.CONFIRMED, BookingStatus.CHECKED_IN, BookingStatus.COMPLETED);
 
@@ -107,6 +108,7 @@ public class BookingService {
         validateSlotForBooking(turf, slot, bookingDate);
         validateSportForBooking(turf.getId(), sportCode);
         expireInactivePendingHolds(bookingDate, slotId);
+        ensureSlotAvailability(slot, bookingDate);
 
         // 1. Lock slot
         SlotAvailability sa = slotAvailabilityRepository
@@ -272,6 +274,26 @@ public class BookingService {
     }
 
     @Transactional(readOnly = true)
+    public List<BookingResponse> getUpcomingOwnerBookings(String username) {
+        User owner = findUser(username)
+                .orElseThrow(() -> ApiException.notFound("User account was not found."));
+
+        Map<Long, String> paymentStatuses = paymentStatusesForOwner(owner.getId());
+        Map<Long, TrustAttendance> attendanceByBooking = attendanceForOwner(owner.getId());
+        LocalDateTime now = LocalDateTime.now();
+
+        return bookingsForOwner(owner.getId()).stream()
+                .filter(booking -> booking.getStatus() == BookingStatus.CONFIRMED)
+                .filter(booking -> {
+                    LocalDateTime slotStart = booking.getBookingDate().atTime(booking.getSlot().getStartTime());
+                    return slotStart.isAfter(now);
+                })
+                .sorted(Comparator.comparing(booking -> booking.getBookingDate().atTime(booking.getSlot().getStartTime())))
+                .map(booking -> mapToResponse(booking, paymentStatuses.get(booking.getId()), attendanceByBooking.get(booking.getId())))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<BookingResponse> getOwnerBookings(BookingStatus status) {
         return getOwnerBookings(status, null, null, null);
     }
@@ -348,9 +370,10 @@ public class BookingService {
                 .filter(attendance -> attendance.getCheckinTime() != null && attendance.getCheckinTime().toLocalDate().equals(today))
                 .filter(attendance -> attendance.getStatus() == AttendanceStatus.ARRIVED || attendance.getStatus() == AttendanceStatus.LATE)
                 .count();
-        long attendanceEligible = bookings.stream()
-                .filter(booking -> booking.getStatus() == BookingStatus.CHECKED_IN || booking.getStatus() == BookingStatus.COMPLETED || booking.getStatus() == BookingStatus.NO_SHOW)
+        long attendedBookings = bookings.stream()
+                .filter(booking -> booking.getStatus() == BookingStatus.CHECKED_IN || booking.getStatus() == BookingStatus.COMPLETED)
                 .count();
+        long attendanceEligible = attendedBookings + noShowBookings;
 
         return OwnerBookingOperationsSummary.builder()
                 .totalBookings(totalBookings)
@@ -366,7 +389,7 @@ public class BookingService {
                         .filter(booking -> today.equals(booking.getBookingDate()))
                         .filter(booking -> REVENUE_BOOKING_STATUSES.contains(booking.getStatus()))
                         .toList()))
-                .attendanceRate(percent(checkedInToday + completedBookings, attendanceEligible))
+                .attendanceRate(percent(attendedBookings, attendanceEligible))
                 .noShowRate(percent(noShowBookings, attendanceEligible))
                 .recentActivity(bookings.stream()
                         .flatMap(booking -> bookingTimelineRepository.findByBookingIdOrderByCreatedAtDesc(booking.getId()).stream())
@@ -406,8 +429,8 @@ public class BookingService {
     @Transactional
     public BookingResponse completeOwnerBooking(Long bookingId, OwnerBookingActionRequest request) {
         Booking booking = requireOwnerBooking(bookingId);
-        if (booking.getStatus() != BookingStatus.CHECKED_IN && booking.getStatus() != BookingStatus.CONFIRMED) {
-            throw ApiException.conflict("Only confirmed or checked-in bookings can be completed.");
+        if (booking.getStatus() != BookingStatus.CHECKED_IN) {
+            throw ApiException.conflict("Check in the player before completing this booking.");
         }
         if (bookingEndsAt(booking).isAfter(LocalDateTime.now())) {
             throw ApiException.conflict("Booking can be completed only after the slot end time.");
@@ -534,7 +557,7 @@ public class BookingService {
             throw ApiException.conflict("Check-in opens two hours before the slot starts.");
         }
         if (now.isAfter(endsAt.plusMinutes(30))) {
-            throw ApiException.conflict("Check-in window is closed. Mark this booking as no-show or complete it.");
+            throw ApiException.conflict("Check-in window is closed. Mark this booking as no-show.");
         }
     }
 
@@ -607,6 +630,43 @@ public class BookingService {
             );
             
             log.info("Expired booking: {}", booking.getId());
+        }
+    }
+
+    @Scheduled(fixedRate = 600000)
+    @Transactional
+    public void markNoShows() {
+        LocalDateTime now = LocalDateTime.now();
+
+        List<Booking> activeBookings = bookingRepository.findByStatus(BookingStatus.CONFIRMED).stream()
+                .filter(booking -> bookingEndsAt(booking).plusMinutes(NO_SHOW_GRACE_MINUTES).isBefore(now))
+                .toList();
+
+        for (Booking booking : activeBookings) {
+            trustAttendanceRepository.findByBookingId(booking.getId()).orElseGet(() -> trustAttendanceRepository.save(TrustAttendance.builder()
+                    .booking(booking)
+                    .user(booking.getUser())
+                    .status(AttendanceStatus.NO_SHOW)
+                    .build()));
+            noShowCaseRepository.findByBookingId(booking.getId()).orElseGet(() -> noShowCaseRepository.save(NoShowCase.builder()
+                    .booking(booking)
+                    .user(booking.getUser())
+                    .noShowType("PLAYER")
+                    .status("OPEN")
+                    .penalty(BigDecimal.ZERO)
+                    .notes("Automatically marked after the slot and grace period ended.")
+                    .build()));
+            booking.setStatus(BookingStatus.NO_SHOW);
+            bookingRepository.save(booking);
+            
+            bookingTimelineRepository.save(BookingTimeline.builder()
+                    .booking(booking)
+                    .eventType("NO_SHOW_MARKED")
+                    .performedBy("System")
+                    .details("Automatically marked as no-show 30 minutes after the slot ended.")
+                    .build());
+
+            log.info("Auto-marked booking as NO_SHOW: {}", booking.getId());
         }
     }
 
@@ -842,12 +902,27 @@ public class BookingService {
         }
     }
 
+    private void ensureSlotAvailability(Slot slot, LocalDate bookingDate) {
+        if (slotAvailabilityRepository.findBySlotIdAndDate(slot.getId(), bookingDate).isPresent()) {
+            return;
+        }
+        slotAvailabilityRepository.saveAndFlush(SlotAvailability.builder()
+                .slot(slot)
+                .date(bookingDate)
+                .isAvailable(true)
+                .isBlocked(false)
+                .build());
+    }
+
     private LocalDateTime bookingStartsAt(Booking booking) {
         return LocalDateTime.of(booking.getBookingDate(), booking.getSlot().getStartTime());
     }
 
     private LocalDateTime bookingEndsAt(Booking booking) {
-        return LocalDateTime.of(booking.getBookingDate(), booking.getSlot().getEndTime());
+        LocalDate endDate = booking.getSlot().getEndTime().isAfter(booking.getSlot().getStartTime())
+                ? booking.getBookingDate()
+                : booking.getBookingDate().plusDays(1);
+        return LocalDateTime.of(endDate, booking.getSlot().getEndTime());
     }
 
     private java.util.Optional<User> findUser(String loginId) {

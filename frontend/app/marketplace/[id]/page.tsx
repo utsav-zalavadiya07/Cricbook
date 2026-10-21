@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -51,8 +52,10 @@ export default function MarketplaceDetailPage() {
             <p className="theme-accent text-xs font-black uppercase tracking-[0.34em]">Slot Transfer</p>
             <div className="mt-4 grid gap-8 lg:grid-cols-[1fr_0.8fr]">
               <div>
-                <h1 className="theme-title text-4xl font-black sm:text-5xl">{listing.turfName}</h1>
-                <p className="theme-muted mt-3 text-base">{listing.location}, {listing.city}</p>
+                <h1 className="theme-title text-4xl font-black sm:text-5xl">{listing.turfName}
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="{listing.turfName} information" focusable={false}>{listing.location}, {listing.city}</TileInfo>
+              </span></h1>
                 <div className="mt-6 grid gap-3 sm:grid-cols-3">
                   <Metric label="Date" value={listing.bookingDate} />
                   <Metric label="Time" value={`${listing.startTime} - ${listing.endTime}`} />

@@ -61,6 +61,7 @@ const ownerNav = [
   { href: "/owner/resale", labelKey: "nav.resaleRules", icon: "Market" },
   { href: "/owner/engagement", labelKey: "nav.engagementAnalytics", icon: "XP" },
   { href: "/owner/trust", labelKey: "nav.trustRules", icon: "Trust" },
+  { href: "/owner/wallet", labelKey: "nav.wallet", icon: "Wallet" },
   { href: "/owner/subscription", labelKey: "nav.subscription", icon: "Sub" },
 ];
 

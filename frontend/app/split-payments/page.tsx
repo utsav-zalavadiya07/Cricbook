@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { TileInfo } from "@/components/ui";
 import { useI18n } from "@/modules/i18n/I18nProvider";
 import { getMyBookings } from "@/modules/booking/services/bookingService";
 import { Booking } from "@/modules/booking/types/booking.types";
@@ -154,8 +155,10 @@ function SplitPaymentsContent() {
           <div className="grid gap-6 xl:grid-cols-[1fr_360px] xl:items-end">
             <div>
               <p className="theme-soft text-xs font-bold uppercase tracking-[0.28em]">{t("split.epic")}</p>
-              <h1 className="theme-title mt-3 text-3xl font-black sm:text-5xl">{t("split.title")}</h1>
-              <p className="theme-muted mt-3 max-w-3xl text-sm leading-6">{t("split.subtitle")}</p>
+              <h1 className="theme-title mt-3 text-3xl font-black sm:text-5xl">{t("split.title")}
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Page information" focusable={false}>{t("split.subtitle")}</TileInfo>
+              </span></h1>
             </div>
             <div className="theme-panel-soft rounded-3xl p-4">
               <p className="theme-soft text-xs font-black uppercase tracking-[0.18em]">Collection Snapshot</p>
@@ -329,9 +332,11 @@ function SplitCard({ split, onPay, busy }: { split: PaymentSplit; onPay: (splitI
 function Metric({ title, value, detail }: { title: string; value: string | number; detail: string }) {
   return (
     <div className="theme-panel rounded-3xl p-5">
-      <p className="theme-soft text-xs font-black uppercase tracking-[0.18em]">{title}</p>
+      <div className="flex min-w-0 items-start justify-between gap-2">
+        <p className="theme-soft min-w-0 break-words text-xs font-black uppercase leading-5 tracking-[0.18em]">{title}</p>
+        <TileInfo label={`${title} information`}>{detail}</TileInfo>
+      </div>
       <p className="theme-title mt-3 text-2xl font-black">{value}</p>
-      <p className="theme-muted mt-1 truncate text-sm">{detail}</p>
     </div>
   );
 }

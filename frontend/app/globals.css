@@ -77,11 +77,11 @@ body {
   background: var(--theme-page-admin);
 }
 
-.theme-navbar > .mx-auto,
-.theme-page > .mx-auto,
-.theme-page-player > .mx-auto,
-.theme-page-owner > .mx-auto,
-.theme-page-admin > .mx-auto {
+.theme-navbar>.mx-auto,
+.theme-page>.mx-auto,
+.theme-page-player>.mx-auto,
+.theme-page-owner>.mx-auto,
+.theme-page-admin>.mx-auto {
   width: 100%;
   max-width: none;
   margin-left: 0;
@@ -232,16 +232,21 @@ html[data-theme="dark"] select.theme-input option {
   box-shadow: 0 10px 26px rgba(21, 34, 53, 0.08);
 }
 
-.slot-calendar-item:hover {
+.slot-calendar-item:not(.slot-calendar-item--selected):hover {
   box-shadow: 0 16px 34px rgba(21, 34, 53, 0.12);
 }
 
-.slot-calendar-item--selected {
-  border-color: #0ea5e9;
+.slot-calendar-item--selected,
+.slot-calendar-item.slot-calendar-item--selected,
+.slot-calendar-item.slot-calendar-item--selected:hover,
+.slot-calendar-item.slot-calendar-item--selected:focus,
+.slot-calendar-item.slot-calendar-item--selected:active {
+  border-color: #0ea5e9 !important;
   box-shadow:
     0 0 0 2px rgba(14, 165, 233, 0.95),
-    0 0 0 6px rgba(14, 165, 233, 0.18),
-    0 16px 34px rgba(14, 165, 233, 0.16);
+    0 0 0 6px rgba(14, 165, 233, 0.22),
+    0 16px 34px rgba(14, 165, 233, 0.18) !important;
+  z-index: 10;
 }
 
 .slot-status-available {
@@ -409,16 +414,21 @@ html[data-theme="dark"] .slot-calendar-item {
   box-shadow: 0 14px 34px rgba(2, 6, 23, 0.18);
 }
 
-html[data-theme="dark"] .slot-calendar-item:hover {
+html[data-theme="dark"] .slot-calendar-item:not(.slot-calendar-item--selected):hover {
   box-shadow: 0 18px 44px rgba(2, 6, 23, 0.3);
 }
 
-html[data-theme="dark"] .slot-calendar-item--selected {
-  border-color: #38bdf8;
+html[data-theme="dark"] .slot-calendar-item--selected,
+html[data-theme="dark"] .slot-calendar-item.slot-calendar-item--selected,
+html[data-theme="dark"] .slot-calendar-item.slot-calendar-item--selected:hover,
+html[data-theme="dark"] .slot-calendar-item.slot-calendar-item--selected:focus,
+html[data-theme="dark"] .slot-calendar-item.slot-calendar-item--selected:active {
+  border-color: #38bdf8 !important;
   box-shadow:
     0 0 0 2px rgba(56, 189, 248, 0.95),
-    0 0 0 6px rgba(56, 189, 248, 0.24),
-    0 18px 44px rgba(56, 189, 248, 0.18);
+    0 0 0 6px rgba(56, 189, 248, 0.28),
+    0 18px 44px rgba(56, 189, 248, 0.22) !important;
+  z-index: 10;
 }
 
 html[data-theme="dark"] .slot-status-available {
@@ -541,12 +551,18 @@ html[data-theme="dark"] .slot-status-text-locked {
   color: #fde68a;
 }
 
-.slot-calendar-item.slot-calendar-item--selected {
-  border-color: #0ea5e9;
+.slot-calendar-item.slot-calendar-item--selected,
+.slot-calendar-item.slot-calendar-item--selected:hover,
+.slot-calendar-item.slot-calendar-item--selected:focus,
+.slot-calendar-item.slot-calendar-item--selected:active {
+  border-color: #0ea5e9 !important;
 }
 
-html[data-theme="dark"] .slot-calendar-item.slot-calendar-item--selected {
-  border-color: #38bdf8;
+html[data-theme="dark"] .slot-calendar-item.slot-calendar-item--selected,
+html[data-theme="dark"] .slot-calendar-item.slot-calendar-item--selected:hover,
+html[data-theme="dark"] .slot-calendar-item.slot-calendar-item--selected:focus,
+html[data-theme="dark"] .slot-calendar-item.slot-calendar-item--selected:active {
+  border-color: #38bdf8 !important;
 }
 
 .auth-page-backdrop {
@@ -571,7 +587,7 @@ html[data-theme="dark"] .slot-calendar-item.slot-calendar-item--selected {
   box-shadow: 0 24px 80px rgba(2, 6, 23, 0.32);
 }
 
-.auth-showcase-card > * {
+.auth-showcase-card>* {
   position: relative;
   z-index: 1;
 }
@@ -1494,6 +1510,7 @@ h2.text-4xl {
 }
 
 @media (min-width: 640px) {
+
   h1.sm\:text-4xl,
   .theme-title.sm\:text-4xl {
     font-size: 2rem;
@@ -1514,6 +1531,7 @@ h2.text-4xl {
 }
 
 @media (min-width: 1280px) {
+
   h1.xl\:text-5xl,
   .theme-title.xl\:text-5xl {
     font-size: 2.5rem;
@@ -1530,6 +1548,7 @@ h2.text-4xl {
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -1541,8 +1560,127 @@ h2.text-4xl {
   border-radius: 999px;
 }
 
+/* Owner Portal Scrollbars - Blue */
+html[data-portal="owner"] ::-webkit-scrollbar-thumb,
+html[data-portal="owner"]::-webkit-scrollbar-thumb,
+body[data-portal="owner"] ::-webkit-scrollbar-thumb,
+body[data-portal="owner"]::-webkit-scrollbar-thumb,
+.owner-scrollbar::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--theme-secondary) 55%, var(--theme-border)) !important;
+}
+
+html[data-portal="owner"] ::-webkit-scrollbar-thumb:hover,
+html[data-portal="owner"]::-webkit-scrollbar-thumb:hover,
+body[data-portal="owner"] ::-webkit-scrollbar-thumb:hover,
+body[data-portal="owner"]::-webkit-scrollbar-thumb:hover,
+.owner-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-secondary) !important;
+}
+
+/* Player Portal Scrollbars - Green */
+html[data-portal="player"] ::-webkit-scrollbar-thumb,
+html[data-portal="player"]::-webkit-scrollbar-thumb,
+body[data-portal="player"] ::-webkit-scrollbar-thumb,
+body[data-portal="player"]::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--theme-primary) 44%, var(--theme-border)) !important;
+}
+
+html[data-portal="player"] ::-webkit-scrollbar-thumb:hover,
+html[data-portal="player"]::-webkit-scrollbar-thumb:hover,
+body[data-portal="player"] ::-webkit-scrollbar-thumb:hover,
+body[data-portal="player"]::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-primary) !important;
+}
+
 * {
   transition-property: color, background-color, border-color, opacity, transform, box-shadow, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 220ms;
+}
+
+/* Light theme overrides for notification components */
+html[data-theme="light"] .notification-folder-inactive {
+  border-color: rgba(33, 55, 84, 0.14) !important;
+  background-color: #f1f6fa !important;
+  color: #475569 !important;
+}
+
+html[data-theme="light"] .notification-folder-inactive:hover {
+  background-color: #e4edf4 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] .notification-count-pill {
+  border-color: rgba(33, 55, 84, 0.12) !important;
+  background-color: #e2eaf1 !important;
+  color: #334155 !important;
+}
+
+html[data-theme="light"] .notification-badge-normal {
+  border-color: rgba(33, 55, 84, 0.14) !important;
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+}
+
+html[data-theme="light"] .notification-badge-archived {
+  border-color: rgba(33, 55, 84, 0.14) !important;
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+}
+
+html[data-theme="light"] .notification-type-general {
+  border-color: rgba(33, 55, 84, 0.14) !important;
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+}
+
+html[data-theme="light"] .notification-btn-markread {
+  border-color: rgba(0, 168, 68, 0.28) !important;
+  background-color: rgba(0, 168, 68, 0.08) !important;
+  color: #008736 !important;
+}
+
+html[data-theme="light"] .notification-btn-markread:hover {
+  background-color: rgba(0, 168, 68, 0.15) !important;
+  color: #006629 !important;
+}
+
+html[data-theme="light"] .notification-link-open {
+  border-color: rgba(25, 118, 210, 0.28) !important;
+  background-color: rgba(25, 118, 210, 0.08) !important;
+  color: #1565c0 !important;
+}
+
+html[data-theme="light"] .notification-btn-delete {
+  border-color: rgba(239, 68, 68, 0.25) !important;
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  color: #dc2626 !important;
+}
+
+/* Owner portal overrides for notification components */
+html[data-portal="owner"] .theme-page-player {
+  background: var(--theme-page-owner);
+}
+
+html[data-theme="light"][data-portal="owner"] .notification-btn-markread {
+  border-color: rgba(14, 165, 233, 0.28) !important;
+  background-color: rgba(14, 165, 233, 0.08) !important;
+  color: #0284c7 !important;
+}
+
+html[data-theme="light"][data-portal="owner"] .notification-btn-markread:hover {
+  background-color: rgba(14, 165, 233, 0.15) !important;
+  color: #0369a1 !important;
+}
+
+/* Razorpay Checkout In-Screen Modal Styling:
+ * Prevents the browser from painting an opaque white full-screen backdrop over the app
+ * when running in dark mode. Keeps Cricbook UI visible behind the semi-transparent modal.
+ */
+iframe.razorpay-checkout-frame,
+iframe[src*="razorpay"],
+.razorpay-checkout-frame {
+  color-scheme: light !important;
+  background-color: transparent !important;
+  background: transparent !important;
 }

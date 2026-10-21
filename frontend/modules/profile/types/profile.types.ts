@@ -3,12 +3,30 @@ export interface User {
   name: string;
   email: string;
   phone: string;
+  city?: string;
+  bio?: string;
+  designation?: string;
+  alternatePhone?: string;
+  businessName?: string;
+  businessType?: string;
+  gstin?: string;
+  address?: string;
+  supportEmail?: string;
   profileCompletionPercentage?: number;
 }
 
 export interface UpdateProfilePayload {
   name?: string;
   phone?: string;
+  city?: string;
+  bio?: string;
+  designation?: string;
+  alternatePhone?: string;
+  businessName?: string;
+  businessType?: string;
+  gstin?: string;
+  address?: string;
+  supportEmail?: string;
 }
 
 export interface PlayerProfile {

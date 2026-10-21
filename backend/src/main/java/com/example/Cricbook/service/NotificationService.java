@@ -35,6 +35,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NotificationService {
 
+    private static final long AUTO_ARCHIVE_AFTER_DAYS = 30;
+
     private final NotificationRepository repository;
     private final EmailService emailService;
     private final NotificationPreferenceRepository preferenceRepository;
@@ -253,6 +255,16 @@ public class NotificationService {
         }
     }
 
+    @Scheduled(cron = "0 0 2 * * ?")
+    @Transactional
+    public void autoArchiveOldNotifications() {
+        java.time.LocalDateTime cutoff = java.time.LocalDateTime.now().minusDays(AUTO_ARCHIVE_AFTER_DAYS);
+        int archived = repository.autoArchiveOlderThan(cutoff);
+        if (archived > 0) {
+            log.info("Auto-archived {} notifications older than {} days", archived, AUTO_ARCHIVE_AFTER_DAYS);
+        }
+    }
+
     private boolean isEmailConfigured() {
         return emailEnabled;
     }
@@ -291,7 +303,9 @@ public class NotificationService {
     }
 
     private boolean isArchived(NotificationQueue notification) {
-        return notification.getArchivedAt() != null || "ARCHIVED".equalsIgnoreCase(status(notification));
+        return notification.getArchivedAt() != null
+                || "ARCHIVED".equalsIgnoreCase(status(notification))
+                || (notification.getCreatedAt() != null && !notification.getCreatedAt().isAfter(java.time.LocalDateTime.now().minusDays(AUTO_ARCHIVE_AFTER_DAYS)));
     }
 
     private boolean userHasRole(User user, String role) {

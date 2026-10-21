@@ -18,6 +18,8 @@ public class TurfSearchResponse {
     private String city;
     private String location;
     private BigDecimal pricePerHour;
+    private BigDecimal startingSlotPrice;
+    private BigDecimal maximumSlotPrice;
     private Double rating;
     private Integer totalReviews;
     private String boxType;

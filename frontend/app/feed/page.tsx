@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import {
@@ -121,10 +122,10 @@ export default function FeedPage() {
       <div className="w-full space-y-6">
         <section className="theme-panel-strong rounded-[2rem] p-6 shadow-2xl shadow-black/20 sm:p-8">
           <p className="theme-accent-player text-xs font-black uppercase tracking-[0.3em]">EPIC 15 - Community Feed</p>
-          <h1 className="theme-title mt-3 text-3xl font-black tracking-tight sm:text-5xl">Community posts, reactions, comments, and moderation.</h1>
-          <p className="theme-muted mt-3 max-w-3xl text-sm leading-6">
-            Create cricket updates, react to team activity, comment on posts, and report unsafe content from one feed.
-          </p>
+          <h1 className="theme-title mt-3 text-3xl font-black tracking-tight sm:text-5xl">Community posts, reactions, comments, and moderation.
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Community posts, reactions, comments, and moderation. information" focusable={false}>Create cricket updates, react to team activity, comment on posts, and report unsafe content from one feed.</TileInfo>
+              </span></h1>
         </section>
 
         {status && <p className="theme-card rounded-2xl px-4 py-3 text-sm font-semibold text-emerald-300">{status}</p>}

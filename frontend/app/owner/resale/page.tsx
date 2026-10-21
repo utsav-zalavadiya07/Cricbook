@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { FormEvent, useEffect, useState } from "react";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
@@ -10,6 +11,7 @@ import {
   updateOwnerResaleRules,
 } from "@/modules/resale/services/resaleService";
 import { useToast } from "@/modules/ui/ToastProvider";
+import { formatDate } from "@/utils/dateFormatter";
 
 export default function OwnerResalePage() {
   const { toast } = useToast();
@@ -55,8 +57,10 @@ export default function OwnerResalePage() {
       <main className="space-y-6">
         <section className="theme-panel-strong rounded-[2rem] p-6">
           <p className="theme-accent-owner text-xs font-black uppercase tracking-[0.34em]">Resale Rules</p>
-          <h1 className="theme-title mt-3 text-3xl font-black sm:text-5xl">Recover cancelled slots without losing control.</h1>
-          <p className="theme-muted mt-3 max-w-3xl text-sm leading-6">Set resale permissions, trust restrictions, transfer windows, and track recovered booking revenue.</p>
+          <h1 className="theme-title mt-3 text-3xl font-black sm:text-5xl">Recover cancelled slots without losing control.
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Recover cancelled slots without losing control. information" focusable={false}>Set resale permissions, trust restrictions, transfer windows, and track recovered booking revenue.</TileInfo>
+              </span></h1>
         </section>
 
         <section className="grid gap-4 sm:grid-cols-4">
@@ -85,7 +89,7 @@ export default function OwnerResalePage() {
               {(analytics?.recentListings || []).map((listing) => (
                 <article key={listing.id} className="theme-panel-soft rounded-2xl p-4">
                   <p className="theme-title font-black">{listing.turfName}</p>
-                  <p className="theme-muted mt-1 text-sm">{listing.bookingDate} · {listing.startTime} · ₹{listing.price}</p>
+                  <p className="theme-muted mt-1 text-sm">{formatDate(listing.bookingDate)} · {listing.startTime} · ₹{listing.price}</p>
                   <p className="theme-muted mt-3 text-xs">{listing.status} · Seller trust {listing.sellerTrustScore}</p>
                 </article>
               ))}

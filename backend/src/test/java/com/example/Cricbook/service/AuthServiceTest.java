@@ -363,10 +363,34 @@ public class AuthServiceTest {
     }
 
     @Test
+    void testRefreshToken_LegacyOwnerSessionPreservesOwnerRole() {
+        RefreshTokenRequest request = new RefreshTokenRequest();
+        request.setRefreshToken("legacy-owner-refresh-token");
+        User owner = User.builder().id(8L).email("owner@example.com").status(UserStatus.ACTIVE).build();
+        owner.getRoles().add(new Role(2L, RoleName.ROLE_OWNER));
+        RefreshToken refreshToken = RefreshToken.builder()
+                .user(owner)
+                .token("legacy-owner-refresh-token")
+                .expiry(LocalDateTime.now().plusDays(1))
+                .build();
+
+        when(refreshTokenRepository.findByToken("legacy-owner-refresh-token")).thenReturn(Optional.of(refreshToken));
+        when(jwtUtil.generateToken(anyMap(), any())).thenReturn("owner-access-token");
+
+        AuthResponse response = authService.refreshToken(request);
+
+        assertEquals("OWNER", response.getRole());
+        assertEquals("owner-access-token", response.getAccessToken());
+        verify(refreshTokenRepository).delete(refreshToken);
+        verify(sessionManagementService).createSession(eq(owner), eq(false), any(SessionRequestContext.class));
+    }
+
+    @Test
     void testRefreshToken_RotatesManagedSession() {
         RefreshTokenRequest request = new RefreshTokenRequest();
         request.setRefreshToken("refresh-token");
         User user = User.builder().id(1L).email("john@example.com").status(UserStatus.ACTIVE).build();
+        user.getRoles().add(new Role(2L, RoleName.ROLE_OWNER));
         UserSession rotatedSession = UserSession.builder()
                 .sessionId("sess-managed")
                 .user(user)
@@ -382,6 +406,7 @@ public class AuthServiceTest {
         assertEquals("managed-access-token", response.getAccessToken());
         assertEquals("refresh-token-next", response.getRefreshToken());
         assertEquals("sess-managed", response.getSessionId());
+        assertEquals("OWNER", response.getRole());
         verify(refreshTokenRepository, never()).findByToken(anyString());
     }
 

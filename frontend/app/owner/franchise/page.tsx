@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -48,10 +49,10 @@ export default function FranchiseChainDashboard() {
         {/* Header navigation */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-white/10 pb-6 gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold bg-gradient-to-r from-white via-indigo-200 to-emerald-400 bg-clip-text text-transparent">
-              🏢 Franchise Chain &amp; Organization Desk
-            </h1>
-            <p className="text-sm text-slate-400 mt-1">Manage global multi-city sports branches, assign local branch managers, and audit performance.</p>
+            <h1 className="text-3xl font-extrabold bg-gradient-to-r from-white via-indigo-200 to-emerald-400 bg-clip-text text-transparent">🏢 Franchise Chain &amp; Organization Desk
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="🏢 Franchise Chain &amp; Organization Desk information" focusable={false}>Manage global multi-city sports branches, assign local branch managers, and audit performance.</TileInfo>
+              </span></h1>
           </div>
           <div className="flex gap-3">
             <Link href="/owner/pricing" className="inline-flex items-center justify-center rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 px-4 py-2.5 text-xs font-bold transition">

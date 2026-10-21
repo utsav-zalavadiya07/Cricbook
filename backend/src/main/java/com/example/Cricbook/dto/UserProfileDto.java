@@ -15,6 +15,15 @@ public class UserProfileDto {
     private String name;
     private String email;
     private String phone;
+    private String city;
+    private String bio;
+    private String designation;
+    private String alternatePhone;
+    private String businessName;
+    private String businessType;
+    private String gstin;
+    private String address;
+    private String supportEmail;
     private String preferredLanguage;
     private String preferredTheme;
     private UserStatus status;

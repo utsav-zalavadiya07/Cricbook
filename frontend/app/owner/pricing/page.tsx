@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useCallback, useEffect, useState } from "react";
 import api from "@/services/api";
@@ -105,12 +106,14 @@ export default function OwnerPricingRulesDashboard() {
       <div className="mx-auto max-w-6xl space-y-8">
         <div className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="bg-gradient-to-r from-white via-indigo-200 to-emerald-400 bg-clip-text text-3xl font-extrabold text-transparent">
-              Dynamic Pricing & Tariff Optimization
-            </h1>
-            <p className="mt-1 text-sm text-slate-400">
-              Manage protected peak-hour and weekend pricing rules for your real turfs.
-            </p>
+            <div>
+            <h1 className="bg-gradient-to-r from-white via-indigo-200 to-emerald-400 bg-clip-text text-3xl font-extrabold text-transparent">Dynamic Pricing & Tariff Optimization
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Pricing information" focusable={false}>
+                Manage protected peak-hour and weekend pricing rules for your real turfs.
+              </TileInfo>
+              </span></h1>
+          </div>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
             <select

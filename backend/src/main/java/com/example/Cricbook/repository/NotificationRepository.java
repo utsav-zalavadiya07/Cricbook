@@ -18,15 +18,15 @@ public interface NotificationRepository extends JpaRepository<NotificationQueue,
     List<NotificationQueue> findByUserIdAndIdIn(Long userId, List<Long> ids);
 
     @Modifying
-    @Query("UPDATE NotificationQueue n SET n.status = 'READ', n.readAt = CURRENT_TIMESTAMP WHERE n.id = :id AND n.userId = :userId")
+    @Query("UPDATE NotificationQueue n SET n.status = CASE WHEN n.status = 'ARCHIVED' THEN 'ARCHIVED' ELSE 'READ' END, n.readAt = CURRENT_TIMESTAMP WHERE n.id = :id AND n.userId = :userId")
     int markAsRead(@Param("id") Long id, @Param("userId") Long userId);
 
     @Modifying
-    @Query("UPDATE NotificationQueue n SET n.status = 'READ', n.readAt = CURRENT_TIMESTAMP WHERE n.userId = :userId AND n.status != 'READ'")
+    @Query("UPDATE NotificationQueue n SET n.status = CASE WHEN n.status = 'ARCHIVED' THEN 'ARCHIVED' ELSE 'READ' END, n.readAt = CURRENT_TIMESTAMP WHERE n.userId = :userId AND n.readAt IS NULL")
     int markAllAsRead(@Param("userId") Long userId);
 
     @Modifying
-    @Query("UPDATE NotificationQueue n SET n.status = 'READ', n.readAt = CURRENT_TIMESTAMP WHERE n.userId = :userId AND n.id IN :ids")
+    @Query("UPDATE NotificationQueue n SET n.status = CASE WHEN n.status = 'ARCHIVED' THEN 'ARCHIVED' ELSE 'READ' END, n.readAt = CURRENT_TIMESTAMP WHERE n.userId = :userId AND n.id IN :ids")
     int markManyAsRead(@Param("userId") Long userId, @Param("ids") List<Long> ids);
 
     @Modifying
@@ -36,6 +36,10 @@ public interface NotificationRepository extends JpaRepository<NotificationQueue,
     @Modifying
     @Query("UPDATE NotificationQueue n SET n.status = 'ARCHIVED', n.archivedAt = CURRENT_TIMESTAMP WHERE n.userId = :userId AND n.id IN :ids")
     int archiveMany(@Param("userId") Long userId, @Param("ids") List<Long> ids);
+
+    @Modifying
+    @Query("UPDATE NotificationQueue n SET n.status = 'ARCHIVED', n.archivedAt = CURRENT_TIMESTAMP WHERE n.createdAt < :cutoff AND n.status != 'ARCHIVED' AND n.archivedAt IS NULL")
+    int autoArchiveOlderThan(@Param("cutoff") java.time.LocalDateTime cutoff);
 
     @Modifying
     @Query("DELETE FROM NotificationQueue n WHERE n.id = :id AND n.userId = :userId")

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { TileInfo } from "@/components/ui";
 import { useI18n } from "@/modules/i18n/I18nProvider";
 import { searchSuggestions } from "../services/searchService";
 import { SearchFilters } from "../types/search.types";
@@ -217,8 +218,12 @@ export default function SearchBar({ filters, setFilters, onSearch, onApplyFilter
     <div className="theme-panel relative z-40 w-full rounded-2xl p-4 shadow-2xl shadow-black/5">
       <div className="mb-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h2 className="theme-title text-base font-black">Find and filter turfs</h2>
-          <p className="theme-muted text-xs">Active turfs load first. Apply only the filters you need.</p>
+          <h2 className="theme-title text-base font-black">
+            Find and filter turfs
+            <span className="inline-flex align-middle ml-2 mb-0.5">
+              <TileInfo label="Search filters information" focusable={false}>Active turfs load first. Apply only the filters you need.</TileInfo>
+            </span>
+          </h2>
         </div>
 
         <div className="flex items-center gap-2">

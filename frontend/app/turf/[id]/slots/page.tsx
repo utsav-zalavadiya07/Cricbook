@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useParams, useRouter } from "next/navigation";
 import DashboardLayout from "@/modules/turf/components/DashboardLayout";
@@ -22,10 +23,10 @@ export default function SlotManagementPage() {
               <span>/</span>
               <span className="text-sky-400">Slots</span>
             </div>
-            <h1 className="text-white text-2xl font-bold">Manage Turf Slots</h1>
-            <p className="text-slate-400 text-sm mt-1">
-              Edit availability, pricing and blocking rules for this turf.
-            </p>
+            <h1 className="text-white text-2xl font-bold">Manage Turf Slots
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Manage Turf Slots information" focusable={false}>Edit availability, pricing and blocking rules for this turf.</TileInfo>
+              </span></h1>
           </div>
           <button onClick={() => router.back()} className="text-slate-400 hover:text-white text-sm transition border border-white/10 rounded-xl px-4 py-2 hover:bg-white/5">
             ← Back

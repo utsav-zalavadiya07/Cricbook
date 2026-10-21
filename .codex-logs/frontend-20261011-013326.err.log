@@ -1,0 +1,10 @@
+[browser] Image with src "http://localhost:8080/uploads/turf/9/f3ee6093-a5f5-4c3b-94cc-d74642de50cd.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+⚠ Fast Refresh had to perform a full reload when ./modules/auth/authStorage.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./modules/auth/authStorage.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[browser] Image with src "http://localhost:8080/uploads/turf/9/f3ee6093-a5f5-4c3b-94cc-d74642de50cd.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "http://localhost:8080/uploads/turf/9/f3ee6093-a5f5-4c3b-94cc-d74642de50cd.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+⚠ Fast Refresh had to perform a full reload when ./store/authStore.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./store/authStore.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload

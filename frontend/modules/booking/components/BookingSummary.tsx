@@ -43,7 +43,7 @@ export default function BookingSummary({
             <div className="space-y-1 text-right">
               {slots.map((slot) => (
                 <div key={slot.slotId}>
-                  {slot.startTime} - {slot.endTime} - Rs {slot.price}
+                  {slot.startTime} - {slot.endTime} - ₹{slot.price}
                 </div>
               ))}
             </div>
@@ -59,9 +59,10 @@ export default function BookingSummary({
       />
 
       <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-4">
-        <span className="theme-text font-medium">Total Amount</span>
-        <span className="text-2xl font-bold text-emerald-500 dark:text-emerald-400">Rs {price}</span>
+        <span className="theme-text font-medium">Regular slot total</span>
+        <span className="text-2xl font-bold text-emerald-500 dark:text-emerald-400">₹{price.toLocaleString("en-IN")}</span>
       </div>
+      <p className="theme-soft pt-2 text-xs leading-5">Any active membership discount is applied automatically when this booking is created. You will review the final payable amount before payment.</p>
     </div>
   );
 }

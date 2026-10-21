@@ -7,9 +7,11 @@ import com.example.Cricbook.enums.RoleName;
 import com.example.Cricbook.exception.ApiException;
 import com.example.Cricbook.mapper.TurfMapper;
 import com.example.Cricbook.repository.SportTurfRepository;
+import com.example.Cricbook.repository.ReviewRepository;
 import com.example.Cricbook.repository.TurfAmenityRepository;
 import com.example.Cricbook.repository.TurfRepository;
 import com.example.Cricbook.repository.UserRepository;
+import com.example.Cricbook.repository.SlotRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
@@ -44,6 +46,12 @@ public class TurfServiceTest {
     private SportTurfRepository sportTurfRepository;
     @Mock
     private TurfAmenityRepository turfAmenityRepository;
+    @Mock
+    private ReviewRepository reviewRepository;
+    @Mock
+    private SlotRepository slotRepository;
+    @Mock
+    private CacheService cacheService;
 
     @InjectMocks
     private TurfService turfService;
@@ -69,6 +77,7 @@ public class TurfServiceTest {
         Turf saved = captor.getValue();
         assertEquals(12, saved.getCapacity());
         assertEquals("Royal Turf", saved.getName());
+        verify(cacheService).evictByPrefix("search:");
     }
 
     @Test
@@ -86,13 +95,60 @@ public class TurfServiceTest {
     @Test
     void testGetTurf_Success() {
         Long id = 1L;
-        Turf turf = Turf.builder().id(id).name("Royal Turf").build();
+        Turf turf = Turf.builder().id(id).name("Royal Turf").pricePerHour(BigDecimal.valueOf(1500)).build();
         when(turfRepository.findById(id)).thenReturn(Optional.of(turf));
         when(turfMapper.toTurfResponse(turf)).thenReturn(TurfResponse.builder().build());
+        when(slotRepository.findMinimumActivePriceByTurfId(id)).thenReturn(Optional.of(BigDecimal.valueOf(500)));
+        when(slotRepository.findMaximumActivePriceByTurfId(id)).thenReturn(Optional.of(BigDecimal.valueOf(1500)));
 
         TurfResponse result = turfService.getTurf(id);
 
         assertNotNull(result);
+        assertEquals(BigDecimal.valueOf(500), result.getStartingSlotPrice());
+        assertEquals(BigDecimal.valueOf(1500), result.getMaximumSlotPrice());
+    }
+
+    @Test
+    void testGetTurfsByOwner_UsesPublishedReviewsInsteadOfStaleCachedRating() {
+        String email = "owner@example.com";
+        User owner = User.builder().id(7L).email(email).build();
+        Turf turf = Turf.builder().id(21L).owner(owner).rating(0.0).totalReviews(0).build();
+        TurfResponse mapped = TurfResponse.builder().id(21L).rating(0.0).totalReviews(0).build();
+        ReviewRepository.PublishedRatingAggregate aggregate = mock(ReviewRepository.PublishedRatingAggregate.class);
+
+        when(userRepository.findByEmailOrPhone(email)).thenReturn(Optional.of(owner));
+        when(turfRepository.findByOwnerId(owner.getId())).thenReturn(List.of(turf));
+        when(turfMapper.toTurfResponse(turf)).thenReturn(mapped);
+        when(reviewRepository.findPublishedRatingAggregates(List.of(turf.getId())))
+                .thenReturn(List.of(aggregate));
+        when(aggregate.getTurfId()).thenReturn(turf.getId());
+        when(aggregate.getAverageRating()).thenReturn(4.26);
+        when(aggregate.getTotalReviews()).thenReturn(3L);
+
+        List<TurfResponse> result = turfService.getTurfsByOwner(email);
+
+        assertEquals(1, result.size());
+        assertEquals(4.3, result.get(0).getRating());
+        assertEquals(3, result.get(0).getTotalReviews());
+    }
+
+    @Test
+    void testGetTurfsByOwner_ReturnsZeroWhenNoPublishedReviewsExist() {
+        String email = "owner@example.com";
+        User owner = User.builder().id(7L).email(email).build();
+        Turf turf = Turf.builder().id(21L).owner(owner).rating(4.8).totalReviews(6).build();
+        TurfResponse mapped = TurfResponse.builder().id(21L).rating(4.8).totalReviews(6).build();
+
+        when(userRepository.findByEmailOrPhone(email)).thenReturn(Optional.of(owner));
+        when(turfRepository.findByOwnerId(owner.getId())).thenReturn(List.of(turf));
+        when(turfMapper.toTurfResponse(turf)).thenReturn(mapped);
+        when(reviewRepository.findPublishedRatingAggregates(List.of(turf.getId())))
+                .thenReturn(List.of());
+
+        List<TurfResponse> result = turfService.getTurfsByOwner(email);
+
+        assertEquals(0.0, result.get(0).getRating());
+        assertEquals(0, result.get(0).getTotalReviews());
     }
 
     @Test
@@ -123,6 +179,7 @@ public class TurfServiceTest {
 
         assertNotNull(result);
         assertEquals("Updated Turf", turf.getName());
+        verify(cacheService).evictByPrefix("search:");
     }
 
     @Test

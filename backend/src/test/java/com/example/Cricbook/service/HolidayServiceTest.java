@@ -128,6 +128,28 @@ class HolidayServiceTest {
     }
 
     @Test
+    void saveRuleRejectsSelectedModeWithoutSlots() {
+        User owner = owner(1L, "owner@example.com", RoleName.ROLE_OWNER);
+        Turf turf = Turf.builder().id(10L).owner(owner).build();
+        HolidayPricingRule request = HolidayPricingRule.builder()
+                .autoApply(true)
+                .pricingMode("PERCENTAGE")
+                .value(BigDecimal.valueOf(25))
+                .applyTo("SELECTED")
+                .slotIds(Set.of())
+                .build();
+
+        when(turfRepository.findById(10L)).thenReturn(Optional.of(turf));
+        when(userRepository.findByEmail("owner@example.com")).thenReturn(Optional.of(owner));
+
+        ApiException exception = assertThrows(ApiException.class,
+                () -> holidayService.saveRule(10L, "owner@example.com", request));
+
+        assertEquals("Select at least one slot for selected-slot holiday pricing.", exception.getMessage());
+        verify(holidayPricingRuleRepository, never()).save(any(HolidayPricingRule.class));
+    }
+
+    @Test
     void saveRuleRejectsUnsafePercentage() {
         User owner = owner(1L, "owner@example.com", RoleName.ROLE_OWNER);
         Turf turf = Turf.builder().id(10L).owner(owner).build();

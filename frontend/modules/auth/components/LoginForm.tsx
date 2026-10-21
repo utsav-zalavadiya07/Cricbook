@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/modules/i18n/I18nProvider";
-import { canRoleAccessPath, safeNextPath } from "@/modules/auth/sessionPolicy";
+import { getLandingPathForRole } from "@/modules/auth/sessionPolicy";
 import { useAuthStore } from "@/store/authStore";
 import { loginUser } from "../services/authService";
 
@@ -168,14 +168,7 @@ export default function LoginForm({
 
       await setAuth({ email: username }, res.data.accessToken, res.data.role, res.data.refreshToken, { remember: rememberMe });
 
-      const requestedPath = safeNextPath(new URLSearchParams(window.location.search).get("next"), "");
-      const fallbackPath = res.data.role === "OWNER" || res.data.role === "ADMIN" ? "/owner/dashboard" : "/search";
-      const nextPath = requestedPath && canRoleAccessPath(res.data.role, requestedPath) ? requestedPath : fallbackPath;
-      if (res.data.role === "OWNER" || res.data.role === "ADMIN") {
-        router.replace(nextPath);
-      } else {
-        router.replace(nextPath);
-      }
+      router.replace(getLandingPathForRole(res.data.role));
     } catch (error: unknown) {
       setServerError(loginErrorMessage(error, t("auth.invalidCredentials")));
     } finally {

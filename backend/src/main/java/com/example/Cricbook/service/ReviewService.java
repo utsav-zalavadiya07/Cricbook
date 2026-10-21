@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReviewService {
     private static final String STATUS_PUBLISHED = "PUBLISHED";
+    private static final String STATUS_APPROVED = "APPROVED";
     private static final String STATUS_FLAGGED = "FLAGGED";
     private static final String STATUS_HIDDEN = "HIDDEN";
     private static final String STATUS_DELETED = "DELETED";
@@ -407,7 +408,10 @@ public class ReviewService {
     }
 
     private String normalizeStatus(Review review) {
-        return review.getStatus() == null || review.getStatus().isBlank() ? STATUS_PUBLISHED : review.getStatus().trim().toUpperCase(Locale.ROOT);
+        String status = review.getStatus() == null || review.getStatus().isBlank()
+                ? STATUS_PUBLISHED
+                : review.getStatus().trim().toUpperCase(Locale.ROOT);
+        return STATUS_APPROVED.equals(status) ? STATUS_PUBLISHED : status;
     }
 
     private int reputationScore(double average, long totalReviews, double responseRate, long flagged) {

@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -152,8 +153,10 @@ export default function OwnerCampaignsPage() {
       <main className="flex-1 p-8 space-y-6 overflow-y-auto">
         <div className="flex justify-between items-center border-b border-white/5 pb-4">
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Turf Campaigns &amp; Marketing</h1>
-            <p className="text-slate-400 text-xs mt-1">Promote open turf slots, offer happy-hour discounts, and track slot conversion ROI.</p>
+            <h1 className="text-2xl font-bold text-white tracking-tight">Turf Campaigns &amp; Marketing
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Turf Campaigns &amp; Marketing information" focusable={false}>Promote open turf slots, offer happy-hour discounts, and track slot conversion ROI.</TileInfo>
+              </span></h1>
           </div>
         </div>
 

@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SlotService {
+    private static final int AVAILABILITY_WINDOW_DAYS = 90;
     private static final DateTimeFormatter SLOT_TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
     private static final int MAX_SLOT_DURATION_MINUTES = 720;
     private static final int MINUTES_PER_DAY = 24 * 60;
@@ -62,6 +63,7 @@ public class SlotService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final TurfMapper turfMapper;
+    private final CacheService cacheService;
     @org.springframework.context.annotation.Lazy
     private final com.example.Cricbook.service.ai.AIDynamicPricingService aiDynamicPricingService;
 
@@ -89,10 +91,15 @@ public class SlotService {
             archiveExistingSlotConfiguration(turfId);
         }
 
-        List<Slot> existingSlots = replaceExisting
+        List<Slot> existingRegularSlots = replaceExisting
                 ? List.of()
-                : activeRegularSlots(turfId);
+                : unarchivedRegularSlots(turfId);
+        List<Slot> existingActiveSlots = existingRegularSlots.stream()
+                .filter(slot -> Boolean.TRUE.equals(slot.getIsActive()))
+                .collect(Collectors.toList());
         List<Slot> createdSlots = new ArrayList<>();
+        List<Slot> reactivatedSlots = new ArrayList<>();
+        List<Slot> requestedSlots = new ArrayList<>();
         int currentMinute = startMinute;
 
         while (currentMinute < endMinute) {
@@ -100,8 +107,22 @@ public class SlotService {
             LocalTime currentTime = fromMinuteOfDay(currentMinute);
             LocalTime nextTime = fromMinuteOfDay(nextMinute);
 
-            if (hasActiveSlotOverlap(existingSlots, currentMinute, nextMinute)) {
-                throw ApiException.conflict("A slot already overlaps " + currentTime + " - " + nextTime + ". Adjust the time range or edit the existing slot.");
+            Slot exactExistingSlot = findExactSlot(existingRegularSlots, currentTime, nextTime);
+            if (exactExistingSlot != null) {
+                if (!Boolean.TRUE.equals(exactExistingSlot.getIsActive())) {
+                    if (hasActiveSlotOverlap(existingActiveSlots, currentMinute, nextMinute)) {
+                        throw scheduleOverlapConflict(currentTime, nextTime);
+                    }
+                    exactExistingSlot.setIsActive(true);
+                    reactivatedSlots.add(exactExistingSlot);
+                    existingActiveSlots.add(exactExistingSlot);
+                }
+                requestedSlots.add(exactExistingSlot);
+                currentMinute = nextMinute;
+                continue;
+            }
+            if (hasActiveSlotOverlap(existingActiveSlots, currentMinute, nextMinute)) {
+                throw scheduleOverlapConflict(currentTime, nextTime);
             }
 
             Slot slot = Slot.builder()
@@ -114,18 +135,26 @@ public class SlotService {
                     .build();
             
             createdSlots.add(slot);
+            existingActiveSlots.add(slot);
+            requestedSlots.add(slot);
             currentMinute = nextMinute;
         }
-        if (createdSlots.isEmpty()) {
+        if (requestedSlots.isEmpty()) {
             throw ApiException.badRequest("No slots can be created from the selected time range and duration.");
         }
 
-        List<Slot> savedSlots = slotRepository.saveAll(createdSlots);
+        List<Slot> changedSlots = new ArrayList<>(reactivatedSlots);
+        changedSlots.addAll(createdSlots);
+        if (!changedSlots.isEmpty()) {
+            slotRepository.saveAll(changedSlots);
+        }
         
-        // Generate availability for next 30 days
-        generateAvailability(savedSlots);
+        // Prime the rolling booking window. Later availability requests automatically
+        // fill any missing dates from this regular slot configuration.
+        generateAvailability(requestedSlots);
+        invalidateSearchPricing();
 
-        return savedSlots.stream()
+        return requestedSlots.stream()
                 .map(turfMapper::toSlotResponse)
                 .collect(Collectors.toList());
     }
@@ -154,25 +183,7 @@ public class SlotService {
     @Transactional
     public void generateAvailability(List<Slot> slots) {
         LocalDate today = LocalDate.now();
-        List<SlotAvailability> availabilities = new ArrayList<>();
-
-        for (Slot slot : slots) {
-            for (int i = 0; i < 30; i++) {
-                LocalDate date = today.plusDays(i);
-                
-                // Check if already exists
-                if (slotAvailabilityRepository.findBySlotIdAndDate(slot.getId(), date).isEmpty()) {
-                    availabilities.add(SlotAvailability.builder()
-                            .slot(slot)
-                            .date(date)
-                            .isAvailable(true)
-                            .isBlocked(false)
-                            .build());
-                }
-            }
-        }
-
-        slotAvailabilityRepository.saveAll(availabilities);
+        generateMissingAvailability(slots, today, today.plusDays(AVAILABILITY_WINDOW_DAYS - 1));
     }
 
     @Transactional
@@ -189,6 +200,7 @@ public class SlotService {
         validateBlockRequest(request);
         Turf turf = getTurfEntity(turfId);
         validateOwnershipOrAdmin(turf, userEmail);
+        ensureAvailability(turfId, request.getDate(), request.getDate());
 
         List<SlotAvailability> availabilities = new ArrayList<>();
         for (Long slotId : uniqueSlotIds(request.getSlotIds())) {
@@ -282,7 +294,9 @@ public class SlotService {
         slot.setPrice(nextPrice);
         slot.setIsActive(nextActive);
 
-        return turfMapper.toSlotResponse(slotRepository.save(slot));
+        SlotResponse response = turfMapper.toSlotResponse(slotRepository.save(slot));
+        invalidateSearchPricing();
+        return response;
     }
 
     @Transactional
@@ -315,14 +329,16 @@ public class SlotService {
         }
 
         slotPriceOverrideRepository.saveAll(overrides);
+        invalidateSearchPricing();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<SlotAvailabilityResponse> getAvailability(Long turfId, LocalDate date) {
         if (date == null) {
             throw ApiException.badRequest("Availability date is required.");
         }
         Turf turf = getTurfEntity(turfId);
+        ensureAvailability(turfId, date, date);
         List<SlotAvailability> availabilities = slotAvailabilityRepository.findBySlotTurfIdAndDate(turfId, date);
         java.util.Map<Long, BookingStatus> bookingStatuses = bookingStatusesBySlot(turfId, date);
         java.util.Map<Long, java.math.BigDecimal> priceOverrides = slotPriceOverrideRepository == null
@@ -335,6 +351,7 @@ public class SlotService {
                 .filter(this::isVisibleSlotAvailability)
                 .map(slotAvailability -> {
                     SlotAvailabilityResponse item = turfMapper.toSlotAvailabilityResponse(slotAvailability);
+                    item.setListingPrice(turf.getPricePerHour());
                     if (item.getSlotId() != null && priceOverrides.containsKey(item.getSlotId())) {
                         item.setPrice(priceOverrides.get(item.getSlotId()));
                     }
@@ -399,7 +416,11 @@ public class SlotService {
         return response;
     }
 
-    @Transactional(readOnly = true)
+    private void invalidateSearchPricing() {
+        cacheService.evictByPrefix("search:");
+    }
+
+    @Transactional
     public List<SlotCalendarDateResponse> getCalendar(Long turfId, LocalDate startDate, LocalDate endDate) {
         Turf turf = getTurfEntity(turfId);
         LocalDate start = startDate == null ? LocalDate.now() : startDate;
@@ -410,6 +431,8 @@ public class SlotService {
         if (java.time.temporal.ChronoUnit.DAYS.between(start, end) > 90) {
             throw ApiException.badRequest("Calendar range cannot exceed 90 days.");
         }
+
+        ensureAvailability(turfId, start, end);
 
         List<SlotAvailability> rows = slotAvailabilityRepository.findBySlotTurfIdAndDateBetween(turfId, start, end).stream()
                 .filter(this::isVisibleSlotAvailability)
@@ -468,6 +491,46 @@ public class SlotService {
     private Turf getTurfEntity(Long turfId) {
         return turfRepository.findById(turfId)
                 .orElseThrow(() -> new ApiException("Turf not found"));
+    }
+
+    private void ensureAvailability(Long turfId, LocalDate startDate, LocalDate endDate) {
+        generateMissingAvailability(activeRegularSlots(turfId), startDate, endDate);
+    }
+
+    private void generateMissingAvailability(List<Slot> slots, LocalDate startDate, LocalDate endDate) {
+        if (slots == null || slots.isEmpty() || startDate == null || endDate == null || endDate.isBefore(startDate)) {
+            return;
+        }
+
+        List<SlotAvailability> existingRows = slotAvailabilityRepository.findBySlotTurfIdAndDateBetween(
+                slots.get(0).getTurf().getId(),
+                startDate,
+                endDate
+        );
+        java.util.Set<String> existingKeys = existingRows.stream()
+                .map(row -> row.getSlot().getId() + ":" + row.getDate())
+                .collect(Collectors.toSet());
+        List<SlotAvailability> missingRows = new ArrayList<>();
+
+        for (Slot slot : slots) {
+            LocalDate current = startDate;
+            while (!current.isAfter(endDate)) {
+                String key = slot.getId() + ":" + current;
+                if (!existingKeys.contains(key)) {
+                    missingRows.add(SlotAvailability.builder()
+                            .slot(slot)
+                            .date(current)
+                            .isAvailable(true)
+                            .isBlocked(false)
+                            .build());
+                }
+                current = current.plusDays(1);
+            }
+        }
+
+        if (!missingRows.isEmpty()) {
+            slotAvailabilityRepository.saveAll(missingRows);
+        }
     }
 
     private java.util.Map<Long, BookingStatus> bookingStatusesBySlot(Long turfId, LocalDate date) {
@@ -545,14 +608,31 @@ public class SlotService {
         });
     }
 
+    private Slot findExactSlot(List<Slot> existingSlots, LocalTime startTime, LocalTime endTime) {
+        return existingSlots.stream()
+                .filter(slot -> slot.getStartTime().equals(startTime) && slot.getEndTime().equals(endTime))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private ApiException scheduleOverlapConflict(LocalTime startTime, LocalTime endTime) {
+        return ApiException.conflict("The active regular schedule has a different slot overlapping "
+                + startTime + " - " + endTime
+                + ". Regular slots repeat automatically and do not expire. Use Replace regular schedule only when you want to change the timetable.");
+    }
+
     private List<Slot> activeRegularSlots(Long turfId) {
+        return unarchivedRegularSlots(turfId).stream()
+                .filter(slot -> Boolean.TRUE.equals(slot.getIsActive()))
+                .collect(Collectors.toList());
+    }
+
+    private List<Slot> unarchivedRegularSlots(Long turfId) {
         List<Slot> slots = slotRepository.findByTurfIdAndArchivedFalse(turfId);
         if (slots == null) {
             return List.of();
         }
-        return slots.stream()
-                .filter(slot -> Boolean.TRUE.equals(slot.getIsActive()))
-                .collect(Collectors.toList());
+        return slots;
     }
 
     private int toMinuteOfDay(LocalTime time) {

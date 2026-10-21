@@ -12,10 +12,12 @@ import com.example.Cricbook.enums.RoleName;
 import com.example.Cricbook.enums.TurfStatus;
 import com.example.Cricbook.exception.ApiException;
 import com.example.Cricbook.mapper.TurfMapper;
+import com.example.Cricbook.repository.ReviewRepository;
 import com.example.Cricbook.repository.TurfRepository;
 import com.example.Cricbook.repository.TurfAmenityRepository;
 import com.example.Cricbook.repository.SportTurfRepository;
 import com.example.Cricbook.repository.UserRepository;
+import com.example.Cricbook.repository.SlotRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +28,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +48,9 @@ public class TurfService {
     private final MultiSportService multiSportService;
     private final SportTurfRepository sportTurfRepository;
     private final TurfAmenityRepository turfAmenityRepository;
+    private final ReviewRepository reviewRepository;
+    private final SlotRepository slotRepository;
+    private final CacheService cacheService;
     @org.springframework.context.annotation.Lazy
     private final MonetizationGateService monetizationGateService;
 
@@ -115,6 +122,7 @@ public class TurfService {
             savedTurf = turfRepository.save(savedTurf); // Update with images
         }
 
+        cacheService.evictByPrefix("search:");
         return toTurfResponse(savedTurf, request.getSports());
     }
 
@@ -153,6 +161,7 @@ public class TurfService {
 
         Turf updatedTurf = turfRepository.save(turf);
         syncRequestedSports(updatedTurf.getId(), request.getSports());
+        cacheService.evictByPrefix("search:");
         return toTurfResponse(updatedTurf, request.getSports());
     }
 
@@ -166,9 +175,21 @@ public class TurfService {
     public List<TurfResponse> getTurfsByOwner(String ownerEmail) {
         User owner = userRepository.findByEmailOrPhone(ownerEmail)
                 .orElseThrow(() -> ApiException.notFound("Owner account was not found."));
-        return turfRepository.findByOwnerId(owner.getId())
+        List<Turf> turfs = turfRepository.findByOwnerId(owner.getId());
+        if (turfs.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Long, ReviewRepository.PublishedRatingAggregate> ratingByTurfId = reviewRepository
+                .findPublishedRatingAggregates(turfs.stream().map(Turf::getId).toList())
                 .stream()
-                .map(this::toTurfResponse)
+                .collect(Collectors.toMap(
+                        ReviewRepository.PublishedRatingAggregate::getTurfId,
+                        Function.identity()
+                ));
+
+        return turfs.stream()
+                .map(turf -> applyCurrentRating(toTurfResponse(turf), ratingByTurfId.get(turf.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -422,6 +443,27 @@ public class TurfService {
                 : safeSports(preferredSports);
         response.setSports(sports);
         response.setSport(sports.isEmpty() ? null : sports.get(0));
+        response.setStartingSlotPrice(slotRepository.findMinimumActivePriceByTurfId(turf.getId()).orElse(turf.getPricePerHour()));
+        response.setMaximumSlotPrice(slotRepository.findMaximumActivePriceByTurfId(turf.getId()).orElse(turf.getPricePerHour()));
+        return response;
+    }
+
+    private TurfResponse applyCurrentRating(
+            TurfResponse response,
+            ReviewRepository.PublishedRatingAggregate aggregate
+    ) {
+        if (response == null) {
+            return null;
+        }
+        if (aggregate == null) {
+            response.setRating(0.0);
+            response.setTotalReviews(0);
+            return response;
+        }
+        double averageRating = aggregate.getAverageRating() == null ? 0.0 : aggregate.getAverageRating();
+        long totalReviews = aggregate.getTotalReviews() == null ? 0L : aggregate.getTotalReviews();
+        response.setRating(Math.round(averageRating * 10.0) / 10.0);
+        response.setTotalReviews(Math.toIntExact(totalReviews));
         return response;
     }
 

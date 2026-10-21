@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminLogin, adminVerifyOtp } from "@/modules/admin/services/adminService";
-import { canRoleAccessPath, safeNextPath } from "@/modules/auth/sessionPolicy";
+
 import { useAuthStore } from "@/store/authStore";
 
 export default function AdminLoginPage() {
@@ -48,8 +48,7 @@ export default function AdminLoginPage() {
       const response = await adminVerifyOtp({ email, otp });
       await setAuth({ email: response.data.email, name: "Cricbook Admin" }, response.data.accessToken, response.data.role, response.data.refreshToken);
       window.localStorage.setItem("adminEmail", response.data.email);
-      const requestedPath = safeNextPath(new URLSearchParams(window.location.search).get("next"), "/admin");
-      router.replace(canRoleAccessPath(response.data.role, requestedPath) ? requestedPath : "/admin");
+      router.replace("/admin");
     } catch (error: unknown) {
       setError(readableError(error, "Invalid 2FA code."));
     } finally {

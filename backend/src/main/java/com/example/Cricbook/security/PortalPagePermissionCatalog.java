@@ -66,6 +66,7 @@ public final class PortalPagePermissionCatalog {
                 page("OWNER", "/owner/resale", "Resale Rules", "Booking resale and waitlist policy", "OWNER_RESALE"),
                 page("OWNER", "/owner/engagement", "Engagement", "Customer engagement analytics", "OWNER_ENGAGEMENT"),
                 page("OWNER", "/owner/trust", "Trust Rules", "Trust and safety controls for owners", "OWNER_TRUST"),
+                page("OWNER", "/owner/wallet", "Wallet", "Wallet funding and transaction history for owner subscriptions", "OWNER_WALLET"),
                 page("OWNER", "/owner/subscription", "Subscription", "Owner plan, featured listing, and billing controls", "OWNER_SUBSCRIPTION"),
                 page("OWNER", "/owner/settings", "Settings", "Owner account and operational preferences", "OWNER_SETTINGS"),
 

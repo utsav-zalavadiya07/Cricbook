@@ -1,0 +1,20 @@
+⚠ Fast Refresh had to perform a full reload when ./modules/i18n/extraMessages.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./modules/i18n/extraMessages.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./services/api.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./services/api.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[browser] Uncaught ReferenceError: portalRedirect is not defined
+    at SessionGate (modules/auth/components/SessionGate.tsx:30:69)
+    at RootLayout (app\layout.tsx:41:17)
+  28 |       router.replace(access.loginPath);
+  29 |     }
+> 30 |   }, [access.loginPath, access.public, allowed, hydrated, pathname, portalRedirect, router]);
+     |                                                                     ^
+  31 |
+  32 |   if (access.public) {
+  33 |     return <>{children}</>;
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+    at Set.forEach (<anonymous>) (<anonymous>)
+⚠ Fast Refresh had to perform a full reload when ./services/api.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./services/api.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload

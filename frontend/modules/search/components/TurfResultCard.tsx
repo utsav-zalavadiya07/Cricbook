@@ -3,9 +3,10 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { memo } from "react";
+import { SlotPriceDisplay } from "@/components/ui";
 import { useI18n } from "@/modules/i18n/I18nProvider";
-import { SearchTurf } from "../types/search.types";
 import { getImageUrl } from "@/utils/image";
+import { SearchTurf } from "../types/search.types";
 
 interface TurfResultCardProps {
   turf: SearchTurf;
@@ -16,7 +17,15 @@ function TurfResultCard({ turf }: TurfResultCardProps) {
   const { t } = useI18n();
   const rating = Number(turf.rating ?? 0);
   const reviews = Number(turf.totalReviews ?? 0);
-  const price = turf.pricePerHour != null ? `Rs ${turf.pricePerHour}` : "Price unavailable";
+  const startingPrice = turf.startingSlotPrice ?? turf.pricePerHour;
+  const maximumPrice = turf.maximumSlotPrice ?? startingPrice;
+  const allSlotsSamePrice = startingPrice != null && maximumPrice != null && Number(startingPrice) === Number(maximumPrice);
+  const hasSpecialSlots = startingPrice != null && turf.pricePerHour != null
+    && Number(startingPrice) < Number(turf.pricePerHour)
+    && !allSlotsSamePrice;
+  const savingsPercent = hasSpecialSlots
+    ? Math.round((1 - Number(startingPrice) / Number(turf.pricePerHour)) * 100)
+    : 0;
 
   return (
     <div
@@ -43,11 +52,21 @@ function TurfResultCard({ turf }: TurfResultCardProps) {
           <p className="theme-muted mt-0.5 text-xs">{turf.city}</p>
         </div>
 
+        {hasSpecialSlots && (
+          <div className="flex items-center justify-between gap-2 rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-3 py-2 text-xs">
+            <span className="font-semibold text-emerald-700 dark:text-emerald-200">Selected slots at ₹{Number(startingPrice).toLocaleString("en-IN")}</span>
+            <span className="shrink-0 font-bold text-emerald-700 dark:text-emerald-300">Save up to {savingsPercent}%</span>
+          </div>
+        )}
+
         <div className="flex items-center justify-between">
-          <p className="text-lg font-bold text-emerald-700 dark:text-emerald-300">
-            {price}
-            {turf.pricePerHour != null && <span className="theme-soft text-xs font-normal">{t("search.perHour")}</span>}
-          </p>
+          {startingPrice != null ? (
+            <SlotPriceDisplay
+              price={Number(startingPrice)}
+              compareAtPrice={hasSpecialSlots ? Number(turf.pricePerHour) : undefined}
+              prefix={allSlotsSamePrice ? undefined : "From"}
+            />
+          ) : <span className="theme-muted text-sm">Price unavailable</span>}
           {rating > 0 && (
             <div className="theme-muted flex items-center gap-1 text-xs">
               <span className="theme-title font-medium">{rating.toFixed(1)}</span>
@@ -56,9 +75,7 @@ function TurfResultCard({ turf }: TurfResultCardProps) {
           )}
         </div>
 
-        {turf.distance != null && (
-          <p className="theme-muted text-xs">{turf.distance.toFixed(1)} km away</p>
-        )}
+        {turf.distance != null && <p className="theme-muted text-xs">{turf.distance.toFixed(1)} km away</p>}
 
         <div className="flex items-center justify-between">
           <span className="theme-card rounded-lg px-2.5 py-1 text-xs theme-muted">{turf.pitchType || "Pitch"}</span>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getAdminResaleAnalytics, ResaleAnalytics } from "@/modules/resale/services/resaleService";
 import { useToast } from "@/modules/ui/ToastProvider";
+import { formatDate } from "@/utils/dateFormatter";
 
 export default function AdminResalePage() {
   const { toast } = useToast();
@@ -38,7 +39,7 @@ export default function AdminResalePage() {
             {(analytics?.recentListings || []).map((listing) => (
               <article key={listing.id} className="theme-panel-soft rounded-2xl p-4">
                 <p className="theme-title font-black">{listing.turfName}</p>
-                <p className="theme-muted mt-1 text-sm">{listing.city} · {listing.bookingDate} · ₹{listing.price}</p>
+                <p className="theme-muted mt-1 text-sm">{listing.city} · {formatDate(listing.bookingDate)} · ₹{listing.price}</p>
                 <p className="theme-muted mt-3 text-xs">{listing.status} · Seller {listing.sellerName} · Trust {listing.sellerTrustScore}</p>
               </article>
             ))}

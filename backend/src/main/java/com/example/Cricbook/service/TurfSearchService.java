@@ -7,6 +7,7 @@ import com.example.Cricbook.entity.TurfAmenity;
 import com.example.Cricbook.entity.TurfImage;
 import com.example.Cricbook.exception.ApiException;
 import com.example.Cricbook.repository.TurfRepository;
+import com.example.Cricbook.repository.SlotRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 public class TurfSearchService {
 
     private final TurfRepository turfRepository;
+    private final SlotRepository slotRepository;
     private final CacheService cacheService;
     private final MultiSportService multiSportService;
 
@@ -313,6 +315,8 @@ public class TurfSearchService {
                 .city(turf.getCity())
                 .location(turf.getLocation())
                 .pricePerHour(turf.getPricePerHour())
+                .startingSlotPrice(slotRepository.findMinimumActivePriceByTurfId(turf.getId()).orElse(turf.getPricePerHour()))
+                .maximumSlotPrice(slotRepository.findMaximumActivePriceByTurfId(turf.getId()).orElse(turf.getPricePerHour()))
                 .rating(turf.getRating())
                 .totalReviews(turf.getTotalReviews())
                 .boxType(turf.getBoxType() != null ? turf.getBoxType().name() : null)

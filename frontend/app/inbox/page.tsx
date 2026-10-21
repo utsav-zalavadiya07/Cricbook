@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
@@ -10,17 +11,10 @@ import {
   trackMetric,
   triggerEvent
 } from "@/modules/notification/services/notificationService";
+import { Notification } from "@/modules/notification/types/notification.types";
+import { isNotificationArchived, isNotificationRead } from "@/modules/notification/utils/notificationState";
 
 type FolderName = "ALL" | "TODAY" | "THIS_WEEK" | "ARCHIVE";
-type InboxNotification = {
-  id: number;
-  title: string;
-  message: string;
-  channel: string;
-  status: string;
-  deepLink?: string;
-  createdAt?: string;
-};
 
 type Recommendation = {
   type: string;
@@ -29,7 +23,7 @@ type Recommendation = {
 };
 
 export default function InboxCenterPage() {
-  const [notifications, setNotifications] = useState<InboxNotification[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [activeFolder, setActiveFolder] = useState<FolderName>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
@@ -53,8 +47,8 @@ export default function InboxCenterPage() {
       setRecommendations(recRes.data || []);
 
       // Calculate unreads
-      const nextNotifications = (notifRes.data || []) as InboxNotification[];
-      const unreads = nextNotifications.filter((notification) => notification.status !== "READ").length;
+      const nextNotifications = (notifRes.data || []) as Notification[];
+      const unreads = nextNotifications.filter((notification) => !isNotificationRead(notification) && !isNotificationArchived(notification)).length;
       setUnreadsCount(unreads);
 
       nextNotifications.forEach((notification) => {
@@ -79,9 +73,13 @@ export default function InboxCenterPage() {
 
   const handleRead = async (id: number) => {
     try {
+      const target = notifications.find((notification) => notification.id === id);
+      if (!target || isNotificationRead(target) || isNotificationArchived(target)) {
+        return;
+      }
       await markAsRead(id);
       setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, status: "READ" } : n))
+        prev.map((n) => (n.id === id ? { ...n, status: "READ", read: true, readAt: new Date().toISOString() } : n))
       );
       setUnreadsCount((prev) => Math.max(0, prev - 1));
     } catch (err) {
@@ -91,8 +89,15 @@ export default function InboxCenterPage() {
 
   const handleArchive = async (id: number) => {
     try {
+      const target = notifications.find((notification) => notification.id === id);
+      if (!target || isNotificationArchived(target)) {
+        return;
+      }
       await archiveNotification(id);
-      setNotifications((prev) => prev.filter((n) => n.id !== id));
+      setNotifications((prev) => prev.filter((notification) => notification.id !== id));
+      if (!isNotificationRead(target)) {
+        setUnreadsCount((prev) => Math.max(0, prev - 1));
+      }
       setStatusMsg("Notification moved to Archive folder.");
       setTimeout(() => setStatusMsg(""), 3000);
     } catch (err) {
@@ -105,7 +110,7 @@ export default function InboxCenterPage() {
     setTimeout(() => setStatusMsg(""), 4000);
   };
 
-  const handleDeepLinkClick = async (notif: InboxNotification) => {
+  const handleDeepLinkClick = async (notif: Notification) => {
     try {
       await trackMetric(notif.id, "click");
       await markAsRead(notif.id);
@@ -145,8 +150,10 @@ export default function InboxCenterPage() {
         <div className="flex items-center gap-3">
           <span className="text-xl">📥</span>
           <div>
-            <h1 className="text-base font-bold text-white tracking-wide">Communication Hub</h1>
-            <p className="text-[10px] text-slate-400">Manage transactional inbox alerts and campaigns.</p>
+            <h1 className="text-base font-bold text-white tracking-wide">Communication Hub
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Communication Hub information" focusable={false}>Manage transactional inbox alerts and campaigns.</TileInfo>
+              </span></h1>
           </div>
         </div>
         <div className="flex gap-2">
@@ -293,53 +300,74 @@ export default function InboxCenterPage() {
               </div>
             ) : (
               <div className="space-y-3">
-                {notifications.map((n) => (
-                  <div
-                    key={n.id}
-                    className={`p-4 rounded-xl border flex flex-col justify-between md:flex-row md:items-center gap-4 transition-all ${
-                      n.status !== "READ" ? "bg-emerald-500/5 border-emerald-500/10" : "bg-black/10 border-white/5"
-                    }`}
-                  >
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        {n.status !== "READ" && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        )}
-                        <h4 className="font-bold text-slate-200 text-sm">{n.title}</h4>
-                        <span className="px-1.5 py-0.2 bg-slate-800 text-slate-400 rounded text-[9px] font-mono tracking-wide">
-                          {n.channel}
-                        </span>
+                {notifications.map((n) => {
+                  const isUnread = !isNotificationRead(n) && !isNotificationArchived(n);
+                  return (
+                    <div
+                      key={n.id}
+                      onClick={(e) => {
+                        const target = e.target as HTMLElement;
+                        if (target.closest("button") || target.closest("a")) return;
+                        if (isUnread) void handleRead(n.id);
+                      }}
+                      className={`p-4 rounded-xl border flex flex-col justify-between md:flex-row md:items-center gap-4 transition-all ${
+                        isUnread
+                          ? "cursor-pointer bg-emerald-500/5 border-emerald-500/20 shadow-md shadow-emerald-950/10 hover:border-emerald-500/40 hover:bg-emerald-500/10"
+                          : "bg-black/10 border-white/5 opacity-85 hover:opacity-100"
+                      }`}
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          {isUnread && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          )}
+                          <h4 className="font-bold text-slate-200 text-sm">{n.title}</h4>
+                          <span className="px-1.5 py-0.2 bg-slate-800 text-slate-400 rounded text-[9px] font-mono tracking-wide">
+                            {n.channel}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 leading-relaxed">{n.message}</p>
+                        <span className="text-[9px] text-slate-600 block pt-1">{n.createdAt ? new Date(n.createdAt).toLocaleTimeString() : "N/A"}</span>
                       </div>
-                      <p className="text-xs text-slate-400 leading-relaxed">{n.message}</p>
-                      <span className="text-[9px] text-slate-600 block pt-1">{n.createdAt ? new Date(n.createdAt).toLocaleTimeString() : "N/A"}</span>
-                    </div>
 
-                    <div className="flex items-center gap-2 self-end md:self-auto">
-                      {n.deepLink && (
-                        <button
-                          onClick={() => handleDeepLinkClick(n)}
-                          className="px-2.5 py-1 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/20 text-[10px] font-bold rounded-lg transition-all"
-                        >
-                          Open Link
-                        </button>
-                      )}
-                      {n.status !== "READ" && (
-                        <button
-                          onClick={() => handleRead(n.id)}
-                          className="px-2.5 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold rounded-lg transition-all"
-                        >
-                          Mark Read
-                        </button>
-                      )}
-                      <button
-                        onClick={() => handleArchive(n.id)}
-                        className="px-2.5 py-1 bg-red-500/5 hover:bg-red-500/10 text-red-400 border border-red-500/10 text-[10px] font-bold rounded-lg transition-all"
-                      >
-                        Archive
-                      </button>
+                      <div className="flex items-center gap-2 self-end md:self-auto">
+                        {n.deepLink && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (isUnread) void handleRead(n.id);
+                              handleDeepLinkClick(n);
+                            }}
+                            className="px-2.5 py-1 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/20 text-[10px] font-bold rounded-lg transition-all"
+                          >
+                            Open Link
+                          </button>
+                        )}
+                        {!isNotificationArchived(n) ? (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              void handleArchive(n.id);
+                            }}
+                            className="px-2.5 py-1 bg-red-500/5 hover:bg-red-500/10 text-red-400 border border-red-500/10 text-[10px] font-bold rounded-lg transition-all"
+                          >
+                            Archive
+                          </button>
+                        ) : (
+                          <span
+                            className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold ${
+                              isNotificationRead(n)
+                                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300"
+                                : "bg-amber-500/10 border-amber-500/20 text-amber-300"
+                            }`}
+                          >
+                            {isNotificationRead(n) ? "Read" : "Unread"}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

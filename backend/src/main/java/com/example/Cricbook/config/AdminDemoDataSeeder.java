@@ -274,8 +274,13 @@ public class AdminDemoDataSeeder implements CommandLineRunner {
         if (marketingBannerRepository.count() == 0) marketingBannerRepository.save(MarketingBanner.builder().title("Weekend Cricket Offer").location("Homepage").bannerType("Image").imageUrl("/demo-banner.jpg").targetUrl("/search").status("ACTIVE").startDate(LocalDateTime.now()).endDate(LocalDateTime.now().plusDays(14)).build());
         if (couponRepository.count() == 0) couponRepository.save(Coupon.builder().code("WELCOME100").discountType("FLAT").discountValue(BigDecimal.valueOf(100)).maxDiscount(BigDecimal.valueOf(100)).minBookingAmount(BigDecimal.valueOf(500)).validFrom(LocalDate.now()).validUntil(LocalDate.now().plusMonths(1)).active(true).build());
         if (referralCampaignRepository.count() == 0) referralCampaignRepository.save(ReferralCampaign.builder().name("Demo Referral Rewards").reward(BigDecimal.valueOf(100)).eligibility("FIRST_BOOKING").status("ACTIVE").expiresAt(LocalDateTime.now().plusMonths(1)).build());
-        if (marketingCampaignRepository.count() == 0) marketingCampaignRepository.save(MarketingCampaign.builder().createdBy(owner).name("Weekend Push").title("Book cricket this weekend").message("Save on prime slots with WELCOME100.").channel(NotificationChannel.PUSH).targetRole("USER").deepLink("/search").status(CampaignStatus.DRAFT).sentCount(0).build());
-        if (announcementRepository.count() == 0) announcementRepository.save(Announcement.builder().title("Demo Maintenance Window").message("Sample announcement for admin marketing center.").priority("MEDIUM").displayLocation("BANNER").status("ACTIVE").build());
+        if (announcementRepository.count() == 0) announcementRepository.save(Announcement.builder().title("Demo Maintenance Window").message("Sample announcement for admin marketing center.").priority("MEDIUM").displayLocation("BANNER").status("DRAFT").build());
+        announcementRepository.findAll().forEach(a -> {
+            if ("Demo Maintenance Window".equals(a.getTitle()) && "ACTIVE".equals(a.getStatus())) {
+                a.setStatus("DRAFT");
+                announcementRepository.save(a);
+            }
+        });
         if (seoSettingRepository.count() == 0) seoSettingRepository.save(SeoSetting.builder().pageSlug("home").metaTitle("Cricbook Demo").metaDescription("Demo SEO settings created by backend seeder.").keywords("cricket,turf,booking").openGraphImage("/demo-og.jpg").build());
     }
 

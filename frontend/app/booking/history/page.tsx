@@ -1,4 +1,5 @@
 "use client";
+import { TileInfo } from "@/components/ui";
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -6,7 +7,9 @@ import { useConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { DataGrid, type DataGridColumn } from "@/components/ui/DataGrid";
 import { cancelBooking, getMyBookings } from "@/modules/booking/services/bookingService";
 import { Booking } from "@/modules/booking/types/booking.types";
+import { extractApiErrorMessage } from "@/modules/ui/apiNotificationService";
 import { useToast } from "@/modules/ui/ToastProvider";
+import { formatDate, formatDateTime } from "@/utils/dateFormatter";
 
 const statusColors: Record<string, string> = {
   CONFIRMED: "border-emerald-500/30 bg-emerald-500/12 text-emerald-600 dark:text-emerald-300",
@@ -92,8 +95,9 @@ export default function BookingHistoryPage() {
       await Promise.all(ids.map((id) => cancelBooking(id)));
       refreshBookings();
       showSuccess("Booking Cancelled", "Your booking was cancelled successfully.");
-    } catch {
-      showError("Cancellation Failed", "Could not cancel booking.");
+    } catch (err: unknown) {
+      const detail = extractApiErrorMessage(err, "Could not cancel booking.");
+      showError("Cancellation Failed", detail);
     }
   };
 
@@ -185,10 +189,10 @@ export default function BookingHistoryPage() {
             <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
               <div>
                 <p className="theme-kicker text-xs font-black uppercase tracking-[0.24em]">Booking history</p>
-                <h1 className="theme-title mt-3 text-3xl font-black tracking-tight sm:text-4xl">My Bookings</h1>
-                <p className="theme-muted mt-2 max-w-2xl text-sm leading-6">
-                  Review every turf reservation with schedule, payment state, booking status, amount, and quick actions in one grid.
-                </p>
+                <h1 className="theme-title mt-3 text-3xl font-black tracking-tight sm:text-4xl">My Bookings
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="My Bookings information" focusable={false}>Review every turf reservation with schedule, payment state, booking status, amount, and quick actions in one grid.</TileInfo>
+              </span></h1>
               </div>
               <Link
                 href="/search"
@@ -317,19 +321,7 @@ function ActionButton({ booking, onCancel }: { booking: BookingGridRow; onCancel
   );
 }
 
-function formatDate(value: string) {
-  if (!value) return "--";
-  const date = new Date(`${value}T00:00:00`);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
-}
 
-function formatDateTime(value?: string) {
-  if (!value) return "--";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
-}
 
 function formatTimeRange(booking: Booking) {
   if (!booking.startTime && !booking.endTime) return "--";

@@ -1,6 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { TileInfo } from "@/components/ui";
+import { formatDateTime } from "@/utils/dateFormatter";
 
 export type AdminRowAction = {
   label: string;
@@ -40,8 +42,16 @@ export function AdminPageHeader({ eyebrow, title, description, actions }: AdminP
       <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.32em] text-emerald-400">{eyebrow}</p>
-          <h1 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">{title}</h1>
-          <p className="mt-3 max-w-4xl text-sm leading-6 text-slate-300">{description}</p>
+          <div className="mt-3">
+            <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
+              {title}
+              {description ? (
+                <span className="inline-flex align-middle ml-3 mb-1">
+                  <TileInfo label={`${title} information`} focusable={false}>{description}</TileInfo>
+                </span>
+              ) : null}
+            </h1>
+          </div>
         </div>
         {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}
       </div>
@@ -61,9 +71,11 @@ export function AdminMetricCard({ label, value, detail, tone = "slate" }: AdminM
 
   return (
     <article className={`rounded-3xl border p-5 shadow-xl ${toneClass}`}>
-      <p className="text-xs font-black uppercase tracking-[0.2em] opacity-80">{label}</p>
+      <div className="flex min-w-0 items-start justify-between gap-2">
+        <p className="min-w-0 break-words text-xs font-black uppercase leading-5 tracking-[0.2em] opacity-80">{label}</p>
+        {detail ? <TileInfo label={`${label} information`}>{detail}</TileInfo> : null}
+      </div>
       <p className="mt-3 text-3xl font-black text-white">{value}</p>
-      {detail ? <p className="mt-2 text-xs leading-5 text-slate-400">{detail}</p> : null}
     </article>
   );
 }
@@ -169,8 +181,14 @@ export function AdminDataTable({
     <section className="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/75 shadow-2xl">
       <div className="flex flex-col gap-2 border-b border-white/10 px-5 py-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h2 className="text-xl font-black text-white">{title}</h2>
-          {description ? <p className="mt-1 text-sm text-slate-400">{description}</p> : null}
+          <h2 className="text-xl font-black text-white">
+            {title}
+            {description ? (
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label={`${title} information`} focusable={false}>{description}</TileInfo>
+              </span>
+            ) : null}
+          </h2>
         </div>
         <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">
           {loading ? "Loading" : `${rows.length} records`}
@@ -205,7 +223,7 @@ export function AdminDataTable({
               rows.map((row) => (
                 <tr key={`${row.id}-${row.title}`} className="bg-slate-900/35 align-top transition hover:bg-emerald-500/[0.04]">
                   <td className="min-w-[280px] px-5 py-4">
-                    <p className="font-black text-white">{row.title}</p>
+                     <p className="font-black text-white">{row.title}</p>
                     {row.subtitle ? <p className="mt-1 text-sm text-slate-400">{row.subtitle}</p> : null}
                     <p className="mt-2 text-xs font-black uppercase tracking-[0.16em] text-slate-600">ID {row.id}</p>
                   </td>
@@ -318,9 +336,5 @@ export function formatAdminDate(value?: string) {
   if (!value) {
     return "-";
   }
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return value;
-  }
-  return new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(parsed);
+  return formatDateTime(value);
 }

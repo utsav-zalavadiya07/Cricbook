@@ -1,4 +1,5 @@
 "use client";
+import { Button, SegmentedFilter, TileInfo } from "@/components/ui";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import api from "@/services/api";
@@ -45,8 +46,8 @@ const views: { key: ViewKey; label: string }[] = [
   { key: "calendar", label: "Calendar View" },
   { key: "disable", label: "Disable Slot" },
   { key: "price", label: "Edit Slot Price" },
-  { key: "holiday", label: "Special Day Pricing" },
-  { key: "generate", label: "Bulk Generate" },
+  { key: "holiday", label: "Special Pricing" },
+  { key: "generate", label: "Regular Schedule" },
 ];
 
 const inputClass =
@@ -126,6 +127,21 @@ const getCalendarDates = (value: string, mode: CalendarMode) => {
   if (mode === "week") return getWeekDates(value);
   if (mode === "month") return getMonthDates(value);
   return [value];
+};
+
+const getCalendarViewInformation = (value: string, mode: CalendarMode) => {
+  if (mode === "week") {
+    const weekDates = getWeekDates(value);
+    return `Review and manage schedules from ${formatDateTitle(weekDates[0])} to ${formatDateTitle(weekDates[weekDates.length - 1])}.`;
+  }
+
+  if (mode === "month") {
+    const parsed = new Date(`${value}T00:00:00`);
+    const month = new Intl.DateTimeFormat("en-IN", { month: "long", year: "numeric" }).format(parsed);
+    return `Review and manage all schedules for ${month}.`;
+  }
+
+  return `Review and manage the ${formatDateTitle(value)} schedule.`;
 };
 
 const formatShortDate = (value: string) => {
@@ -260,6 +276,7 @@ export default function OwnerSlotsPage() {
   const [loadingTurfs, setLoadingTurfs] = useState(true);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [scheduleEditing, setScheduleEditing] = useState(false);
   const [date, setDate] = useState(today());
   const [disableFilter, setDisableFilter] = useState<SlotStatusFilter>("all");
   const [disableTimeBand, setDisableTimeBand] = useState<SlotTimeBand>("all");
@@ -268,7 +285,7 @@ export default function OwnerSlotsPage() {
     startTime: "06:00",
     endTime: "22:00",
     slotDuration: 60,
-    price: 500,
+    price: 0,
     replaceExisting: false,
     fullDay: false,
   });
@@ -294,10 +311,16 @@ export default function OwnerSlotsPage() {
     () => turfs.find((turf) => turf.id === selectedTurfId),
     [selectedTurfId, turfs]
   );
+  const defaultSlotPrice = generateForm.price > 0 ? generateForm.price : Number(selectedTurf?.pricePerHour ?? 0);
 
   const selectedSlots = useMemo(
     () => slots.filter((slot) => selectedSlotIds.includes(slot.id)),
     [selectedSlotIds, slots]
+  );
+
+  const activeScheduleSlots = useMemo(
+    () => slots.filter((slot) => slot.isActive).sort((first, second) => parseTimeToMinutes(first.startTime) - parseTimeToMinutes(second.startTime)),
+    [slots]
   );
 
   const selectedAvailability = useMemo(
@@ -397,7 +420,30 @@ export default function OwnerSlotsPage() {
     if (!Number.isFinite(nextTurfId)) return;
     setSelectedTurfId(nextTurfId);
     setSelectedSlotIds([]);
+    setScheduleEditing(false);
+    const nextTurf = turfs.find((turf) => turf.id === nextTurfId);
+    setGenerateForm((current) => ({ ...current, price: Number(nextTurf?.pricePerHour ?? 0), replaceExisting: false }));
     router.replace(`/owner/slots?turfId=${nextTurfId}`, { scroll: false });
+  };
+
+  const startScheduleEdit = () => {
+    const firstSlot = activeScheduleSlots[0];
+    const lastSlot = activeScheduleSlots[activeScheduleSlots.length - 1];
+    if (firstSlot && lastSlot) {
+      const duration = getEndMinutes(firstSlot.startTime, firstSlot.endTime) - parseTimeToMinutes(firstSlot.startTime);
+      const fullDay = firstSlot.startTime.startsWith("00:00") && lastSlot.endTime.startsWith("00:00");
+      setGenerateForm({
+        startTime: firstSlot.startTime.slice(0, 5),
+        endTime: lastSlot.endTime.slice(0, 5),
+        slotDuration: duration,
+        price: firstSlot.price,
+        replaceExisting: true,
+        fullDay,
+      });
+    } else {
+      setGenerateForm((current) => ({ ...current, replaceExisting: false }));
+    }
+    setScheduleEditing(true);
   };
 
   const toggleSelectedSlot = (slotId: number) => {
@@ -433,7 +479,7 @@ export default function OwnerSlotsPage() {
 
   const handleGenerate = async () => {
     const count = calculatedSlotCount();
-    if (!selectedTurfId || count <= 0) {
+    if (!selectedTurfId || count <= 0 || !Number.isFinite(defaultSlotPrice) || defaultSlotPrice <= 0) {
       showWarning("Invalid slot configuration", "Choose a valid start time, end time and duration.");
       return;
     }
@@ -454,12 +500,14 @@ export default function OwnerSlotsPage() {
       if (!confirmed) return;
     }
 
-    void runAction(() =>
-      createSlots(selectedTurfId, {
+    void runAction(
+      () => createSlots(selectedTurfId, {
         ...generateForm,
+        price: defaultSlotPrice,
         startTime: generateForm.fullDay ? "00:00" : generateForm.startTime,
         endTime: generateForm.fullDay ? "00:00" : generateForm.endTime,
-      }).then(() => undefined)
+      }).then(() => undefined),
+      () => setScheduleEditing(false),
     );
   };
 
@@ -650,19 +698,16 @@ export default function OwnerSlotsPage() {
 
   const renderTabToolbar = ({
     title,
-    subtitle,
+    information,
     controls,
   }: {
     title: string;
-    subtitle: string;
+    information: string;
     controls?: ReactNode;
   }) => (
     <div className="theme-panel-soft border-b p-4 sm:p-5">
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-        <div>
-          <h2 className="theme-title text-lg font-bold">{title}</h2>
-          <p className="theme-muted mt-1 text-sm">{subtitle}</p>
-        </div>
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+        <SectionTitleInfo title={title} information={information} />
         {controls && (
           <div className="grid w-full gap-3 sm:grid-cols-2 xl:w-auto xl:grid-flow-col xl:auto-cols-[220px] xl:items-end">
             {controls}
@@ -682,7 +727,7 @@ export default function OwnerSlotsPage() {
         <section className="theme-panel overflow-hidden rounded-2xl">
           {renderTabToolbar({
             title: views.find((view) => view.key === activeView)?.label || "Slot Manager",
-            subtitle: loadingTurfs ? "Loading your turfs..." : "Add a turf first, then manage slots from this page.",
+            information: loadingTurfs ? "Loading your turfs..." : "Add a turf first, then manage slots from this page.",
           })}
           <p className="theme-muted p-10 text-center text-sm">
             {loadingTurfs ? "Loading your turfs..." : "No turfs found. Add a turf first from My Turfs."}
@@ -693,13 +738,51 @@ export default function OwnerSlotsPage() {
 
     if (activeView === "generate") {
       const count = calculatedSlotCount();
+      const firstActiveSlot = activeScheduleSlots[0];
+      const lastActiveSlot = activeScheduleSlots[activeScheduleSlots.length - 1];
+      const showScheduleForm = activeScheduleSlots.length === 0 || scheduleEditing;
       return (
         <section className="theme-panel overflow-hidden rounded-2xl">
           {renderTabToolbar({
-            title: "Bulk Generate",
-            subtitle: "Create the base slot template for the selected turf.",
+            title: "Regular Schedule",
+            information: "Set it once. Cricbook automatically keeps future booking dates ready from this schedule.",
           })}
           <div className="p-4 sm:p-5 space-y-6">
+            {activeScheduleSlots.length > 0 && (
+              <div className="theme-card rounded-2xl border p-4 sm:p-5">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="theme-title text-base font-bold">Current regular schedule</p>
+                      <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-200">Active · No expiry</span>
+                    </div>
+                    <p className="theme-muted mt-2 text-sm leading-6">
+                      {formatTimeLabel(firstActiveSlot.startTime)} to {formatTimeLabel(lastActiveSlot.endTime)} · {activeScheduleSlots.length} slots repeat every day and remain active until you change them.
+                    </p>
+                  </div>
+                  {!scheduleEditing && <Button tone="secondary" onClick={startScheduleEdit}>Change Schedule</Button>}
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {activeScheduleSlots.map((slot) => (
+                    <span key={slot.id} className="theme-panel-soft rounded-lg border px-2.5 py-1.5 text-xs font-semibold">
+                      {formatTimeLabel(slot.startTime)}–{formatTimeLabel(slot.endTime)} · ₹{slot.price}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeScheduleSlots.length === 0 && (
+              <div className="theme-card flex items-start gap-3 rounded-2xl border p-4">
+                <span aria-hidden="true" className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-300">↻</span>
+                <div>
+                  <p className="theme-title text-sm font-bold">Create the regular schedule once</p>
+                  <p className="theme-muted mt-1 text-xs leading-5">Future dates are created automatically from this schedule. Slots do not expire after 30, 60, or 90 days.</p>
+                </div>
+              </div>
+            )}
+
+            {showScheduleForm && <>
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
               <Field label="Opening Time">
                 <input
@@ -721,14 +804,18 @@ export default function OwnerSlotsPage() {
               </Field>
               <Field label="Duration">
                 <select className={inputClass} value={generateForm.slotDuration} onChange={(e) => setGenerateForm({ ...generateForm, slotDuration: Number(e.target.value) })}>
+                  <option value={15}>15 minutes</option>
                   <option value={30}>30 minutes</option>
+                  <option value={45}>45 minutes</option>
                   <option value={60}>60 minutes</option>
                   <option value={90}>90 minutes</option>
                   <option value={120}>120 minutes</option>
+                  {![15, 30, 45, 60, 90, 120].includes(generateForm.slotDuration) && <option value={generateForm.slotDuration}>{generateForm.slotDuration} minutes</option>}
                 </select>
               </Field>
-              <Field label="Price">
-                <input type="number" min={1} className={inputClass} value={generateForm.price} onChange={(e) => setGenerateForm({ ...generateForm, price: Number(e.target.value) })} />
+              <Field label="Default slot price">
+                <input type="number" min={1} className={inputClass} value={defaultSlotPrice || ""} onChange={(e) => setGenerateForm({ ...generateForm, price: Number(e.target.value) })} />
+                <p className="theme-muted mt-1 text-xs">Starts with the turf listing price. You can change individual slot prices later.</p>
               </Field>
             </div>
 
@@ -767,7 +854,7 @@ export default function OwnerSlotsPage() {
                   onChange={(e) => setGenerateForm({ ...generateForm, replaceExisting: e.target.checked })}
                 />
                 <span>
-                  <span className="theme-title block text-sm font-bold">Replace existing slots</span>
+                  <span className="theme-title block text-sm font-bold">Replace regular schedule</span>
                   <span className="theme-muted mt-1 block text-xs leading-5">
                     Archive current regular slots and create new ones. Useful when changing turf timetable hours.
                   </span>
@@ -777,12 +864,16 @@ export default function OwnerSlotsPage() {
 
             <div className="flex flex-col gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-emerald-700 dark:text-emerald-100 font-medium">
-                {count} slots will be {generateForm.replaceExisting ? "used as the new regular configuration" : "generated"} for {selectedTurf?.name}.
+                {count} daily slots will repeat automatically for {selectedTurf?.name}. {generateForm.replaceExisting ? "The current regular schedule will be replaced." : "Existing non-overlapping slots will stay."}
               </p>
-              <button disabled={saving || count === 0} onClick={() => void handleGenerate()} className="rounded-xl bg-emerald-500 hover:bg-emerald-400 px-5 py-2.5 text-sm font-bold text-white transition disabled:opacity-50">
-                {generateForm.replaceExisting ? "Replace Slots" : "Generate Slots"}
-              </button>
+              <div className="flex gap-2">
+                {activeScheduleSlots.length > 0 && <Button tone="secondary" disabled={saving} onClick={() => setScheduleEditing(false)}>Cancel</Button>}
+                <Button disabled={saving || count === 0} onClick={() => void handleGenerate()}>
+                  {generateForm.replaceExisting ? "Replace Schedule" : "Save Schedule"}
+                </Button>
+              </div>
             </div>
+            </>}
           </div>
         </section>
       );
@@ -793,7 +884,7 @@ export default function OwnerSlotsPage() {
         <section className="theme-panel overflow-hidden rounded-2xl">
           {renderTabToolbar({
             title: "Edit Slot Price",
-            subtitle: "Update regular prices for generated slots.",
+            information: "Update regular prices for generated slots.",
           })}
           <div className="grid gap-3 p-4 sm:p-5">
             {loadingSlots && renderLoadingSlots()}
@@ -833,12 +924,12 @@ export default function OwnerSlotsPage() {
         return matchesSearch && matchesBand;
       });
       const filterOptions: Array<{ key: SlotStatusFilter; label: string; count: number }> = [
-        { key: "all", label: "All", count: sortedSlots.length },
+        { key: "all", label: "Any status", count: sortedSlots.length },
         { key: "active", label: "Active", count: activeSlots.length },
         { key: "disabled", label: "Disabled", count: disabledSlots.length },
       ];
       const timeFilterOptions: Array<{ key: SlotTimeBand; label: string; count: number }> = [
-        { key: "all", label: "All day", count: slotsMatchingStatus.length },
+        { key: "all", label: "Any time", count: slotsMatchingStatus.length },
         ...slotTimeBands.map((band) => ({
           key: band.key,
           label: band.label,
@@ -856,77 +947,54 @@ export default function OwnerSlotsPage() {
         <section className="theme-panel overflow-hidden rounded-2xl">
           {renderTabToolbar({
             title: "Disable Slot",
-            subtitle: "Control recurring slot availability. Use Calendar View for date-only blocks.",
+            information: "Control recurring slot availability. Use Calendar View for date-only blocks.",
           })}
           <div className="space-y-5 p-4 sm:p-5">
-            <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.35fr)]">
-              <SlotStatusCard label="Active slots" value={activeSlots.length} tone="emerald" />
-              <SlotStatusCard label="Disabled slots" value={disabledSlots.length} tone="red" />
-              <div className="theme-panel-soft rounded-2xl border p-4">
-                <p className="theme-title text-sm font-bold">Global impact</p>
-                <p className="theme-muted mt-1 text-xs leading-5">
-                  Disabled slots are hidden from every future booking day until you enable them again.
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-4 rounded-2xl border border-sky-500/15 bg-sky-500/10 p-3">
-              <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
-                <div>
-                  <p className="theme-title text-sm font-bold">Regular availability switches</p>
-                  <p className="theme-muted mt-1 text-xs">Toggle a slot off only when the time should not repeat in your regular schedule.</p>
+            <div className="rounded-2xl border border-sky-500/15 bg-sky-500/10 p-3">
+              <div className="grid gap-3 xl:grid-cols-[minmax(260px,1fr)_auto_auto] xl:items-end">
+                <div className="min-w-0 space-y-1.5">
+                  <label htmlFor="disable-slot-search" className="theme-muted block text-[10px] font-black uppercase tracking-[0.16em]">Search slots</label>
+                  <div className="relative">
+                    <input
+                      id="disable-slot-search"
+                      className={`${inputClass} pr-20`}
+                      value={disableSearch}
+                      onChange={(event) => setDisableSearch(event.target.value)}
+                      placeholder="Find by time, e.g. 18:00"
+                    />
+                    {disableSearch && (
+                      <button
+                        type="button"
+                        onClick={() => setDisableSearch("")}
+                        className="theme-muted absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold hover:text-sky-500"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <div className="theme-input inline-flex rounded-xl p-1">
-                  {filterOptions.map((option) => (
-                    <button
-                      key={option.key}
-                      type="button"
-                      onClick={() => setDisableFilter(option.key)}
-                      className={`rounded-lg px-3 py-2 text-xs font-bold transition duration-150 ${
-                        disableFilter === option.key
-                          ? "bg-sky-500 text-white"
-                          : "theme-muted hover:bg-sky-500/10 hover:text-sky-500"
-                      }`}
-                    >
-                      {option.label} <span className="opacity-75">({option.count})</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="grid gap-3 xl:grid-cols-[minmax(260px,1fr)_minmax(0,2fr)]">
-                <div className="relative">
-                  <input
-                    className={`${inputClass} pr-20`}
-                    value={disableSearch}
-                    onChange={(event) => setDisableSearch(event.target.value)}
-                    placeholder="Find slot by time, e.g. 18:00"
-                  />
-                  {disableSearch && (
-                    <button
-                      type="button"
-                      onClick={() => setDisableSearch("")}
-                      className="theme-muted absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold hover:text-sky-500"
-                    >
-                      Clear
-                    </button>
-                  )}
-                </div>
-                <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-                  {timeFilterOptions.map((option) => (
-                    <button
-                      key={option.key}
-                      type="button"
-                      onClick={() => setDisableTimeBand(option.key)}
-                      className={`shrink-0 rounded-xl border px-3 py-2 text-xs font-black transition duration-150 ${
-                        disableTimeBand === option.key
-                          ? "border-sky-400 bg-sky-500 text-white"
-                          : "theme-card theme-muted hover:border-sky-500/40 hover:text-sky-500"
-                      }`}
-                    >
-                      {option.label} <span className="opacity-75">({option.count})</span>
-                    </button>
-                  ))}
-                </div>
+                <SegmentedFilter
+                  label="Status"
+                  value={disableFilter}
+                  options={filterOptions.map((option) => ({
+                    value: option.key,
+                    label: option.label,
+                    count: option.count,
+                    disabled: option.key !== "all" && option.count === 0,
+                  }))}
+                  onChange={setDisableFilter}
+                />
+                <SegmentedFilter
+                  label="Time"
+                  value={disableTimeBand}
+                  options={timeFilterOptions.map((option) => ({
+                    value: option.key,
+                    label: option.label,
+                    count: option.count,
+                    disabled: option.key !== "all" && option.count === 0,
+                  }))}
+                  onChange={setDisableTimeBand}
+                />
               </div>
             </div>
 
@@ -939,7 +1007,7 @@ export default function OwnerSlotsPage() {
             )}
             {!loadingSlots && visibleSlots.length > 0 && (
               <div className="space-y-4">
-                <p className="theme-muted text-xs font-semibold">
+                <p aria-live="polite" className="theme-muted text-xs font-semibold">
                   Showing {visibleSlots.length} of {sortedSlots.length} regular slots.
                 </p>
                 {groupedVisibleSlots.map((group) => (
@@ -1027,40 +1095,55 @@ export default function OwnerSlotsPage() {
     }
 
     if (activeView === "holiday") {
+      const holidayRuleNeedsSlots = applyToSlotsMode === "SELECTED" && selectedSlotIds.length === 0;
+      const holidayRuleInvalid = !Number.isFinite(pricingValue) || pricingValue <= 0 || holidayRuleNeedsSlots;
+
       return (
         <section className="space-y-6">
           {/* Card 1: Holiday Pricing Automation */}
-          <div className="theme-panel overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-lg">
-            <div className="theme-panel-soft border-b p-4 sm:p-5">
-              <h2 className="theme-title text-lg font-bold bg-gradient-to-r from-sky-400 to-indigo-300 bg-clip-text text-transparent">Holiday Pricing Automation</h2>
-              <p className="theme-muted mt-1 text-sm">Configure dynamic rules that automatically adjust turf rates on calendar holidays.</p>
+          <div className="theme-panel overflow-hidden rounded-2xl">
+            <div className="theme-panel-soft flex flex-wrap items-center justify-between gap-3 border-b p-4 sm:p-5">
+              <SectionTitleInfo
+                title="Automatic Holiday Pricing"
+                information="Configure a reusable rule that adjusts turf rates on selected calendar holidays."
+              />
+              <span className={`rounded-full border px-3 py-1 text-xs font-black ${
+                enableAutoHoliday
+                  ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                  : "theme-card theme-muted"
+              }`}>
+                {enableAutoHoliday ? "Rule enabled" : "Rule disabled"}
+              </span>
             </div>
 
-            <div className="p-4 sm:p-5 space-y-6">
+            <div className="space-y-5 p-4 sm:p-5">
               {/* Toggle Rule */}
-              <label className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition duration-200 ${
+              <label className={`flex cursor-pointer items-center justify-between gap-4 rounded-2xl border p-4 transition duration-200 ${
                 enableAutoHoliday ? "border-sky-500/40 bg-sky-500/10" : "theme-card hover:border-sky-500/40"
               }`}>
-                <input
-                  type="checkbox"
-                  className="mt-1 h-4 w-4 shrink-0 rounded border-slate-400 accent-sky-500"
-                  checked={enableAutoHoliday}
-                  onChange={(e) => setEnableAutoHoliday(e.target.checked)}
-                />
                 <span>
-                  <span className="theme-title block text-sm font-bold">Auto Apply Holiday Pricing</span>
+                  <span className="theme-title block text-sm font-black">Use automatic holiday pricing</span>
                   <span className="theme-muted mt-1 block text-xs leading-5">
-                    Automatically detect upcoming national, state, and festival holidays and adjust prices.
+                    Select holidays and save one rule instead of creating each date manually.
                   </span>
+                </span>
+                <span className={`relative h-7 w-12 shrink-0 rounded-full transition ${enableAutoHoliday ? "bg-sky-500" : "bg-slate-600"}`}>
+                  <input
+                    type="checkbox"
+                    className="peer sr-only"
+                    checked={enableAutoHoliday}
+                    onChange={(e) => setEnableAutoHoliday(e.target.checked)}
+                  />
+                  <span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition peer-focus-visible:ring-2 peer-focus-visible:ring-sky-300 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-slate-800 ${enableAutoHoliday ? "right-1" : "left-1"}`} />
                 </span>
               </label>
 
               {enableAutoHoliday && (
-                <div className="grid gap-6 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10">
-                  <div className="space-y-5">
-                    <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)]">
+                  <div className="theme-card space-y-5 rounded-2xl border p-4 sm:p-5">
+                    <div className="grid gap-3 sm:grid-cols-2">
                       {/* Location */}
-                      <div>
+                      <div className="theme-panel-soft rounded-xl border p-3">
                         <span className="theme-muted block text-xs font-semibold uppercase tracking-wider">Location</span>
                         <p className="theme-title text-sm font-bold mt-1">
                           {selectedTurf?.city || "Ahmedabad"}, {selectedTurf?.state || "Gujarat"}
@@ -1068,7 +1151,7 @@ export default function OwnerSlotsPage() {
                       </div>
 
                       {/* Source */}
-                      <div>
+                      <div className="theme-panel-soft rounded-xl border p-3">
                         <span className="theme-muted block text-xs font-semibold uppercase tracking-wider">Calendar Database</span>
                         <p className="theme-title text-sm font-bold mt-1">
                           {selectedTurf?.holidaySource || "India + Gujarat Calendar"}
@@ -1077,22 +1160,15 @@ export default function OwnerSlotsPage() {
                     </div>
 
                     {/* Pricing Strategy */}
-                    <div className="space-y-2">
-                      <span className="theme-muted block text-xs font-semibold uppercase tracking-wider">Pricing Strategy</span>
-                      <div className="flex flex-wrap gap-4">
-                        {(["PERCENTAGE", "FIXED", "MULTIPLIER"] as const).map((strat) => (
-                          <label key={strat} className="flex items-center gap-2 text-sm cursor-pointer select-none">
-                            <input
-                              type="radio"
-                              name="strategy"
-                              value={strat}
-                              checked={pricingStrategy === strat}
-                              onChange={() => setPricingStrategy(strat)}
-                              className="accent-sky-500"
-                            />
-                            <span className="capitalize">{strat.toLowerCase().replace("_", " ")}</span>
-                          </label>
-                        ))}
+                    <div className="space-y-3">
+                      <div>
+                        <p className="theme-title text-sm font-black">1. Choose the price adjustment</p>
+                        <p className="theme-muted mt-1 text-xs">Select one calculation method for included holidays.</p>
+                      </div>
+                      <div className="grid gap-2 sm:grid-cols-3">
+                        <PricingChoiceCard name="strategy" value="PERCENTAGE" checked={pricingStrategy === "PERCENTAGE"} onChange={setPricingStrategy} title="Percentage" description="Increase the regular rate" />
+                        <PricingChoiceCard name="strategy" value="FIXED" checked={pricingStrategy === "FIXED"} onChange={setPricingStrategy} title="Fixed price" description="Use one holiday rate" />
+                        <PricingChoiceCard name="strategy" value="MULTIPLIER" checked={pricingStrategy === "MULTIPLIER"} onChange={setPricingStrategy} title="Multiplier" description="Multiply the regular rate" />
                       </div>
                     </div>
 
@@ -1113,31 +1189,14 @@ export default function OwnerSlotsPage() {
                     </Field>
 
                     {/* Apply To */}
-                    <div className="space-y-2">
-                      <span className="theme-muted block text-xs font-semibold uppercase tracking-wider">Apply To</span>
-                      <div className="flex gap-4">
-                        <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
-                          <input
-                            type="radio"
-                            name="applyTo"
-                            value="ALL"
-                            checked={applyToSlotsMode === "ALL"}
-                            onChange={() => setApplyToSlotsMode("ALL")}
-                            className="accent-sky-500"
-                          />
-                          All Slots
-                        </label>
-                        <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
-                          <input
-                            type="radio"
-                            name="applyTo"
-                            value="SELECTED"
-                            checked={applyToSlotsMode === "SELECTED"}
-                            onChange={() => setApplyToSlotsMode("SELECTED")}
-                            className="accent-sky-500"
-                          />
-                          Selected Slots
-                        </label>
+                    <div className="space-y-3">
+                      <div>
+                        <p className="theme-title text-sm font-black">2. Choose where it applies</p>
+                        <p className="theme-muted mt-1 text-xs">Use every regular slot or limit the rule to selected times.</p>
+                      </div>
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        <PricingChoiceCard name="applyTo" value="ALL" checked={applyToSlotsMode === "ALL"} onChange={setApplyToSlotsMode} title="All regular slots" description={`${slots.length} slots will use this rule`} />
+                        <PricingChoiceCard name="applyTo" value="SELECTED" checked={applyToSlotsMode === "SELECTED"} onChange={setApplyToSlotsMode} title="Selected slots" description="Choose specific time ranges" />
                       </div>
                     </div>
 
@@ -1153,9 +1212,17 @@ export default function OwnerSlotsPage() {
                   </div>
 
                   {/* Upcoming Holidays list */}
-                  <div className="space-y-4 pt-5 md:pt-0 md:pl-6">
-                    <span className="theme-muted block text-xs font-semibold uppercase tracking-wider">Upcoming Calendar Holidays</span>
-                    <div className="space-y-2 max-h-[380px] overflow-y-auto pr-1">
+                  <div className="theme-card space-y-4 rounded-2xl border p-4 sm:p-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="theme-title text-sm font-black">3. Include holidays</p>
+                        <p className="theme-muted mt-1 text-xs">Uncheck dates that should keep regular pricing.</p>
+                      </div>
+                      <span className="rounded-full bg-sky-500/10 px-2.5 py-1 text-xs font-bold text-sky-700 dark:text-sky-300">
+                        {upcomingHolidays.filter((holiday) => !excludedHolidays.includes(holiday.holidayName)).length}/{upcomingHolidays.length} included
+                      </span>
+                    </div>
+                    <div className="max-h-[420px] space-y-2 overflow-y-auto pr-1">
                       {upcomingHolidays.length === 0 ? (
                         <p className="text-xs text-slate-500">No upcoming holidays found.</p>
                       ) : (
@@ -1199,12 +1266,24 @@ export default function OwnerSlotsPage() {
               )}
 
               {/* Save Rule Action */}
-              <div className="flex justify-end pt-3 border-t border-white/10">
+              <div className="theme-panel-soft flex flex-col gap-3 rounded-2xl border p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="theme-title text-sm font-black">
+                    {enableAutoHoliday ? "Automatic rule ready to save" : "Automatic pricing is turned off"}
+                  </p>
+                  <p className="theme-muted mt-1 text-xs">
+                    {holidayRuleNeedsSlots
+                      ? "Select at least one time slot before saving this rule."
+                      : enableAutoHoliday
+                      ? `${pricingStrategy === "PERCENTAGE" ? `${pricingValue}% increase` : pricingStrategy === "MULTIPLIER" ? `${pricingValue}x multiplier` : `Rs ${pricingValue} fixed price`} for ${applyToSlotsMode === "ALL" ? "all regular slots" : `${selectedSlotIds.length} selected slots`}.`
+                      : "Save this state to keep holiday prices unchanged."}
+                  </p>
+                </div>
                 <button
                   type="button"
-                  disabled={automationSaving}
+                  disabled={automationSaving || holidayRuleInvalid}
                   onClick={handleSaveHolidayAutomation}
-                  className="rounded-xl bg-gradient-to-r from-sky-500 to-indigo-500 px-6 py-2.5 text-sm font-black text-white transition duration-200 hover:from-sky-400 hover:to-indigo-400 shadow-md shadow-sky-500/10"
+                  className="shrink-0 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-500 px-6 py-2.5 text-sm font-black text-white shadow-md shadow-sky-500/10 transition duration-200 hover:from-sky-400 hover:to-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {automationSaving ? "Saving..." : "Save Rule"}
                 </button>
@@ -1213,42 +1292,99 @@ export default function OwnerSlotsPage() {
           </div>
 
           {/* Card 2: Manual Holiday Pricing */}
-          <div className="theme-panel overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-lg">
-            <div className="theme-panel-soft border-b p-4 sm:p-5">
-              <h2 className="theme-title text-lg font-bold">Manual Holiday Pricing</h2>
-              <p className="theme-muted mt-1 text-sm">Apply date-specific prices manually for customized/unlisted events.</p>
+          <div className="theme-panel overflow-hidden rounded-2xl">
+            <div className="theme-panel-soft flex flex-wrap items-center justify-between gap-3 border-b p-4 sm:p-5">
+              <div>
+                <SectionTitleInfo
+                  title="Manual Date Override"
+                  information="Set a one-time price for selected slots on a specific date, such as a local event or unlisted holiday."
+                />
+                <p className="theme-muted mt-1 text-xs">Use this when one date needs a different rate from your regular or automatic pricing.</p>
+              </div>
+              <span className="rounded-full border border-sky-500/20 bg-sky-500/10 px-3 py-1 text-xs font-black text-sky-700 dark:text-sky-300">
+                One-time change
+              </span>
             </div>
 
-            <div className="p-4 sm:p-5 space-y-4">
-              <div className="grid gap-4 md:grid-cols-3">
-                <Field label="Date">
-                  <input type="date" className={inputClass} value={holidayForm.date} onChange={(e) => setHolidayForm({ ...holidayForm, date: e.target.value })} />
-                </Field>
-                <Field label="Holiday Price">
-                  <input type="number" min={1} className={inputClass} value={holidayForm.price} onChange={(e) => setHolidayForm({ ...holidayForm, price: Number(e.target.value) })} />
-                </Field>
-                <Field label="Reason / Event Name">
-                  <input className={inputClass} value={holidayForm.reason} onChange={(e) => setHolidayForm({ ...holidayForm, reason: e.target.value })} />
-                </Field>
+            <div className="grid gap-5 p-4 sm:p-5 xl:grid-cols-[minmax(0,1fr)_320px]">
+              <div className="space-y-5">
+                <section className="theme-card rounded-2xl border p-4 sm:p-5">
+                  <div className="mb-4">
+                    <p className="theme-title text-sm font-black">1. Add override details</p>
+                    <p className="theme-muted mt-1 text-xs">Choose the date, per-slot rate, and a label your team will recognize.</p>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <Field label="Date">
+                      <input type="date" className={inputClass} value={holidayForm.date} onChange={(e) => setHolidayForm({ ...holidayForm, date: e.target.value })} />
+                    </Field>
+                    <Field label="Price per slot (Rs)">
+                      <input type="number" min={1} className={inputClass} value={holidayForm.price} onChange={(e) => setHolidayForm({ ...holidayForm, price: Number(e.target.value) })} />
+                    </Field>
+                    <Field label="Reason / Event Name">
+                      <input className={inputClass} value={holidayForm.reason} onChange={(e) => setHolidayForm({ ...holidayForm, reason: e.target.value })} />
+                    </Field>
+                  </div>
+                </section>
+
+                <section className="theme-card rounded-2xl border p-4 sm:p-5">
+                  <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="theme-title text-sm font-black">2. Select time slots</p>
+                      <p className="theme-muted mt-1 text-xs">Only selected slots receive this one-time price.</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="rounded-full bg-sky-500/10 px-2.5 py-1 text-xs font-bold text-sky-700 dark:text-sky-300">
+                        {selectedSlots.length} selected
+                      </span>
+                      <button
+                        type="button"
+                        disabled={slots.length === 0}
+                        onClick={() => setSelectedSlotIds(slots.map((slot) => slot.id))}
+                        className="theme-input rounded-lg px-3 py-1.5 text-xs font-bold transition hover:border-sky-400 disabled:opacity-40"
+                      >
+                        Select all
+                      </button>
+                      <button
+                        type="button"
+                        disabled={selectedSlotIds.length === 0}
+                        onClick={() => setSelectedSlotIds([])}
+                        className="theme-input rounded-lg px-3 py-1.5 text-xs font-bold transition hover:border-sky-400 disabled:opacity-40"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+                  <div className="max-h-72 overflow-y-auto rounded-xl border border-white/10 bg-black/10 p-3">
+                    {loadingSlots ? renderLoadingSlots() : renderSlotPicker("Generate regular slots before adding a date override.")}
+                  </div>
+                </section>
               </div>
 
-              <div className="grid gap-4 pt-2 lg:grid-cols-[1fr_280px]">
-                <div className="space-y-2">
-                  <span className="theme-muted block text-xs font-semibold uppercase tracking-wider">Select Slots to Pricing Override</span>
-                  <div className="max-h-60 overflow-y-auto border border-white/10 rounded-xl p-3 bg-black/20">
-                    {loadingSlots ? renderLoadingSlots() : renderSlotPicker("Generate slots first.")}
-                  </div>
+              <aside className="theme-panel-soft h-fit rounded-2xl border p-4 xl:sticky xl:top-4">
+                <p className="theme-title text-sm font-black">Override summary</p>
+                <p className="theme-muted mt-1 text-xs leading-5">Review the one-time change before applying it.</p>
+
+                <dl className="mt-5 space-y-3">
+                  <SummaryRow label="Date" value={holidayForm.date ? new Date(`${holidayForm.date}T00:00:00`).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "Not selected"} />
+                  <SummaryRow label="Price" value={`Rs ${holidayForm.price || 0} / slot`} />
+                  <SummaryRow label="Selected slots" value={`${selectedSlots.length} of ${slots.length}`} />
+                  <SummaryRow label="Reason" value={holidayForm.reason.trim() || "Not provided"} />
+                </dl>
+
+                <div className="mt-5 rounded-xl border border-sky-500/20 bg-sky-500/10 p-3">
+                  <p className="text-xs font-bold text-sky-700 dark:text-sky-300">This overrides the selected date only.</p>
+                  <p className="theme-muted mt-1 text-xs leading-5">Your regular schedule and automatic holiday rule remain unchanged.</p>
                 </div>
-                <div className="theme-panel-soft rounded-xl p-4 border border-white/10 bg-black/10 flex flex-col justify-between">
-                  <div>
-                    <p className="theme-title text-sm font-semibold">{selectedSlots.length} slots selected</p>
-                    <p className="theme-muted mt-1 text-xs leading-4">Apply a manual override price for this specific date.</p>
-                  </div>
-                  <button disabled={saving || selectedSlotIds.length === 0} onClick={handleHolidayPricing} className="mt-4 w-full rounded-xl bg-sky-500 px-4 py-2.5 text-sm font-bold text-white transition duration-200 hover:bg-sky-400 disabled:opacity-50">
-                    Apply Holiday Price
-                  </button>
-                </div>
-              </div>
+
+                <button
+                  type="button"
+                  disabled={saving || selectedSlotIds.length === 0}
+                  onClick={handleHolidayPricing}
+                  className="mt-5 w-full rounded-xl bg-sky-500 px-4 py-3 text-sm font-black text-white transition duration-200 hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {saving ? "Applying..." : `Apply to ${selectedSlots.length} slot${selectedSlots.length === 1 ? "" : "s"}`}
+                </button>
+              </aside>
             </div>
           </div>
         </section>
@@ -1273,10 +1409,10 @@ export default function OwnerSlotsPage() {
     const renderCalendarToolbar = () => (
       <div className="theme-panel-soft border-b p-4 sm:p-5">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-          <div>
-            <h2 className="theme-title text-lg font-bold">Calendar View</h2>
-            <p className="theme-muted mt-1 text-sm">{formatDateTitle(date)} schedule</p>
-          </div>
+          <SectionTitleInfo
+            title="Calendar View"
+            information={getCalendarViewInformation(date, calendarMode)}
+          />
           <div className="grid gap-3 lg:grid-cols-[180px_160px_auto] lg:items-center">
             <Field label="View Mode">
               <div className="theme-input grid grid-cols-3 rounded-xl p-1">
@@ -1506,8 +1642,12 @@ export default function OwnerSlotsPage() {
         {/* Global Page Header & Turf Selector */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-white/10 pb-6">
           <div>
-            <h1 className="theme-title text-3xl font-black tracking-tight">Slot Manager</h1>
-            <p className="theme-muted mt-1 text-sm">Manage slot templates, daily schedules, dynamic pricing, and holiday rules.</p>
+            <div>
+            <h1 className="theme-title text-3xl font-black tracking-tight">Slot Manager
+              <span className="inline-flex align-middle ml-3 mb-1">
+                <TileInfo label="Slot Manager information" focusable={false}>Manage slot templates, daily schedules, dynamic pricing, and holiday rules.</TileInfo>
+              </span></h1>
+          </div>
           </div>
           <div className="w-full sm:w-72 shrink-0">
             <label className="block">
@@ -1565,6 +1705,74 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
       <span className="theme-muted mb-1.5 block text-xs font-bold uppercase tracking-wider">{label}</span>
       {children}
     </label>
+  );
+}
+
+function PricingChoiceCard({
+  name,
+  value,
+  checked,
+  onChange,
+  title,
+  description,
+}: {
+  name: string;
+  value: string;
+  checked: boolean;
+  onChange: (value: string) => void;
+  title: string;
+  description: string;
+}) {
+  return (
+    <label className={`flex cursor-pointer gap-3 rounded-xl border p-3 transition duration-150 ${
+      checked ? "border-sky-400 bg-sky-500/10" : "theme-panel-soft hover:border-sky-500/40"
+    }`}>
+      <input
+        type="radio"
+        name={name}
+        value={value}
+        checked={checked}
+        onChange={(event) => onChange(event.target.value)}
+        className="mt-0.5 h-4 w-4 shrink-0 accent-sky-500"
+      />
+      <span className="min-w-0">
+        <span className="theme-title block text-xs font-black">{title}</span>
+        <span className="theme-muted mt-1 block text-[11px] leading-4">{description}</span>
+      </span>
+    </label>
+  );
+}
+
+function SummaryRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-3 last:border-b-0 last:pb-0">
+      <dt className="theme-muted text-xs font-semibold">{label}</dt>
+      <dd className="theme-title max-w-[170px] text-right text-xs font-bold break-words">{value}</dd>
+    </div>
+  );
+}
+
+function SectionTitleInfo({
+  title,
+  information,
+  titleClassName = "",
+}: {
+  title: string;
+  information: string;
+  titleClassName?: string;
+}) {
+  return (
+    <h2 className="theme-title inline-flex items-center gap-2 text-lg font-bold">
+      <span className={titleClassName}>{title}</span>
+      <TileInfo
+        label={`${title} information`}
+        focusable={false}
+        variant="standard"
+        className="text-base"
+      >
+        {information}
+      </TileInfo>
+    </h2>
   );
 }
 
